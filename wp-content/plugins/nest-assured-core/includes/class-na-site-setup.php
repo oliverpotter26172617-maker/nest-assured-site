@@ -1,0 +1,784 @@
+<?php
+/**
+ * Idempotent site content setup.
+ *
+ * @package NestAssuredCore
+ */
+
+declare(strict_types=1);
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
+final class NA_Site_Setup
+{
+    public static function register_command(): void
+    {
+        if (defined('WP_CLI') && WP_CLI) {
+            WP_CLI::add_command('nest-assured install', [self::class, 'cli_install']);
+            WP_CLI::add_command('nest-assured cache-clear', [self::class, 'cli_clear_cache']);
+        }
+    }
+
+    /**
+     * Run the content installer from WP-CLI.
+     */
+    public static function cli_install(): void
+    {
+        self::install();
+        WP_CLI::success('Nest Assured pages and site settings are installed.');
+    }
+
+    /**
+     * Clear the page cache after a controlled build update.
+     */
+    public static function cli_clear_cache(): void
+    {
+        if (function_exists('wp_cache_clear_cache')) {
+            wp_cache_clear_cache();
+            WP_CLI::success('WP Super Cache files cleared.');
+            return;
+        }
+
+        wp_cache_flush();
+        WP_CLI::warning('WP Super Cache was unavailable, so only the object cache was cleared.');
+    }
+
+    public static function install(): void
+    {
+        $legal_id = self::upsert_page('Legal information', 'legal', self::legal_index());
+
+        $pages = [
+            ['Home', 'home', self::home()],
+            ['Life insurance', 'life-insurance', self::life_insurance()],
+            ['Income protection', 'income-protection', self::income_protection()],
+            ['Critical illness cover', 'critical-illness-cover', self::critical_illness()],
+            ['Family protection', 'family-protection', self::family_protection()],
+            ['Private medical insurance', 'private-medical-insurance', self::private_medical_insurance()],
+            ['Business protection', 'business-protection', self::business_protection()],
+            ['General insurance', 'general-insurance', self::general_insurance()],
+            ['Protection guides', 'guides', self::guides()],
+            ['Editorial policy', 'editorial-policy', NA_Content_Expansion::editorial_policy()],
+            ['Already a client', 'already-a-client', self::already_client()],
+            ['How it works', 'how-it-works', self::how_it_works()],
+            ['FAQs', 'faqs', self::faqs()],
+            ['About Nest Assured', 'about', self::about()],
+            ['Contact', 'contact', self::contact()],
+            ['Enquire', 'enquire', self::enquire()],
+        ];
+
+        $ids = [];
+        foreach ($pages as [$title, $slug, $content]) {
+            $ids[$slug] = self::upsert_page($title, $slug, $content);
+        }
+
+        $guides_id = (int) ($ids['guides'] ?? 0);
+        $guide_pages = [
+            ['Life insurance or critical illness cover?', 'life-insurance-vs-critical-illness-cover', self::guide_life_vs_critical()],
+            ['Income protection and employer sick pay', 'income-protection-and-sick-pay', self::guide_income_and_sick_pay()],
+            ['Choosing private medical insurance', 'choosing-private-medical-insurance', self::guide_choosing_pmi()],
+            ['Types of business protection explained', 'types-of-business-protection', self::guide_business_protection_types()],
+            ['Buildings and contents insurance explained', 'buildings-and-contents-insurance', self::guide_buildings_and_contents()],
+            ['When should you review protection insurance?', 'when-to-review-protection-insurance', self::guide_when_to_review()],
+        ];
+
+        $guide_pages = array_merge($guide_pages, NA_Content_Expansion::guides());
+
+        foreach ($guide_pages as [$title, $slug, $content]) {
+            $ids[$slug] = self::upsert_page($title, $slug, $content, $guides_id);
+        }
+
+        $ids['legal'] = $legal_id;
+        $ids['privacy'] = self::upsert_privacy_page($legal_id);
+        $ids['complaints-procedure'] = self::upsert_page('Complaints procedure', 'complaints-procedure', self::complaints(), $legal_id);
+        $ids['financial-promotions'] = self::upsert_page('Financial promotions', 'financial-promotions', self::financial_promotions(), $legal_id);
+
+        if (! empty($ids['home'])) {
+            update_option('show_on_front', 'page');
+            update_option('page_on_front', (int) $ids['home']);
+            update_option('page_for_posts', 0);
+        }
+
+        self::configure_page_seo($ids);
+
+        update_option('wp_page_for_privacy_policy', (int) $ids['privacy']);
+        update_option('blogname', 'Nest Assured');
+        update_option('blogdescription', 'Protection insurance, explained clearly');
+        update_option('permalink_structure', '/%postname%/');
+        update_option('default_comment_status', 'closed');
+        update_option('default_ping_status', 'closed');
+        update_option('timezone_string', 'Europe/London');
+        update_option('WPLANG', 'en_GB');
+        update_option('na_site_build_version', NA_CORE_VERSION);
+
+        self::configure_yoast();
+        self::configure_backups();
+
+        self::remove_starter_content();
+        flush_rewrite_rules();
+    }
+
+    private static function upsert_page(string $title, string $slug, string $content, int $parent = 0): int
+    {
+        $path = $parent > 0 ? get_post_field('post_name', $parent) . '/' . $slug : $slug;
+        $existing = get_page_by_path($path, OBJECT, 'page');
+
+        // Skip untouched pages so the post modified date, surfaced publicly as
+        // "Last reviewed", only moves when the content genuinely changes.
+        $hash = md5($title . '|' . $slug . '|' . $parent . '|' . $content);
+        if ($existing instanceof WP_Post && $hash === (string) get_post_meta($existing->ID, '_na_content_hash', true)) {
+            return (int) $existing->ID;
+        }
+
+        $post = [
+            'post_type'      => 'page',
+            'post_status'    => 'publish',
+            'post_title'     => $title,
+            'post_name'      => $slug,
+            'post_content'   => $content,
+            'post_parent'    => $parent,
+            'comment_status' => 'closed',
+            'ping_status'    => 'closed',
+        ];
+
+        if ($existing instanceof WP_Post) {
+            $post['ID'] = $existing->ID;
+            $result = wp_update_post($post, true);
+        } else {
+            $result = wp_insert_post($post, true);
+        }
+
+        if (is_wp_error($result)) {
+            return 0;
+        }
+
+        update_post_meta((int) $result, '_na_content_hash', $hash);
+        return (int) $result;
+    }
+
+    private static function upsert_privacy_page(int $legal_id): int
+    {
+        $existing_id = (int) get_option('wp_page_for_privacy_policy', 0);
+        $existing = $existing_id > 0 ? get_post($existing_id) : null;
+
+        if (! $existing instanceof WP_Post || 'page' !== $existing->post_type) {
+            return self::upsert_page('Privacy', 'privacy', self::privacy(), $legal_id);
+        }
+
+        $result = wp_update_post([
+            'ID'             => $existing->ID,
+            'post_title'     => 'Privacy',
+            'post_name'      => 'privacy',
+            'post_status'    => 'publish',
+            'post_parent'    => $legal_id,
+            'post_content'   => self::privacy(),
+            'comment_status' => 'closed',
+        ], true);
+
+        return is_wp_error($result) ? 0 : (int) $result;
+    }
+
+    private static function remove_starter_content(): void
+    {
+        foreach (['hello-world', 'sample-page'] as $slug) {
+            $post = get_page_by_path($slug, OBJECT, ['post', 'page']);
+            if ($post instanceof WP_Post && 'trash' !== $post->post_status) {
+                wp_trash_post($post->ID);
+            }
+        }
+    }
+
+    private static function configure_yoast(): void
+    {
+        $titles = get_option('wpseo_titles', []);
+        if (is_array($titles) && [] !== $titles) {
+            $logo_id = (int) get_option('site_icon', 0);
+            $logo_url = $logo_id > 0 ? (string) wp_get_attachment_image_url($logo_id, 'full') : '';
+            $titles['separator'] = 'sc-pipe';
+            $titles['website_name'] = 'Nest Assured';
+            $titles['company_name'] = 'Nest Assured';
+            $titles['company_or_person'] = 'company';
+            $titles['title-home-wpseo'] = '%%sitename%% %%sep%% %%sitedesc%%';
+            $titles['metadesc-home-wpseo'] = 'Friendly, adviser-led guidance on life insurance, income protection, critical illness, private medical, business and home insurance.';
+            $titles['open_graph_frontpage_title'] = 'Nest Assured | Insurance advice, made reassuringly clear';
+            $titles['open_graph_frontpage_desc'] = $titles['metadesc-home-wpseo'];
+            $titles['company_logo'] = $logo_url;
+            $titles['company_logo_id'] = $logo_id;
+            $titles['open_graph_frontpage_image'] = $logo_url;
+            $titles['open_graph_frontpage_image_id'] = $logo_id;
+            $titles['disable-author'] = true;
+            $titles['disable-date'] = true;
+            $titles['noindex-author-wpseo'] = true;
+            update_option('wpseo_titles', $titles);
+        }
+
+        $general = get_option('wpseo', []);
+        if (is_array($general) && [] !== $general) {
+            $general['tracking'] = false;
+            $general['semrush_integration_active'] = false;
+            $general['wincher_integration_active'] = false;
+            $general['enable_ai_generator'] = false;
+            $general['remove_emoji_scripts'] = true;
+            $general['remove_generator'] = true;
+            $general['remove_pingback_header'] = true;
+            update_option('wpseo', $general);
+        }
+    }
+
+    /**
+     * @param array<string, int> $ids Page IDs keyed by slug.
+     */
+    private static function configure_page_seo(array $ids): void
+    {
+        $descriptions = [
+            'home'                   => 'Friendly, adviser-led guidance on life insurance, income protection, critical illness, private medical, business and home insurance.',
+            'life-insurance'         => 'Understand what life insurance is designed to do, what it is not and what to prepare for an adviser conversation.',
+            'income-protection'      => 'Understand how income protection works, the role of waiting periods and what an adviser needs to discuss.',
+            'critical-illness-cover' => 'A plain-English guide to critical illness cover, policy definitions and the adviser conversation.',
+            'family-protection'      => 'Family protection explained: how life insurance, income protection, critical illness cover and existing benefits can fit together for your household.',
+            'private-medical-insurance' => 'Understand private medical insurance, hospital lists, excesses, underwriting and the questions worth discussing with an adviser.',
+            'business-protection'    => 'A clear guide to key person cover, shareholder protection, business loan protection, relevant life and executive income protection.',
+            'general-insurance'      => 'Understand buildings, contents and wider general insurance, including what to check when protecting your home and belongings.',
+            'guides'                 => 'Plain-English insurance guides covering personal protection, private medical insurance, business protection and home insurance.',
+            'editorial-policy'       => 'How Nest Assured writes, reviews, sources and corrects its plain-English insurance guides.',
+            'life-insurance-vs-critical-illness-cover' => 'Compare life insurance and critical illness cover, including when each can pay, how benefits differ and why the two are not interchangeable.',
+            'income-protection-and-sick-pay' => 'Learn how employer sick pay, savings and income protection can work together if illness or injury prevents you from working.',
+            'choosing-private-medical-insurance' => 'A practical checklist for comparing private medical insurance, from underwriting and hospital access to excesses and outpatient cover.',
+            'types-of-business-protection' => 'Understand the main types of business protection and the different roles of key person, shareholder, loan and relevant life cover.',
+            'buildings-and-contents-insurance' => 'A plain-English explanation of buildings and contents insurance, common limits and the details to check before choosing cover.',
+            'when-to-review-protection-insurance' => 'The life, work and mortgage changes that can make a protection insurance review worthwhile.',
+            'making-a-protection-insurance-claim' => 'A practical first-step guide to making a life, critical illness, income protection or private medical insurance claim.',
+            'insurance-jargon-buster' => 'Plain-English definitions for common protection, private medical and general insurance terms.',
+            'income-protection-for-self-employed' => 'How self-employed people can assess income gaps, waiting periods and the evidence used for income protection.',
+            'relevant-life-vs-key-person-cover' => 'Compare relevant life and key person cover, including who each arrangement is intended to protect and why.',
+            'leaving-company-private-medical-insurance' => 'What to check when employer-funded private medical insurance ends, including continuation terms and underwriting.',
+            'life-insurance-and-trusts' => 'A plain-English introduction to life insurance trusts, trustees, beneficiaries and the decisions that need care.',
+            'preparing-for-protection-appointment' => 'A practical checklist of policies, workplace benefits, commitments and questions to prepare for a protection appointment.',
+            'already-a-client'       => 'A dedicated protection enquiry route for existing Major Money Matters mortgage clients.',
+            'how-it-works'           => 'How the Nest Assured advice-led protection process works from enquiry to adviser conversation.',
+            'faqs'                   => 'Approved protection questions drawn from real Nest Assured adviser conversations.',
+            'about'                  => 'Nest Assured is the protection advice service connected to mortgage broker Major Money Matters, built around a regulated adviser conversation.',
+            'contact'                => 'Choose the correct Nest Assured contact route for an existing-client or new protection enquiry.',
+            'enquire'                => 'Start an advice-led protection conversation through the correct existing-client or new-enquiry route.',
+        ];
+
+        foreach ($descriptions as $slug => $description) {
+            $page_id = (int) ($ids[$slug] ?? 0);
+            if ($page_id <= 0) {
+                continue;
+            }
+
+            update_post_meta($page_id, '_yoast_wpseo_metadesc', $description);
+        }
+
+        if (! empty($ids['home'])) {
+            update_post_meta((int) $ids['home'], '_yoast_wpseo_title', 'Nest Assured | Insurance advice, made reassuringly clear');
+        }
+
+        $titles = [
+            'life-insurance' => 'Life Insurance Advice | Nest Assured',
+            'income-protection' => 'Income Protection Advice | Nest Assured',
+            'critical-illness-cover' => 'Critical Illness Cover Advice | Nest Assured',
+            'family-protection' => 'Family Protection Advice | Nest Assured',
+            'private-medical-insurance' => 'Private Medical Insurance Advice | Nest Assured',
+            'business-protection' => 'Business Protection Insurance Advice | Nest Assured',
+            'general-insurance' => 'Home and General Insurance Advice | Nest Assured',
+            'guides' => 'Protection and Insurance Guides | Nest Assured',
+            'editorial-policy' => 'Editorial Policy | Nest Assured',
+            'life-insurance-vs-critical-illness-cover' => 'Life Insurance vs Critical Illness Cover | Nest Assured',
+            'income-protection-and-sick-pay' => 'Income Protection and Sick Pay Explained | Nest Assured',
+            'choosing-private-medical-insurance' => 'How to Choose Private Medical Insurance | Nest Assured',
+            'types-of-business-protection' => 'Types of Business Protection Explained | Nest Assured',
+            'buildings-and-contents-insurance' => 'Buildings vs Contents Insurance Explained | Nest Assured',
+            'when-to-review-protection-insurance' => 'When to Review Protection Insurance | Nest Assured',
+            'making-a-protection-insurance-claim' => 'How to Make a Protection Insurance Claim | Nest Assured',
+            'insurance-jargon-buster' => 'Insurance Jargon Buster | Nest Assured',
+            'income-protection-for-self-employed' => 'Income Protection for Self-Employed People | Nest Assured',
+            'relevant-life-vs-key-person-cover' => 'Relevant Life vs Key Person Cover | Nest Assured',
+            'leaving-company-private-medical-insurance' => 'Leaving Company Private Medical Insurance | Nest Assured',
+            'life-insurance-and-trusts' => 'Life Insurance and Trusts Explained | Nest Assured',
+            'preparing-for-protection-appointment' => 'Protection Appointment Checklist | Nest Assured',
+        ];
+
+        foreach ($titles as $slug => $title) {
+            if (! empty($ids[$slug])) {
+                update_post_meta((int) $ids[$slug], '_yoast_wpseo_title', $title);
+            }
+        }
+
+        foreach (['already-a-client', 'enquire'] as $slug) {
+            if (! empty($ids[$slug])) {
+                update_post_meta((int) $ids[$slug], '_yoast_wpseo_meta-robots-noindex', '1');
+            }
+        }
+
+        if (! empty($ids['faqs'])) {
+            if ('' === trim(NA_Settings::get('faqs_copy'))) {
+                update_post_meta((int) $ids['faqs'], '_yoast_wpseo_meta-robots-noindex', '1');
+            } else {
+                delete_post_meta((int) $ids['faqs'], '_yoast_wpseo_meta-robots-noindex');
+            }
+        }
+
+        $unapproved_legal = [
+            'legal' => '' === trim(NA_Settings::get('complaints_copy')) || '' === trim(NA_Settings::get('financial_copy')),
+            'privacy' => '' === trim(NA_Settings::get('privacy_copy')),
+            'complaints-procedure' => '' === trim(NA_Settings::get('complaints_copy')),
+            'financial-promotions' => '' === trim(NA_Settings::get('financial_copy')),
+        ];
+
+        foreach ($unapproved_legal as $slug => $should_noindex) {
+            if (empty($ids[$slug])) {
+                continue;
+            }
+            if ($should_noindex) {
+                update_post_meta((int) $ids[$slug], '_yoast_wpseo_meta-robots-noindex', '1');
+            } else {
+                delete_post_meta((int) $ids[$slug], '_yoast_wpseo_meta-robots-noindex');
+            }
+        }
+    }
+
+    private static function configure_backups(): void
+    {
+        if (defined('UPDRAFTPLUS_DIR') || is_dir(WP_PLUGIN_DIR . '/updraftplus')) {
+            update_option('updraft_interval', 'weekly');
+            update_option('updraft_interval_database', 'daily');
+            update_option('updraft_retain', 2);
+            update_option('updraft_retain_db', 7);
+        }
+    }
+
+    private static function html(string $content): string
+    {
+        return "<!-- wp:html -->\n" . trim($content) . "\n<!-- /wp:html -->";
+    }
+
+    private static function shortcode(string $shortcode): string
+    {
+        return "<!-- wp:shortcode -->\n" . $shortcode . "\n<!-- /wp:shortcode -->";
+    }
+
+    private static function home(): string
+    {
+        return self::html('
+<section class="na-hero">
+  <div class="na-shell na-hero__grid">
+    <div>
+      <p class="na-eyebrow">Insurance advice, made reassuringly clear</p>
+      <h1>Feel clearer about protecting what matters.</h1>
+      <p class="na-lede">Friendly, adviser-led guidance for your family, income, health, home or business. Start with an explanation, then decide whether a conversation would help.</p>
+      <div class="na-actions"><a class="na-button" href="/enquire/">Talk to an adviser</a><a class="na-button na-button--outline" href="#guided-start">Help me find a starting point</a></div>
+      <div class="na-hero__signals" aria-label="What to expect"><span>Plain English</span><span>No instant quote</span><span>Advice before decisions</span></div>
+    </div>
+    <div class="na-hero__visual" aria-hidden="true"><div class="na-orbit na-orbit--one"></div><div class="na-orbit na-orbit--two"></div><div class="na-hero__mark"><img src="/wp-content/themes/nest-assured/assets/images/nest-assured-bird-256.webp" width="256" height="256" alt="" /></div><span class="na-float-note na-float-note--one">Your family</span><span class="na-float-note na-float-note--two">Your future</span></div>
+  </div>
+</section>
+
+<section class="na-section">
+  <div class="na-shell">
+    <div class="na-section-heading"><div><p class="na-eyebrow">Choose your route</p><h2>Start from where you are.</h2></div><p>Existing Major Money Matters clients continue the mortgage conversation they have already started. New visitors can explore the cover first.</p></div>
+    <div class="na-grid na-grid--2">
+      <a class="na-card na-audience-card" href="/already-a-client/"><p class="na-kicker">Existing M3M client</p><h3>Continue with your adviser route</h3><p>Tell us who your mortgage adviser is and where you are in the mortgage process. Your enquiry is kept separate from the new-enquiry queue.</p><span class="na-product-card__link">Continue your conversation</span></a>
+      <a class="na-card na-audience-card" href="#guided-start"><p class="na-kicker">New to Nest Assured</p><h3>Find a useful place to begin</h3><p>Use three plain-English questions to choose a topic for discussion. It does not produce a quote or personal recommendation.</p><span class="na-product-card__link">Use the guided starting point</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="na-section na-section--cream" id="cover-options">
+  <div class="na-shell">
+    <div class="na-section-heading"><div><p class="na-eyebrow">Explore your options</p><h2>One reassuring place to start.</h2></div><p>Each page explains what the cover is designed to do, where its limits sit and what an adviser would need to understand.</p></div>
+    <div class="na-product-grid">
+      <a class="na-card na-product-card" href="/life-insurance/"><span class="na-product-card__icon" aria-hidden="true">01</span><h3>Life insurance</h3><p>A lump sum if the insured person dies during the policy term.</p><span class="na-product-card__link">Explore life insurance</span></a>
+      <a class="na-card na-product-card" href="/income-protection/"><span class="na-product-card__icon" aria-hidden="true">02</span><h3>Income protection</h3><p>A regular income if illness or injury prevents the insured person working.</p><span class="na-product-card__link">Explore income protection</span></a>
+      <a class="na-card na-product-card" href="/critical-illness-cover/"><span class="na-product-card__icon" aria-hidden="true">03</span><h3>Critical illness cover</h3><p>A lump sum after diagnosis of a condition covered by the policy.</p><span class="na-product-card__link">Explore critical illness cover</span></a>
+      <a class="na-card na-product-card" href="/private-medical-insurance/"><span class="na-product-card__icon" aria-hidden="true">04</span><h3>Private medical insurance</h3><p>Cover for eligible private diagnosis and treatment, shaped around your priorities.</p><span class="na-product-card__link">Explore private medical</span></a>
+      <a class="na-card na-product-card" href="/business-protection/"><span class="na-product-card__icon" aria-hidden="true">05</span><h3>Business protection</h3><p>Cover designed around the people, ownership and borrowing a business relies on.</p><span class="na-product-card__link">Explore business protection</span></a>
+      <a class="na-card na-product-card" href="/general-insurance/"><span class="na-product-card__icon" aria-hidden="true">06</span><h3>Home and general insurance</h3><p>Buildings, contents and related cover for the things that make a house a home.</p><span class="na-product-card__link">Explore general insurance</span></a>
+      <a class="na-card na-product-card na-product-card--wide" href="/family-protection/"><span class="na-product-card__icon" aria-hidden="true">07</span><div><h3>Family protection</h3><p>Bring life insurance, income protection, critical illness cover and existing benefits into one joined-up household conversation.</p></div><span class="na-product-card__link">Explore family protection</span></a>
+    </div>
+    <div class="na-section-link"><a href="/guides/">Browse all plain-English guides <span aria-hidden="true">&rarr;</span></a></div>
+  </div>
+</section>
+
+<section class="na-section" id="guided-start"><div class="na-shell">')
+            . self::shortcode('[nest_assured_assessment]')
+            . self::html('</div></section>
+
+<section class="na-section na-section--mist">
+  <div class="na-shell">
+    <div class="na-section-heading"><div><p class="na-eyebrow">Useful, not overwhelming</p><h2>Learn at your own pace.</h2></div><p>Short, connected guides answer the questions people often have before speaking with an adviser.</p></div>
+    <div class="na-grid na-grid--3">
+      <a class="na-card na-guide-card" href="/guides/life-insurance-vs-critical-illness-cover/"><p class="na-kicker">Compare cover</p><h3>Life insurance or critical illness cover?</h3><p>Understand what triggers each type of policy and how their benefits differ.</p><span class="na-product-card__link">Read the comparison</span></a>
+      <a class="na-card na-guide-card" href="/guides/income-protection-and-sick-pay/"><p class="na-kicker">Protecting income</p><h3>How does sick pay fit with income protection?</h3><p>Map employer benefits, savings and waiting periods before comparing cover.</p><span class="na-product-card__link">Read the guide</span></a>
+      <a class="na-card na-guide-card" href="/guides/when-to-review-protection-insurance/"><p class="na-kicker">Keeping cover relevant</p><h3>When is a protection review worthwhile?</h3><p>See which life, work and mortgage changes can justify another look.</p><span class="na-product-card__link">Read the checklist</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="na-section na-section--navy">
+  <div class="na-shell">
+    <div class="na-section-heading"><div><p class="na-eyebrow">How it works</p><h2>A conversation before any recommendation.</h2></div><p>An adviser first learns what you already have, what matters to you and what you can reasonably maintain. Only then can products or policy terms be discussed.</p></div>
+    <div class="na-grid na-grid--3">
+      <div class="na-card"><span class="na-card__number">1</span><h3>Tell us where you are</h3><p>Choose the existing-client or new-enquiry route.</p></div>
+      <div class="na-card"><span class="na-card__number">2</span><h3>Speak with an adviser</h3><p>Discuss your circumstances, existing arrangements and questions.</p></div>
+      <div class="na-card"><span class="na-card__number">3</span><h3>Consider the advice</h3><p>Review any recommendation and policy information before deciding.</p></div>
+    </div>
+    <div class="na-actions"><a class="na-button na-button--light" href="/how-it-works/">See the full process</a></div>
+  </div>
+</section>');
+    }
+
+    private static function life_insurance(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Plain-English guide</p>
+  <p class="na-lede">Life insurance is designed to pay a lump sum if the insured person dies during the policy term, provided the policy terms and claim conditions are met.</p>
+  <h2>What it is</h2><p>A life insurance policy covers a defined person for a defined term and amount. The purpose of the money is agreed by the people arranging the cover. It might be considered alongside a mortgage, shared household commitments or financial support for dependants.</p>
+  <h2>Common ways cover can be shaped</h2><div class="na-callout-grid"><div class="na-callout"><h3>Level or increasing cover</h3><p>The benefit stays fixed or can rise over time, depending on the option selected and policy terms.</p></div><div class="na-callout"><h3>Decreasing cover</h3><p>The benefit reduces over the term and is often considered alongside a repayment mortgage.</p></div><div class="na-callout"><h3>Single or joint life</h3><p>Cover can insure one person or two people under one arrangement, with different consequences after a claim.</p></div><div class="na-callout"><h3>Term or whole of life</h3><p>Term cover lasts for an agreed period. Whole-of-life cover is designed to continue while required premiums are maintained.</p></div></div>
+  <h2>What it is not</h2><ul><li>It is not a savings account.</li><li>It does not normally pay simply because the policy reaches the end of its term.</li><li>It is not the same as critical illness cover, which responds to specified diagnoses rather than death.</li><li>A website description cannot establish whether a policy is suitable for you.</li></ul>
+  <h2>What an adviser needs to understand</h2><ul class="na-checklist"><li>Who relies on your income or shares financial commitments with you</li><li>Any cover you already hold personally or through work</li><li>The amount and length of any mortgage or other commitments</li><li>Your budget and how it may change over time</li></ul>
+  <h2>A common misunderstanding</h2><p>“Life cover through work means I do not need to discuss anything else.” Workplace benefits can be valuable, but the amount, conditions and connection to your employment need to be understood before drawing that conclusion.</p>
+  <div class="na-related"><p class="na-eyebrow">Compare the options</p><a class="na-card" href="/guides/life-insurance-vs-critical-illness-cover/"><h3>Life insurance or critical illness cover?</h3><p>See how the claim triggers, benefits and purposes differ.</p><span class="na-product-card__link">Read the comparison</span></a></div>
+  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+  <div class="na-cta"><div><h2>Discuss life insurance with an adviser</h2><p>Start with your existing arrangements and the people or commitments you want the conversation to consider.</p></div><a class="na-button na-button--light" href="/enquire/?topic=life-insurance">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function income_protection(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Plain-English guide</p>
+  <p class="na-lede">Income protection is designed to pay a regular income if illness or injury prevents the insured person working, subject to the policy definition and terms.</p>
+  <h2>What it is</h2><p>The policy normally replaces part of earnings after an agreed waiting period. The amount, waiting period, definition of incapacity and maximum payment period are important parts of the cover.</p>
+  <h2>Four details that make a material difference</h2><div class="na-feature-list"><div><span>01</span><h3>Incapacity definition</h3><p>The policy wording determines how inability to work is assessed.</p></div><div><span>02</span><h3>Waiting period</h3><p>The period before an eligible claim can begin paying should be considered alongside sick pay and savings.</p></div><div><span>03</span><h3>Payment period</h3><p>Some plans limit how long each claim can pay, while others can continue until the end of the policy term, subject to its conditions.</p></div><div><span>04</span><h3>Premium basis</h3><p>Premiums may be guaranteed, reviewable or age-related depending on the product.</p></div></div>
+  <h2>What it is not</h2><ul><li>It is not unemployment cover.</li><li>It does not replace every pound of earnings.</li><li>It is not the same as critical illness cover, which usually pays a lump sum for specified conditions.</li><li>It does not remove the need to understand sick pay and workplace benefits.</li></ul>
+  <h2>What an adviser needs to understand</h2><ul class="na-checklist"><li>Your employment status, occupation and income</li><li>Employer sick pay and any existing protection</li><li>How long savings could support essential outgoings</li><li>Which policy definition and waiting period may be relevant</li></ul>
+  <h2>A common misunderstanding</h2><p>“I can only claim if I am permanently unable to work.” Policies differ. Some are designed around a temporary inability to work, but the exact definition, waiting period and claim requirements must be checked.</p>
+  <div class="na-related"><p class="na-eyebrow">Build the timeline</p><a class="na-card" href="/guides/income-protection-and-sick-pay/"><h3>How does income protection fit with sick pay?</h3><p>Map employer support, savings and a potential policy waiting period.</p><span class="na-product-card__link">Read the guide</span></a></div>
+  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+  <div class="na-cta"><div><h2>Discuss income protection with an adviser</h2><p>Bring any information you have about sick pay, savings and existing workplace benefits.</p></div><a class="na-button na-button--light" href="/enquire/?topic=income-protection">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function critical_illness(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Plain-English guide</p>
+  <p class="na-lede">Critical illness cover is designed to pay a lump sum if the insured person is diagnosed with a condition covered by the policy and meets its definition.</p>
+  <h2>What it is</h2><p>The policy lists the conditions it covers and the definition that a diagnosis must meet. The payment may be considered for financial commitments, changes at home or time away from work, but how it is used is the policyholder’s decision.</p>
+  <h2>What deserves attention in a comparison</h2><div class="na-callout-grid"><div class="na-callout"><h3>Definitions, not just counts</h3><p>The number of listed conditions does not show how each definition works or how relevant it is to you.</p></div><div class="na-callout"><h3>Full and additional payments</h3><p>Some policies include lower payments for specified less-severe conditions without ending all cover.</p></div><div class="na-callout"><h3>Children’s cover</h3><p>Availability, limits and definitions vary and may be included or optional.</p></div><div class="na-callout"><h3>Extra support</h3><p>Some policies include services such as remote GP access, counselling or rehabilitation support.</p></div></div>
+  <h2>What it is not</h2><ul><li>It does not cover every illness.</li><li>A diagnosis does not automatically qualify unless the policy definition is met.</li><li>It is not private medical insurance and does not pay for treatment directly.</li><li>It is not a substitute for income protection.</li></ul>
+  <h2>What an adviser needs to understand</h2><ul class="na-checklist"><li>Your existing cover and workplace benefits</li><li>The financial commitments a lump sum might need to address</li><li>Whether children’s cover or other policy features are relevant</li><li>Your budget and the policy definitions being compared</li></ul>
+  <h2>A common misunderstanding</h2><p>“All providers cover exactly the same illnesses.” Policy lists and definitions vary. The number of listed conditions alone does not explain the quality or relevance of cover.</p>
+  <div class="na-related"><p class="na-eyebrow">Related guide</p><a class="na-card" href="/guides/life-insurance-vs-critical-illness-cover/"><h3>Life insurance or critical illness cover?</h3><p>Understand why two lump-sum policies can still serve different purposes.</p><span class="na-product-card__link">Read the comparison</span></a></div>
+  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+  <div class="na-cta"><div><h2>Discuss critical illness cover with an adviser</h2><p>An adviser can explain policy definitions and how a lump-sum benefit differs from other protection.</p></div><a class="na-button na-button--light" href="/enquire/?topic=critical-illness">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function family_protection(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">A broader conversation</p>
+  <p class="na-lede">Family protection is not one policy type. It is a way to consider how life insurance, income protection, critical illness cover and existing benefits may fit together.</p>
+  <h2>What the conversation covers</h2><p>An adviser can help map the people and commitments that depend on household income, then review which risks are already covered and which questions remain unanswered.</p>
+  <div class="na-milestones"><div><span>People</span><p>Who relies on income, care or other contributions from the household?</p></div><div><span>Commitments</span><p>Which mortgages, debts and regular costs would still need to be met?</p></div><div><span>Existing support</span><p>What policies, savings and workplace benefits are already available?</p></div><div><span>Priorities</span><p>Which risks matter most and what premium could remain comfortable?</p></div></div>
+  <h2>What it is not</h2><ul><li>It is not a pre-packaged bundle.</li><li>It does not mean every household needs every type of policy.</li><li>It is not an online comparison or instant quote.</li><li>It does not replace a review of trusts, nominations or other arrangements where relevant.</li></ul>
+  <h2>Useful information to gather</h2><ul class="na-checklist"><li>Mortgage and other shared financial commitments</li><li>Monthly essential household costs</li><li>Existing personal policies and workplace benefits</li><li>Savings and the length of time they could support the household</li></ul>
+  <h2>A common misunderstanding</h2><p>“One policy should cover every situation.” Different policies are designed to respond to different events. The advice process is used to decide which subjects are relevant and which are not.</p>
+  <div class="na-related"><p class="na-eyebrow">Keep cover relevant</p><a class="na-card" href="/guides/when-to-review-protection-insurance/"><h3>When should you review protection insurance?</h3><p>Use a practical checklist of life, work and mortgage changes.</p><span class="na-product-card__link">Read the guide</span></a></div>
+  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+  <div class="na-cta"><div><h2>Start a family protection conversation</h2><p>Begin with the commitments, people and existing cover you want the adviser to understand.</p></div><a class="na-button na-button--light" href="/enquire/?topic=family-protection">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function private_medical_insurance(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Health cover, explained clearly</p>
+  <p class="na-lede">Private medical insurance can help meet the cost of eligible private diagnosis and treatment. The useful question is not simply who is cheapest, but which cover fits how you want to access care.</p>
+  <div class="na-topic-nav" aria-label="On this page"><strong>On this page</strong><a href="#pmi-covers">What it may cover</a><a href="#pmi-choices">Choices that shape a plan</a><a href="#pmi-prepare">What to prepare</a></div>
+  <h2 id="pmi-covers">What private medical insurance is designed to do</h2><p>Policies are generally designed around eligible acute conditions that begin after cover starts. Depending on the plan, benefits may include consultations, diagnostic tests, hospital treatment, therapies, mental health support and cancer care. Exact benefits, limits and routes to treatment vary.</p>
+  <div class="na-callout-grid"><div class="na-callout"><h3>It works alongside the NHS</h3><p>Having private cover does not remove your right to NHS care. A plan can provide another route for eligible treatment.</p></div><div class="na-callout"><h3>It is not designed for everything</h3><p>Pre-existing conditions, chronic conditions, routine care and some treatments may be excluded or limited.</p></div></div>
+  <h2 id="pmi-choices">The choices that can shape cover and cost</h2><ul class="na-checklist"><li>Individual, couple, family or company-funded cover</li><li>The hospital list and consultant access available to you</li><li>Outpatient limits, therapies, mental health and cancer options</li><li>The excess you agree to pay towards eligible claims</li><li>Full medical underwriting or a moratorium approach, where recent conditions are initially excluded and may later be reconsidered</li><li>Any guided care or open referral pathways, and six-week options that use private treatment only when the NHS wait would be longer than six weeks</li></ul>
+  <h2 id="pmi-prepare">What an adviser needs to understand</h2><p>Your priorities may be speed, consultant choice, a particular hospital network, wider outpatient benefits or keeping premiums manageable. An adviser also needs to explain how underwriting works and what will not be covered.</p>
+  <p class="na-disclaimer">This guide is general information. Cover, underwriting, exclusions, excesses and provider networks depend on the policy and your circumstances.</p>
+  <div class="na-related"><p class="na-eyebrow">Keep exploring</p><h2>Useful next reads</h2><div class="na-grid na-grid--2"><a class="na-card" href="/guides/choosing-private-medical-insurance/"><h3>How to compare private medical insurance</h3><p>A practical checklist for benefits, access and cost controls.</p></a><a class="na-card" href="/critical-illness-cover/"><h3>Critical illness is different</h3><p>See why a lump-sum policy is not the same as paying for treatment.</p></a></div></div>
+  <div class="na-cta"><div><h2>Discuss private medical insurance</h2><p>Start with who needs cover, how you want to access care and the budget you want to keep comfortable.</p></div><a class="na-button na-button--light" href="/enquire/?topic=private-medical-insurance">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function business_protection(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Protecting the people behind the business</p>
+  <p class="na-lede">Business protection is a group of policies designed to help a company manage the financial impact of death or serious illness affecting an owner, director or key employee.</p>
+  <div class="na-topic-nav" aria-label="On this page"><strong>On this page</strong><a href="#business-types">Types of cover</a><a href="#business-questions">Questions to map</a><a href="#business-advice">Why advice matters</a></div>
+  <h2 id="business-types">Five conversations that serve different purposes</h2>
+  <div class="na-feature-list">
+    <div><span>01</span><h3>Key person cover</h3><p>Designed to pay the business if a person whose skills, relationships or leadership are important dies or meets a covered critical illness definition.</p></div>
+    <div><span>02</span><h3>Shareholder or partnership protection</h3><p>Can help provide funds for the remaining owners to buy an affected owner’s interest, alongside an appropriately drafted agreement.</p></div>
+    <div><span>03</span><h3>Business loan protection</h3><p>Designed around borrowing that could become difficult to repay if a person connected to the debt dies or becomes critically ill.</p></div>
+    <div><span>04</span><h3>Relevant life cover</h3><p>An employer-funded life policy for an eligible employee or director, arranged for the benefit of their loved ones rather than the business.</p></div>
+    <div><span>05</span><h3>Executive income protection</h3><p>Designed to help a business continue paying an eligible employee when illness or injury prevents them from working, subject to policy terms.</p></div>
+  </div>
+  <h2 id="business-questions">Start with the risk, not the product</h2><ul class="na-checklist"><li>Which people materially affect revenue, operations or lender confidence?</li><li>How would ownership transfer if a shareholder or partner died?</li><li>Which debts have personal guarantees or depend on a key individual?</li><li>What benefits already exist for directors and employees?</li><li>Who should own the policy and receive any benefit?</li></ul>
+  <h2 id="business-advice">Why the setup matters</h2><p>Policy ownership, valuation, agreements and potential tax treatment need to align with the purpose of the cover. Tax treatment depends on circumstances and may change, so legal and tax advice can be needed alongside insurance advice.</p>
+  <p class="na-disclaimer">This guide is general information and is not legal or tax advice. Eligibility, taxation and policy treatment depend on the arrangement and current rules.</p>
+  <div class="na-related"><p class="na-eyebrow">Go deeper</p><h2>A guide for business owners</h2><a class="na-card" href="/guides/types-of-business-protection/"><h3>Which type of business protection does what?</h3><p>Compare who pays, who receives the benefit and what each arrangement is intended to protect.</p><span class="na-product-card__link">Read the guide</span></a></div>
+  <div class="na-cta"><div><h2>Map your business protection needs</h2><p>Bring your ownership structure, borrowing and a simple view of the people the business relies on.</p></div><a class="na-button na-button--light" href="/enquire/?topic=business-protection">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function general_insurance(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Home and general insurance</p>
+  <p class="na-lede">The right home insurance conversation goes beyond a renewal price. It checks that the building, belongings and valuable items are described accurately and covered on terms you understand.</p>
+  <div class="na-topic-nav" aria-label="On this page"><strong>On this page</strong><a href="#gi-building">Buildings</a><a href="#gi-contents">Contents</a><a href="#gi-check">What to check</a></div>
+  <div class="na-comparison" role="region" aria-label="Buildings and contents comparison" tabindex="0">
+    <div class="na-comparison__head"><span>Cover</span><span>Designed around</span><span>Examples to discuss</span></div>
+    <div id="gi-building"><strong>Buildings insurance</strong><span data-label="Designed around">The structure of the home and permanent fixtures</span><span data-label="Examples to discuss">Rebuild cost, extensions, garages, subsidence and escape of water</span></div>
+    <div id="gi-contents"><strong>Contents insurance</strong><span data-label="Designed around">Belongings you would normally take if you moved</span><span data-label="Examples to discuss">Replacement basis, valuables, bicycles and accidental damage</span></div>
+  </div>
+  <h2 id="gi-check">Details worth checking before you choose</h2><ul class="na-checklist"><li>The rebuild value of the property, which is different from its market value</li><li>Single-item and total limits for jewellery, technology and other valuables</li><li>Whether belongings away from home need personal possessions cover</li><li>Accidental damage, home emergency and legal expenses options</li><li>Security requirements, unoccupancy limits and relevant exclusions</li><li>The excess that applies to different types of claim</li></ul>
+  <h2>Mortgage requirement and personal choice</h2><p>A mortgage lender will usually require suitable buildings insurance by exchange or completion. Contents insurance is normally optional, but the cost of replacing a household’s belongings can still be substantial. Leasehold arrangements may already include buildings cover, so the documents need checking.</p>
+  <p class="na-disclaimer">This page provides general information. Policy limits, exclusions, optional benefits and eligibility vary between insurers and properties.</p>
+  <div class="na-related"><p class="na-eyebrow">Practical guide</p><h2>Understand the two halves of home cover</h2><a class="na-card" href="/guides/buildings-and-contents-insurance/"><h3>Buildings and contents insurance explained</h3><p>Work through examples, common gaps and the information that helps a useful comparison.</p><span class="na-product-card__link">Read the guide</span></a></div>
+  <div class="na-cta"><div><h2>Review home and general insurance</h2><p>Start with the property, who lives there and the belongings or risks you do not want overlooked.</p></div><a class="na-button na-button--light" href="/enquire/?topic=general-insurance">Talk to an adviser</a></div>
+</div></section>');
+    }
+
+    private static function guides(): string
+    {
+        return self::html('
+<section class="na-section na-guides-intro"><div class="na-shell">
+  <div class="na-section-heading"><div><p class="na-eyebrow">The Nest Assured library</p><h2>Good questions lead to better conversations.</h2></div><p>Use these plain-English explainers to understand the moving parts before you speak with an adviser. They provide general information, not a personal recommendation.</p></div>
+  <div class="na-filter-pills" aria-label="Guide topics"><a href="#personal">Personal protection</a><a href="#health">Health</a><a href="#business">Business</a><a href="#home">Home</a><a href="#support">Support and basics</a></div>
+</div></section>
+<section class="na-section na-section--cream"><div class="na-shell">
+  <div class="na-guide-group" id="personal"><p class="na-eyebrow">Personal protection</p><div class="na-grid na-grid--3"><a class="na-card na-guide-card" href="/guides/life-insurance-vs-critical-illness-cover/"><h2>Life insurance or critical illness cover?</h2><p>Compare when each policy can pay and what the benefit is designed to do.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/income-protection-and-sick-pay/"><h2>Income protection and sick pay</h2><p>Understand how work benefits, savings and waiting periods fit together.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/income-protection-for-self-employed/"><h2>Income protection when self-employed</h2><p>Explore earnings evidence, waiting periods and the gap an adviser needs to understand.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/life-insurance-and-trusts/"><h2>Life insurance and trusts</h2><p>Understand trustees, beneficiaries and why policy ownership deserves attention.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/when-to-review-protection-insurance/"><h2>When to review your cover</h2><p>A practical checklist for life, mortgage and employment changes.</p><span class="na-product-card__link">Read guide</span></a></div></div>
+  <div class="na-guide-group" id="health"><p class="na-eyebrow">Health</p><div class="na-grid na-grid--3"><a class="na-card na-guide-card" href="/guides/choosing-private-medical-insurance/"><h2>Choosing private medical insurance</h2><p>Compare access, underwriting, benefits and the levers that can affect cost.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/leaving-company-private-medical-insurance/"><h2>Leaving a company medical scheme</h2><p>Check end dates, continuation terms, underwriting and ongoing treatment before cover changes.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/private-medical-insurance/"><h2>Private medical insurance overview</h2><p>Start with what the cover is designed to do and where its limits sit.</p><span class="na-product-card__link">Read overview</span></a></div></div>
+  <div class="na-guide-group" id="business"><p class="na-eyebrow">Business</p><div class="na-grid na-grid--2"><a class="na-card na-guide-card" href="/guides/types-of-business-protection/"><h2>Types of business protection explained</h2><p>Compare key person, shareholder, loan, relevant life and executive income protection arrangements.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/relevant-life-vs-key-person-cover/"><h2>Relevant life or key person cover?</h2><p>See why two company-funded arrangements can protect completely different interests.</p><span class="na-product-card__link">Read comparison</span></a></div></div>
+  <div class="na-guide-group" id="home"><p class="na-eyebrow">Home</p><div class="na-grid na-grid--2"><a class="na-card na-guide-card" href="/guides/buildings-and-contents-insurance/"><h2>Buildings and contents insurance explained</h2><p>Understand what sits on each side, plus limits and options worth checking.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/general-insurance/"><h2>Home and general insurance overview</h2><p>Start with the property, belongings and risks a useful comparison should reflect.</p><span class="na-product-card__link">Read overview</span></a></div></div>
+  <div class="na-guide-group" id="support"><p class="na-eyebrow">Support and basics</p><div class="na-grid na-grid--3"><a class="na-card na-guide-card" href="/guides/making-a-protection-insurance-claim/"><h2>Making a protection claim</h2><p>Work through the first contact, evidence and record-keeping steps.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/insurance-jargon-buster/"><h2>Insurance jargon buster</h2><p>Translate common protection, medical and home-insurance terms into plain English.</p><span class="na-product-card__link">Open glossary</span></a><a class="na-card na-guide-card" href="/guides/preparing-for-protection-appointment/"><h2>Prepare for an adviser appointment</h2><p>Gather the policies, benefits, commitments and questions that make a conversation useful.</p><span class="na-product-card__link">Use checklist</span></a></div></div>
+  <div class="na-cta"><div><h2>Not sure where to begin?</h2><p>Use the guided starting point or tell an adviser what you would like explained.</p></div><div class="na-actions"><a class="na-button na-button--light" href="/#guided-start">Use the guided start</a><a class="na-button na-button--light" href="/enquire/">Talk to an adviser</a></div></div>
+</div></section>');
+    }
+
+    private static function guide_life_vs_critical(): string
+    {
+        return self::html('
+<article class="na-section"><div class="na-shell na-prose na-guide-article">
+  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Life insurance or critical illness cover</span></nav>
+  <p class="na-eyebrow">Personal protection guide</p><p class="na-lede">Life insurance and critical illness cover can both provide a lump sum, but they are designed to respond to different events. Neither is a substitute for understanding the risk you want to cover.</p>
+  <div class="na-comparison" role="region" aria-label="Life and critical illness comparison" tabindex="0"><div class="na-comparison__head"><span>Question</span><span>Life insurance</span><span>Critical illness cover</span></div><div><strong>What can trigger a claim?</strong><span data-label="Life insurance">Death during the policy term, subject to the policy terms</span><span data-label="Critical illness cover">Diagnosis that meets a condition definition in the policy</span></div><div><strong>How is the benefit normally paid?</strong><span data-label="Life insurance">A lump sum</span><span data-label="Critical illness cover">A lump sum</span></div><div><strong>Who might use the money?</strong><span data-label="Life insurance">Beneficiaries, trustees or the policy owner, depending on setup</span><span data-label="Critical illness cover">The insured person or policy owner, depending on setup</span></div><div><strong>What might it support?</strong><span data-label="Life insurance">Mortgage, debts, dependants and future household needs</span><span data-label="Critical illness cover">Time away from work, adapting a home or other financial commitments</span></div></div>
+  <h2>Why people sometimes consider both</h2><p>A death and a serious illness create different financial pressures. Life cover may be arranged around the needs of people left behind, while critical illness cover may help the insured person and their household adjust after a covered diagnosis. The right balance depends on commitments, other benefits and budget.</p>
+  <h2>Questions that matter more than the policy name</h2><ul class="na-checklist"><li>Who depends on your income or unpaid work?</li><li>What existing personal and workplace cover do you have?</li><li>Would a lump sum need to clear debt, support income or both?</li><li>How do definitions, exclusions and additional benefits compare?</li><li>Can the premium remain affordable for the intended term?</li></ul>
+  <h2>Where income protection fits</h2><p>Income protection is designed around regular payments when illness or injury prevents work. It can complement lump-sum cover because the claim trigger and benefit structure are different.</p>
+  <p class="na-disclaimer">This guide is general information. A diagnosis, death or other event only leads to payment when the policy terms and claim requirements are met.</p>
+  <div class="na-related"><p class="na-eyebrow">Related reading</p><div class="na-grid na-grid--2"><a class="na-card" href="/life-insurance/"><h3>Life insurance</h3><p>Read the full overview.</p></a><a class="na-card" href="/critical-illness-cover/"><h3>Critical illness cover</h3><p>Understand definitions and limits.</p></a></div></div>
+  <div class="na-cta"><div><h2>Compare the risks in your own circumstances</h2><p>An adviser can help you map existing cover, priorities and an affordable budget.</p></div><a class="na-button na-button--light" href="/enquire/?topic=family-protection">Talk to an adviser</a></div>
+</div></article>');
+    }
+
+    private static function guide_income_and_sick_pay(): string
+    {
+        return self::html('
+<article class="na-section"><div class="na-shell na-prose na-guide-article">
+  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Income protection and sick pay</span></nav>
+  <p class="na-eyebrow">Income protection guide</p><p class="na-lede">Employer sick pay is the first piece of the puzzle. Income protection can be arranged to begin after that support reduces or ends, subject to the policy terms.</p>
+  <h2>Build a simple timeline</h2><div class="na-timeline"><div><span>1</span><h3>Employer support</h3><p>Check how long full and reduced pay can last, plus any group income protection benefit.</p></div><div><span>2</span><h3>Savings and household flexibility</h3><p>Estimate how long accessible savings could meet essential spending without disrupting other plans.</p></div><div><span>3</span><h3>Policy waiting period</h3><p>A deferred period can be matched to the point at which existing support is expected to fall away.</p></div></div>
+  <h2>What changes the shape of income protection?</h2><ul class="na-checklist"><li>The definition of incapacity used by the policy</li><li>Your occupation, employment status and earnings</li><li>The proportion of income that can be insured</li><li>The waiting period before payments can begin</li><li>Whether claims can continue for a limited period or potentially longer</li><li>How premiums and benefits can change over time</li></ul>
+  <h2>If you are self-employed or a company director</h2><p>The conversation may need to consider salary, dividends, business expenses and how income is evidenced. Executive income protection may be relevant for some limited companies, while an individual policy may suit other circumstances.</p>
+  <h2>Do not count the same support twice</h2><p>Policies normally limit the total benefit in relation to earnings and other continuing income. Accurate details of employer and existing insurance benefits are important when cover is arranged and when a claim is assessed.</p>
+  <p class="na-disclaimer">This guide is general information. Benefit levels, income definitions, waiting periods, claim limits and taxation depend on the policy and circumstances.</p>
+  <div class="na-cta"><div><h2>Map your income safety net</h2><p>Bring your sick-pay terms, a recent payslip and a view of essential monthly spending.</p></div><a class="na-button na-button--light" href="/enquire/?topic=income-protection">Talk to an adviser</a></div>
+</div></article>');
+    }
+
+    private static function guide_choosing_pmi(): string
+    {
+        return self::html('
+<article class="na-section"><div class="na-shell na-prose na-guide-article">
+  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Choosing private medical insurance</span></nav>
+  <p class="na-eyebrow">Private medical insurance guide</p><p class="na-lede">A useful comparison starts with how you want to access care. Price matters, but so do the hospital network, outpatient pathway, underwriting and limits behind it.</p>
+  <h2>Seven points to compare</h2><div class="na-feature-list"><div><span>01</span><h3>Who is covered?</h3><p>Individual, couple, family and company schemes can have different options and pricing.</p></div><div><span>02</span><h3>How are existing conditions treated?</h3><p>Full medical underwriting and moratorium underwriting take different approaches.</p></div><div><span>03</span><h3>Which hospitals can you use?</h3><p>Hospital lists and guided-care pathways affect where and how treatment is accessed.</p></div><div><span>04</span><h3>How broad is outpatient cover?</h3><p>Consultations, diagnostics and therapies may be full, limited or excluded.</p></div><div><span>05</span><h3>What cancer and mental health benefits apply?</h3><p>Limits and pathways vary, so read the detail rather than relying on labels.</p></div><div><span>06</span><h3>What excess will you pay?</h3><p>A higher excess may reduce premium, but it changes what you contribute to eligible claims.</p></div><div><span>07</span><h3>How might renewal costs change?</h3><p>Age, medical inflation, claims and provider pricing can all influence future premiums.</p></div></div>
+  <h2>Cost controls need trade-offs</h2><p>Reducing outpatient benefits, choosing a narrower hospital list, increasing an excess or adding a six-week option can reduce cost. Each choice also changes access, so it should be made deliberately.</p>
+  <h2>Information to have ready</h2><ul class="na-checklist"><li>Who needs to be included and their ages</li><li>Your preferred hospitals or locations</li><li>Benefits that matter most to you</li><li>Your current cover and renewal date, if applicable</li><li>A comfortable monthly or annual budget</li></ul>
+  <p class="na-disclaimer">This guide is general information. Private medical insurance is not designed to cover every condition or treatment, and policy terms vary.</p>
+  <div class="na-cta"><div><h2>Turn priorities into a comparison</h2><p>An adviser can help distinguish essential benefits from options you may not value.</p></div><a class="na-button na-button--light" href="/enquire/?topic=private-medical-insurance">Talk to an adviser</a></div>
+</div></article>');
+    }
+
+    private static function guide_business_protection_types(): string
+    {
+        return self::html('
+<article class="na-section"><div class="na-shell na-prose na-guide-article">
+  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Types of business protection</span></nav>
+  <p class="na-eyebrow">Business protection guide</p><p class="na-lede">Business protection is not one product. The arrangement needs to match the financial problem, the intended beneficiary and the company’s ownership structure.</p>
+  <div class="na-comparison" role="region" aria-label="Business protection types" tabindex="0"><div class="na-comparison__head"><span>Arrangement</span><span>Usually intended to protect</span><span>Potential recipient</span></div><div><strong>Key person</strong><span data-label="Usually intended to protect">Profit, replacement costs or business continuity</span><span data-label="Potential recipient">The business</span></div><div><strong>Shareholder or partnership</strong><span data-label="Usually intended to protect">Ownership transition following death or covered illness</span><span data-label="Potential recipient">Owners or trustees, depending on setup</span></div><div><strong>Business loan</strong><span data-label="Usually intended to protect">Repayment of borrowing linked to an insured person</span><span data-label="Potential recipient">The business or lender, depending on setup</span></div><div><strong>Relevant life</strong><span data-label="Usually intended to protect">The family of an eligible employee or director</span><span data-label="Potential recipient">Beneficiaries through a trust</span></div><div><strong>Executive income protection</strong><span data-label="Usually intended to protect">Continued remuneration during covered incapacity</span><span data-label="Potential recipient">The employer, to fund benefit payments</span></div></div>
+  <h2>Valuation should follow the purpose</h2><p>A key person’s contribution, an ownership interest and a business loan are not valued in the same way. An adviser may need accounts, ownership details, borrowing documents and remuneration information to establish a defensible starting point.</p>
+  <h2>Documents and advice may need to work together</h2><p>Shareholder or partnership protection often relies on legal agreements as well as policies. Trusts, policy ownership and premium treatment also need careful consideration. An accountant or solicitor may need to advise on matters outside insurance advice.</p>
+  <h2>A concise preparation checklist</h2><ul class="na-checklist"><li>Latest accounts and a simple ownership chart</li><li>Current shareholder or partnership agreements</li><li>Business borrowing and personal guarantees</li><li>Roles, remuneration and existing employee benefits</li><li>Any current business protection policies and trusts</li></ul>
+  <p class="na-disclaimer">This guide is general information and not tax or legal advice. Arrangement, ownership and taxation depend on individual business circumstances and current rules.</p>
+  <div class="na-cta"><div><h2>Start with a business risk map</h2><p>A structured conversation can identify which risks are already covered and which need attention.</p></div><a class="na-button na-button--light" href="/enquire/?topic=business-protection">Talk to an adviser</a></div>
+</div></article>');
+    }
+
+    private static function guide_buildings_and_contents(): string
+    {
+        return self::html('
+<article class="na-section"><div class="na-shell na-prose na-guide-article">
+  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Buildings and contents insurance</span></nav>
+  <p class="na-eyebrow">Home insurance guide</p><p class="na-lede">Buildings cover follows the structure. Contents cover follows the belongings. A combined policy can be convenient, but each half still needs accurate limits and answers.</p>
+  <h2>A simple moving-house test</h2><p>If you could reasonably take an item with you when moving, it will usually sit under contents. The structure and permanently fitted elements usually sit under buildings. Kitchens, bathrooms, fitted flooring, garden structures and landlord or leasehold arrangements can need closer checking.</p>
+  <div class="na-callout-grid"><div class="na-callout"><h3>Buildings: use rebuild cost</h3><p>The insured amount is based on rebuilding the property, not its sale price. Specialist construction or listed status may need more care.</p></div><div class="na-callout"><h3>Contents: think room by room</h3><p>Estimate the cost of replacing belongings as new where the policy uses new-for-old cover, subject to limits.</p></div></div>
+  <h2>Common details that change the comparison</h2><ul class="na-checklist"><li>Valuable items above a single-item limit</li><li>Jewellery, bicycles or technology used away from home</li><li>Business equipment or working from home</li><li>Previous flooding, subsidence, claims or property alterations</li><li>Periods when the home is empty</li><li>Accidental damage and the excess for different claims</li></ul>
+  <h2>At mortgage completion</h2><p>Buildings cover is normally required by a mortgage lender, while contents cover remains a personal choice. The policy start date should match the point at which you become responsible for the property, which can be exchange rather than completion.</p>
+  <h2>At renewal</h2><p>Check changes to the property, household, valuable items and rebuilding costs. A lower renewal price is not automatically better if limits, excesses or optional benefits have changed.</p>
+  <p class="na-disclaimer">This guide is general information. Insurer definitions, limits, exclusions and mortgage requirements vary.</p>
+  <div class="na-cta"><div><h2>Check the cover behind the price</h2><p>Bring your property details, current schedule and a note of valuable or unusual items.</p></div><a class="na-button na-button--light" href="/enquire/?topic=general-insurance">Talk to an adviser</a></div>
+</div></article>');
+    }
+
+    private static function guide_when_to_review(): string
+    {
+        return self::html('
+<article class="na-section"><div class="na-shell na-prose na-guide-article">
+  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>When to review protection insurance</span></nav>
+  <p class="na-eyebrow">Protection review guide</p><p class="na-lede">Protection does not need constant tinkering, but important changes can leave the amount, term, ownership or purpose of existing cover out of step with your life.</p>
+  <h2>Changes that can justify a review</h2><div class="na-milestones"><div><span>Home</span><p>Buying, remortgaging, moving or materially changing the mortgage.</p></div><div><span>Family</span><p>Marriage, separation, a new child or a change in who depends on you.</p></div><div><span>Work</span><p>A new employer, self-employment, promotion, reduced hours or changed benefits.</p></div><div><span>Business</span><p>New owners, borrowing, key hires, growth or a succession plan.</p></div><div><span>Health access</span><p>Leaving a company medical scheme or changing how you want to access treatment.</p></div><div><span>Home contents</span><p>Renovation, an extension, valuable purchases or changed occupancy.</p></div></div>
+  <h2>A review does not automatically mean replacing a policy</h2><p>Existing cover may have valuable terms, pricing or underwriting that cannot be recreated. Never cancel a policy until any replacement has been fully accepted, is in force and has been checked. Sometimes the right outcome is to keep what you have, amend it if possible or add separate cover.</p>
+  <h2>What to bring</h2><ul class="na-checklist"><li>Current policy schedules and trust documents</li><li>Updated mortgage and household commitments</li><li>Workplace benefit details</li><li>Changes to income, ownership or dependants</li><li>A realistic budget for keeping cover sustainable</li></ul>
+  <h2>Review the purpose as well as the amount</h2><p>Ask who should receive a benefit, what it is intended to fund and for how long the need is likely to remain. Those answers help test whether the arrangement still makes sense.</p>
+  <p class="na-disclaimer">This guide is general information. Changing or replacing cover can create risks, including new underwriting, exclusions, waiting periods or higher premiums.</p>
+  <div class="na-cta"><div><h2>Give existing cover a proper review</h2><p>Start with the policies you already have and what has changed since they were arranged.</p></div><a class="na-button na-button--light" href="/enquire/?topic=family-protection">Request a review</a></div>
+</div></article>');
+    }
+
+    private static function already_client(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-eyebrow">Existing Major Money Matters clients</p>
+  <p class="na-lede">Your mortgage adviser may already have introduced this conversation. Use the form below to keep your protection enquiry connected to that journey.</p>
+  <div class="na-note"><h2>This is a distinct client route</h2><p>Your mortgage adviser’s name and mortgage stage are captured so the enquiry can be matched to the correct adviser queue. It is not placed into the standard new-enquiry route.</p></div>
+  <h2>Before you start</h2><ul class="na-checklist"><li>Your mortgage adviser’s name, if known</li><li>Your mortgage reference, if available</li><li>A general idea of where you are in the mortgage process</li></ul>
+</div><div class="na-shell">')
+            . self::shortcode('[nest_assured_enquiry mode="existing"]')
+            . self::html('</div></section>');
+    }
+
+    private static function how_it_works(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell">
+  <div class="na-section-heading"><div><p class="na-eyebrow">Advice-led means</p><h2>Understanding first, recommendation later.</h2></div><p>The website helps you prepare for a conversation. It does not sell policies, calculate premiums or decide which cover is suitable.</p></div>
+  <div class="na-grid na-grid--3">
+    <div class="na-card"><span class="na-card__number">1</span><h3>Choose the right route</h3><p>Existing Major Money Matters clients identify their mortgage adviser. New enquiries go to the protection team.</p></div>
+    <div class="na-card"><span class="na-card__number">2</span><h3>Describe the starting point</h3><p>Share contact details and the subject you want to understand. Sensitive medical information is not requested online.</p></div>
+    <div class="na-card"><span class="na-card__number">3</span><h3>Have the adviser conversation</h3><p>The adviser reviews needs, existing arrangements, affordability, policy terms and any relevant exclusions.</p></div>
+  </div>
+</div></section>
+<section class="na-section na-section--cream"><div class="na-shell na-prose">
+  <h2>What happens after an enquiry?</h2><p>The team on your assigned route reviews the information you submitted. A conversation is then used to establish whether advice is appropriate and what further information is needed. No cover begins because a form was submitted.</p>
+  <h2>What should you bring?</h2><ul class="na-checklist"><li>Existing policy schedules or workplace benefit information</li><li>Mortgage and household commitment information</li><li>Questions you want answered in plain English</li></ul>
+  <p class="na-disclaimer">Policy eligibility, pricing, definitions and exclusions depend on individual circumstances and the insurer’s terms. These are discussed during the advice process.</p>
+</div></section>
+<section class="na-section"><div class="na-shell na-prose"><h2>Book a conversation</h2><p>Online booking will appear here soon. Until then, start with an enquiry and an adviser will arrange a time with you.</p>')
+            . self::shortcode('[nest_assured_booking]')
+            . self::html('</div></section>');
+    }
+
+    private static function faqs(): string
+    {
+        return self::html('<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">This page is reserved for questions drawn from real Nest Assured adviser conversations.</p>')
+            . self::shortcode('[nest_assured_faqs]')
+            . self::html('</div></section>');
+    }
+
+    private static function about(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell">
+  <div class="na-section-heading"><div><p class="na-eyebrow">About Nest Assured</p><h2>A clear route into protection advice.</h2></div><p>Nest Assured is the protection advice service connected to Major Money Matters. It gives clients and advisers a consistent digital path into a regulated conversation.</p></div>')
+            . self::shortcode('[nest_assured_ollie]')
+            . self::html('</div></section>
+<section class="na-section na-section--cream"><div class="na-shell na-prose"><h2>Regulatory status</h2>')
+            . self::shortcode('[nest_assured_regulatory]')
+            . self::html('</div></section>');
+    }
+
+    private static function contact(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell">
+  <div class="na-section-heading"><div><p class="na-eyebrow">Choose the right contact route</p><h2>Keep the conversation connected.</h2></div><p>We ask existing clients to identify their mortgage adviser so their enquiry can follow the established journey.</p></div>
+  <div class="na-grid na-grid--2">
+    <a class="na-card na-audience-card" href="/already-a-client/"><h3>I am an existing Major Money Matters client</h3><p>Continue with your adviser-connected protection route.</p><span class="na-product-card__link">Use the existing-client route</span></a>
+    <a class="na-card na-audience-card" href="/enquire/"><h3>I am making a new enquiry</h3><p>Contact the protection team about a new advice conversation.</p><span class="na-product-card__link">Make a new enquiry</span></a>
+  </div>
+</div></section>');
+    }
+
+    private static function enquire(): string
+    {
+        return self::html('<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">Tell us first whether you are an existing Major Money Matters client. The rest of the form changes so the enquiry can follow the correct route.</p>
+  <h2>What happens after you send it</h2>
+  <div class="na-timeline">
+    <div><span>1</span><h3>Your enquiry is read</h3><p>The right adviser team reviews what you send. Nothing is sold or decided at this stage.</p></div>
+    <div><span>2</span><h3>A short conversation</h3><p>An adviser arranges a time with you to understand your situation, existing cover and questions.</p></div>
+    <div><span>3</span><h3>Advice to consider</h3><p>Any recommendation is explained in plain English, for you to consider in your own time.</p></div>
+  </div>
+</div><div class="na-shell">')
+            . self::shortcode('[nest_assured_enquiry]')
+            . self::html('</div></section>');
+    }
+
+    private static function legal_index(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">Legal, privacy and regulatory information for the Nest Assured website.</p>
+  <div class="na-grid na-grid--3">
+    <a class="na-card" href="/legal/privacy/"><h2>Privacy</h2><p>How enquiry information is collected, used and retained.</p></a>
+    <a class="na-card" href="/legal/complaints-procedure/"><h2>Complaints</h2><p>The approved complaints process and escalation information.</p></a>
+    <a class="na-card" href="/legal/financial-promotions/"><h2>Financial promotions</h2><p>The scope and status of information published on this site.</p></a>
+  </div>
+</div></section>');
+    }
+
+    private static function privacy(): string
+    {
+        return self::html('<section class="na-section"><div class="na-shell na-prose">')
+            . self::shortcode('[nest_assured_privacy]')
+            . self::html('</div></section>');
+    }
+
+    private static function complaints(): string
+    {
+        return self::html('<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">How to raise a concern and how it will be handled.</p>')
+            . self::shortcode('[nest_assured_complaints]')
+            . self::html('</div></section>');
+    }
+
+    private static function financial_promotions(): string
+    {
+        return self::html('
+<section class="na-section"><div class="na-shell na-prose">
+  <p class="na-lede">This website provides general education and a route into an adviser conversation.</p>
+  <h2>What the site does not do</h2><ul><li>It does not generate an insurance quote.</li><li>It does not provide a personal recommendation.</li><li>It does not compare premiums or policy terms for purchase.</li><li>It does not allow a visitor to buy or begin cover online.</li></ul>
+  <p class="na-disclaimer">Eligibility, policy definitions, exclusions, premiums and suitability depend on individual circumstances and the insurer’s terms.</p>')
+            . self::shortcode('[nest_assured_financial]')
+            . self::html('</div></section>');
+    }
+}

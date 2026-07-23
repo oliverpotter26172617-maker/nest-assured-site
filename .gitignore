@@ -1,0 +1,17 @@
+# Track only the custom Nest Assured build and project documents.
+# WordPress core, third-party plugins, the SQLite database (contains enquiry
+# personal data), caches and uploads are reinstallable or must not be committed.
+/*
+!/.gitignore
+!/*.md
+!/wp-content/
+/wp-content/*
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/nest-assured/
+!/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/nest-assured-core/
+!/wp-content/mu-plugins/
+/wp-content/mu-plugins/*
+!/wp-content/mu-plugins/na-performance-router.php

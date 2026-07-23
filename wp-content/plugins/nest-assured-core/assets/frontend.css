@@ -1,0 +1,23 @@
+.na-form.na-was-validated input:invalid:not(:focus),
+.na-form.na-was-validated select:invalid:not(:focus),
+.na-form.na-was-validated textarea:invalid:not(:focus) {
+  border-color: var(--na-error, #9c2f2f);
+}
+
+.na-field__error {
+  color: var(--na-error, #9c2f2f);
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+}
+
+.na-assessment__result h3 {
+  margin-top: 0;
+}
+
+.na-form button[disabled],
+.na-assessment button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

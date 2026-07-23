@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "50rem",
+      "wideSize": "78rem"
+    },
+    "color": {
+      "defaultPalette": false,
+      "palette": [
+        { "slug": "navy", "name": "Nest navy", "color": "#102943" },
+        { "slug": "gold", "name": "Warm gold", "color": "#c79a54" },
+        { "slug": "cream", "name": "Warm cream", "color": "#f7f1e7" },
+        { "slug": "paper", "name": "Paper", "color": "#fffdf9" },
+        { "slug": "ink", "name": "Ink", "color": "#17212b" },
+        { "slug": "mist", "name": "Pale blue", "color": "#eaf0f4" }
+      ]
+    },
+    "spacing": {
+      "blockGap": true,
+      "units": ["px", "rem", "%", "vw", "vh"]
+    },
+    "typography": {
+      "fluid": true,
+      "fontFamilies": [
+        { "slug": "heading", "name": "Editorial", "fontFamily": "Georgia, 'Times New Roman', serif" },
+        { "slug": "body", "name": "Clear sans", "fontFamily": "Arial, Helvetica, sans-serif" }
+      ]
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "#fffdf9",
+      "text": "#17212b"
+    },
+    "spacing": {
+      "blockGap": "1.25rem"
+    },
+    "typography": {
+      "fontFamily": "Arial, Helvetica, sans-serif",
+      "fontSize": "1.0625rem",
+      "lineHeight": "1.7"
+    },
+    "elements": {
+      "heading": {
+        "color": { "text": "#102943" },
+        "typography": {
+          "fontFamily": "Georgia, 'Times New Roman', serif",
+          "fontWeight": "500",
+          "lineHeight": "1.12"
+        }
+      },
+      "link": {
+        "color": { "text": "#102943" }
+      },
+      "button": {
+        "border": { "radius": "999px" },
+        "color": { "background": "#102943", "text": "#ffffff" },
+        "typography": { "fontWeight": "700" }
+      }
+    }
+  }
+}
