@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Nest Assured Core
  * Description: Enquiry routing, needs assessment, booking controls and site setup for Nest Assured.
- * Version: 1.6.3
+ * Version: 1.6.4
  * Requires at least: 6.7
  * Requires PHP: 8.1
  * Author: Nest Assured
@@ -22,7 +22,7 @@ if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
     exit('XML-RPC is disabled.');
 }
 
-define('NA_CORE_VERSION', '1.6.3');
+define('NA_CORE_VERSION', '1.6.4');
 define('NA_CORE_FILE', __FILE__);
 define('NA_CORE_DIR', plugin_dir_path(__FILE__));
 define('NA_CORE_URL', plugin_dir_url(__FILE__));
@@ -116,6 +116,13 @@ add_action('wp_enqueue_scripts', static function (): void {
 
 add_filter('robots_txt', static function (string $output): string {
     header('Content-Type: text/plain; charset=UTF-8', true);
+
+    // Point crawlers at the sitemap that already exists but was never advertised.
+    if (! str_contains($output, 'Sitemap:')) {
+        $sitemap = defined('WPSEO_VERSION') ? home_url('/sitemap_index.xml') : home_url('/wp-sitemap.xml');
+        $output = rtrim($output) . "\n\nSitemap: " . $sitemap . "\n";
+    }
+
     return $output;
 }, PHP_INT_MAX);
 

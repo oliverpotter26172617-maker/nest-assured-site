@@ -19,6 +19,33 @@ final class NA_Enquiry
 
     private const RETENTION_RUN_OPTION = 'na_retention_last_run';
 
+    /**
+     * Stored fields, keyed without the meta prefix. Shared by the admin detail view
+     * and the data-subject export so the two can never drift apart.
+     *
+     * @var array<string, string>
+     */
+    private const FIELD_LABELS = [
+        'client_type'        => 'Client route',
+        'full_name'          => 'Full name',
+        'email'              => 'Email address',
+        'phone'              => 'Phone number',
+        'contact_preference' => 'Contact preference',
+        'adviser_name'       => 'Mortgage adviser',
+        'mortgage_reference' => 'Mortgage reference',
+        'mortgage_stage'     => 'Mortgage stage',
+        'product_interest'   => 'Product interest',
+        'main_concern'       => 'Question or concern',
+        'route'              => 'Assigned queue',
+        'delivery_status'    => 'Delivery status',
+        'delivery_detail'    => 'Delivery detail',
+        'submitted_at'       => 'Submitted at',
+        'source_url'         => 'Submitted from',
+        'consent'            => 'Consent recorded',
+        'consent_at'         => 'Consent recorded at',
+        'consent_version'    => 'Consent wording version',
+    ];
+
     public static function init(): void
     {
         add_action('init', [self::class, 'register_post_type']);
@@ -31,6 +58,11 @@ final class NA_Enquiry
         add_action('add_meta_boxes_' . self::POST_TYPE, [self::class, 'add_meta_boxes']);
         add_action('init', [self::class, 'schedule_retention']);
         add_action('na_delete_expired_enquiries', [self::class, 'delete_expired_enquiries']);
+
+        // Without these, WordPress's own data-subject tools return nothing for anyone
+        // who has submitted an enquiry, so every request becomes a manual database job.
+        add_filter('wp_privacy_personal_data_exporters', [self::class, 'register_exporter']);
+        add_filter('wp_privacy_personal_data_erasers', [self::class, 'register_eraser']);
     }
 
     public static function register_post_type(): void
@@ -414,6 +446,114 @@ final class NA_Enquiry
         $message .= "Thank you. Your enquiry has been received and will be reviewed by the right adviser team.\n\n";
         $message .= "This acknowledgement is not insurance advice, a quote or a recommendation.\n\nNest Assured";
         wp_mail($data['email'], $subject, $message);
+    }
+
+    /**
+     * @param array<string, mixed> $exporters Registered exporters.
+     * @return array<string, mixed>
+     */
+    public static function register_exporter(array $exporters): array
+    {
+        $exporters['nest-assured-enquiries'] = [
+            'exporter_friendly_name' => 'Nest Assured enquiries',
+            'callback'               => [self::class, 'export_personal_data'],
+        ];
+
+        return $exporters;
+    }
+
+    /**
+     * @param array<string, mixed> $erasers Registered erasers.
+     * @return array<string, mixed>
+     */
+    public static function register_eraser(array $erasers): array
+    {
+        $erasers['nest-assured-enquiries'] = [
+            'eraser_friendly_name' => 'Nest Assured enquiries',
+            'callback'             => [self::class, 'erase_personal_data'],
+        ];
+
+        return $erasers;
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private static function find_by_email(string $email, int $page): array
+    {
+        return get_posts([
+            'post_type'      => self::POST_TYPE,
+            'post_status'    => ['private', 'draft', 'pending', 'trash'],
+            'posts_per_page' => 20,
+            'paged'          => max(1, $page),
+            'fields'         => 'ids',
+            'meta_query'     => [[
+                'key'   => '_na_email',
+                'value' => $email,
+            ]],
+        ]);
+    }
+
+    /**
+     * @return array{data: array<int, mixed>, done: bool}
+     */
+    public static function export_personal_data(string $email, int $page = 1): array
+    {
+        $email = sanitize_email($email);
+        $export = [];
+
+        if (! is_email($email)) {
+            return ['data' => [], 'done' => true];
+        }
+
+        $post_ids = self::find_by_email($email, $page);
+
+        foreach ($post_ids as $post_id) {
+            $items = [];
+            foreach (self::FIELD_LABELS as $key => $label) {
+                $value = (string) get_post_meta((int) $post_id, '_na_' . $key, true);
+                if ('' !== $value) {
+                    $items[] = ['name' => $label, 'value' => $value];
+                }
+            }
+
+            $export[] = [
+                'group_id'    => 'nest-assured-enquiries',
+                'group_label' => 'Nest Assured enquiries',
+                'item_id'     => 'na-enquiry-' . $post_id,
+                'data'        => $items,
+            ];
+        }
+
+        return ['data' => $export, 'done' => count($post_ids) < 20];
+    }
+
+    /**
+     * @return array{items_removed: bool, items_retained: bool, messages: array<int, string>, done: bool}
+     */
+    public static function erase_personal_data(string $email, int $page = 1): array
+    {
+        $email = sanitize_email($email);
+
+        if (! is_email($email)) {
+            return ['items_removed' => false, 'items_retained' => false, 'messages' => [], 'done' => true];
+        }
+
+        $post_ids = self::find_by_email($email, $page);
+        $removed = false;
+
+        foreach ($post_ids as $post_id) {
+            if (wp_delete_post((int) $post_id, true)) {
+                $removed = true;
+            }
+        }
+
+        return [
+            'items_removed'  => $removed,
+            'items_retained' => false,
+            'messages'       => [],
+            'done'           => count($post_ids) < 20,
+        ];
     }
 
     public static function schedule_retention(): void

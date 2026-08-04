@@ -72,6 +72,7 @@ final class NA_Settings
             // deletion task unscheduled and retains personal data indefinitely.
             'retention_days'       => '365',
             'send_confirmations'   => '0',
+            'purge_on_uninstall'   => '0',
         ];
 
         $saved = get_option(self::OPTION, []);
@@ -142,6 +143,7 @@ final class NA_Settings
             'adviser_permissions' => sanitize_text_field((string) ($input['adviser_permissions'] ?? '')),
             'retention_days'     => self::sanitize_retention_days($input['retention_days'] ?? ''),
             'send_confirmations' => empty($input['send_confirmations']) ? '0' : '1',
+            'purge_on_uninstall' => empty($input['purge_on_uninstall']) ? '0' : '1',
         ];
     }
 
@@ -465,6 +467,16 @@ final class NA_Settings
                                 Send confirmation emails after a successful submission
                             </label>
                             <p class="description">Enable only after WP Mail SMTP is connected to a transactional provider and tested.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Delete enquiry data on uninstall</th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="na_settings[purge_on_uninstall]" value="1" <?php checked('1', (string) ($settings['purge_on_uninstall'] ?? '0')); ?> />
+                                Permanently delete every stored enquiry if this plugin is uninstalled
+                            </label>
+                            <p class="description">Off by default. Client records may be needed for regulatory record-keeping, so they are never destroyed implicitly.</p>
                         </td>
                     </tr>
                 </table>

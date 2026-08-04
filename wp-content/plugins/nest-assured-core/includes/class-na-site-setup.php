@@ -465,17 +465,17 @@ final class NA_Site_Setup
     </div>
     <div class="na-v2-guides">
       <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/">
-        <p class="na-v2-eyebrow">Compare cover &middot; 4 min</p>
+        <p class="na-v2-eyebrow">Compare cover</p>
         <h3>Life insurance or critical illness cover?</h3>
         <p class="na-v2-guide__desc">What triggers each policy, and why they are not interchangeable.</p>
               </a>
       <a class="na-v2-guide" href="/guides/income-protection-and-sick-pay/">
-        <p class="na-v2-eyebrow">Protecting income &middot; 5 min</p>
+        <p class="na-v2-eyebrow">Protecting income</p>
         <h3>How sick pay fits with income protection</h3>
         <p class="na-v2-guide__desc">Map employer benefits and savings before comparing cover.</p>
               </a>
       <a class="na-v2-guide" href="/guides/when-to-review-protection-insurance/">
-        <p class="na-v2-eyebrow">Keeping cover relevant &middot; 3 min</p>
+        <p class="na-v2-eyebrow">Keeping cover relevant</p>
         <h3>When is a protection review worthwhile?</h3>
         <p class="na-v2-guide__desc">The life, work and mortgage changes that justify another look.</p>
               </a>
@@ -558,7 +558,7 @@ final class NA_Site_Setup
       <p class="na-v2-subhead">Workplace benefits can be valuable, but the amount, conditions and connection to your employment need to be understood before drawing that conclusion.</p>
     </div>
     <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/">
-      <p class="na-v2-eyebrow">Compare the options &middot; 4 min</p>
+      <p class="na-v2-eyebrow">Compare the options</p>
       <h3>Life insurance or critical illness cover?</h3>
       <p class="na-v2-guide__desc">See how the claim triggers, benefits and purposes differ.</p>
       <span class="na-v2-guide__more">Read the comparison <span aria-hidden="true">&rarr;</span></span>
@@ -712,7 +712,7 @@ final class NA_Site_Setup
         <p class="na-v2-eyebrow na-v2-eyebrow--light">Start here</p>
         <h2>Life insurance or critical illness cover?</h2>
         <p>Two policies that both pay a lump sum, designed for completely different events. The comparison worth reading first.</p>
-        <span class="na-v2-feature__more">Read the comparison &middot; 4 min <span aria-hidden="true">&rarr;</span></span>
+        <span class="na-v2-feature__more">Read the comparison <span aria-hidden="true">&rarr;</span></span>
       </div>
       <div class="na-v2-feature__mark" aria-hidden="true">
         <img src="/wp-content/themes/nest-assured/assets/images/nest-assured-bird-256.webp" width="200" height="200" alt="" />
@@ -726,39 +726,39 @@ final class NA_Site_Setup
     <div class="na-v2-group" id="personal">
       <div class="na-v2-group__head"><h2>Personal protection</h2><span class="na-v2-group__count">5 guides</span></div>
       <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/"><p class="na-v2-eyebrow">Compare cover &middot; 4 min</p><h3>Life insurance or critical illness cover?</h3><p class="na-v2-guide__desc">What triggers each policy and how the benefits differ.</p></a>
-        <a class="na-v2-guide" href="/guides/income-protection-and-sick-pay/"><p class="na-v2-eyebrow">Protecting income &middot; 5 min</p><h3>Income protection and employer sick pay</h3><p class="na-v2-guide__desc">How work benefits, savings and waiting periods fit together.</p></a>
-        <a class="na-v2-guide" href="/guides/income-protection-for-self-employed/"><p class="na-v2-eyebrow">Self-employed &middot; 5 min</p><h3>Income protection for self-employed people</h3><p class="na-v2-guide__desc">Earnings evidence, waiting periods and the real gap.</p></a>
-        <a class="na-v2-guide" href="/guides/life-insurance-and-trusts/"><p class="na-v2-eyebrow">Ownership &middot; 4 min</p><h3>Life insurance and trusts</h3><p class="na-v2-guide__desc">Trustees, beneficiaries and why policy ownership matters.</p></a>
-        <a class="na-v2-guide" href="/guides/when-to-review-protection-insurance/"><p class="na-v2-eyebrow">Reviews &middot; 3 min</p><h3>When should you review protection insurance?</h3><p class="na-v2-guide__desc">The life, mortgage and work changes that justify another look.</p></a>
+        <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/"><p class="na-v2-eyebrow">Compare cover</p><h3>Life insurance or critical illness cover?</h3><p class="na-v2-guide__desc">What triggers each policy and how the benefits differ.</p></a>
+        <a class="na-v2-guide" href="/guides/income-protection-and-sick-pay/"><p class="na-v2-eyebrow">Protecting income</p><h3>Income protection and employer sick pay</h3><p class="na-v2-guide__desc">How work benefits, savings and waiting periods fit together.</p></a>
+        <a class="na-v2-guide" href="/guides/income-protection-for-self-employed/"><p class="na-v2-eyebrow">Self-employed</p><h3>Income protection for self-employed people</h3><p class="na-v2-guide__desc">Earnings evidence, waiting periods and the real gap.</p></a>
+        <a class="na-v2-guide" href="/guides/life-insurance-and-trusts/"><p class="na-v2-eyebrow">Ownership</p><h3>Life insurance and trusts</h3><p class="na-v2-guide__desc">Trustees, beneficiaries and why policy ownership matters.</p></a>
+        <a class="na-v2-guide" href="/guides/when-to-review-protection-insurance/"><p class="na-v2-eyebrow">Reviews</p><h3>When should you review protection insurance?</h3><p class="na-v2-guide__desc">The life, mortgage and work changes that justify another look.</p></a>
       </div>
     </div>
     <div class="na-v2-group" id="health">
       <div class="na-v2-group__head"><h2>Health</h2><span class="na-v2-group__count">2 guides</span></div>
       <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/choosing-private-medical-insurance/"><p class="na-v2-eyebrow">Choosing cover &middot; 6 min</p><h3>Choosing private medical insurance</h3><p class="na-v2-guide__desc">Access, underwriting, benefits and the levers behind cost.</p></a>
-        <a class="na-v2-guide" href="/guides/leaving-company-private-medical-insurance/"><p class="na-v2-eyebrow">Changing jobs &middot; 4 min</p><h3>Leaving a company private medical scheme</h3><p class="na-v2-guide__desc">Continuation terms, underwriting and ongoing treatment.</p></a>
+        <a class="na-v2-guide" href="/guides/choosing-private-medical-insurance/"><p class="na-v2-eyebrow">Choosing cover</p><h3>Choosing private medical insurance</h3><p class="na-v2-guide__desc">Access, underwriting, benefits and the levers behind cost.</p></a>
+        <a class="na-v2-guide" href="/guides/leaving-company-private-medical-insurance/"><p class="na-v2-eyebrow">Changing jobs</p><h3>Leaving a company private medical scheme</h3><p class="na-v2-guide__desc">Continuation terms, underwriting and ongoing treatment.</p></a>
       </div>
     </div>
     <div class="na-v2-group" id="business">
       <div class="na-v2-group__head"><h2>Business</h2><span class="na-v2-group__count">2 guides</span></div>
       <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/types-of-business-protection/"><p class="na-v2-eyebrow">Explainer &middot; 6 min</p><h3>Types of business protection explained</h3><p class="na-v2-guide__desc">Key person, shareholder, loan, relevant life and executive cover.</p></a>
-        <a class="na-v2-guide" href="/guides/relevant-life-vs-key-person-cover/"><p class="na-v2-eyebrow">Compare &middot; 4 min</p><h3>Relevant life cover or key person cover?</h3><p class="na-v2-guide__desc">Two company-funded arrangements protecting different interests.</p></a>
+        <a class="na-v2-guide" href="/guides/types-of-business-protection/"><p class="na-v2-eyebrow">Explainer</p><h3>Types of business protection explained</h3><p class="na-v2-guide__desc">Key person, shareholder, loan, relevant life and executive cover.</p></a>
+        <a class="na-v2-guide" href="/guides/relevant-life-vs-key-person-cover/"><p class="na-v2-eyebrow">Compare</p><h3>Relevant life cover or key person cover?</h3><p class="na-v2-guide__desc">Two company-funded arrangements protecting different interests.</p></a>
       </div>
     </div>
     <div class="na-v2-group" id="home">
       <div class="na-v2-group__head"><h2>Home</h2><span class="na-v2-group__count">1 guide</span></div>
       <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/buildings-and-contents-insurance/"><p class="na-v2-eyebrow">Explainer &middot; 5 min</p><h3>Buildings and contents insurance explained</h3><p class="na-v2-guide__desc">What sits on each side, plus the limits worth checking.</p></a>
+        <a class="na-v2-guide" href="/guides/buildings-and-contents-insurance/"><p class="na-v2-eyebrow">Explainer</p><h3>Buildings and contents insurance explained</h3><p class="na-v2-guide__desc">What sits on each side, plus the limits worth checking.</p></a>
       </div>
     </div>
     <div class="na-v2-group" id="support">
       <div class="na-v2-group__head"><h2>Support and basics</h2><span class="na-v2-group__count">3 guides</span></div>
       <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/making-a-protection-insurance-claim/"><p class="na-v2-eyebrow">Practical &middot; 4 min</p><h3>Making a protection insurance claim</h3><p class="na-v2-guide__desc">First contact, evidence and record-keeping steps.</p></a>
+        <a class="na-v2-guide" href="/guides/making-a-protection-insurance-claim/"><p class="na-v2-eyebrow">Practical</p><h3>Making a protection insurance claim</h3><p class="na-v2-guide__desc">First contact, evidence and record-keeping steps.</p></a>
         <a class="na-v2-guide" href="/guides/insurance-jargon-buster/"><p class="na-v2-eyebrow">Glossary &middot; browse</p><h3>Insurance jargon buster</h3><p class="na-v2-guide__desc">Common protection and insurance terms in plain English.</p></a>
-        <a class="na-v2-guide" href="/guides/preparing-for-protection-appointment/"><p class="na-v2-eyebrow">Checklist &middot; 3 min</p><h3>Preparing for a protection appointment</h3><p class="na-v2-guide__desc">The policies, benefits and questions that make a call useful.</p></a>
+        <a class="na-v2-guide" href="/guides/preparing-for-protection-appointment/"><p class="na-v2-eyebrow">Checklist</p><h3>Preparing for a protection appointment</h3><p class="na-v2-guide__desc">The policies, benefits and questions that make a call useful.</p></a>
       </div>
     </div>
   </div>

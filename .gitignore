@@ -5,6 +5,10 @@
 !/.gitignore
 !/.gitattributes
 !/*.md
+# A static robots.txt at the webroot shadows WordPress's virtual one entirely,
+# so the plugin's robots_txt filter cannot add the sitemap line. Tracked so the
+# file is not lost, but the host URL must be corrected on deploy.
+!/robots.txt
 !/wp-content/
 /wp-content/*
 !/wp-content/themes/
