@@ -15,3 +15,10 @@
 !/wp-content/mu-plugins/
 /wp-content/mu-plugins/*
 !/wp-content/mu-plugins/na-performance-router.php
+
+# Claude design workflow skill (needed by cloud sessions)
+!/.claude/
+/.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/design-with-taste/
