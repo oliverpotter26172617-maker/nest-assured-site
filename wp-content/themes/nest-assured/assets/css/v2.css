@@ -2356,3 +2356,9 @@ body.na-editorial-guide .na-calc,
   white-space: nowrap;
   width: 1px;
 }
+
+/* Two short sections stacked put roughly a screen of nothing between the guide
+   rail and the closing note. Collapse the gap where one directly follows another. */
+.na-v2-section--short + .na-v2-section--short {
+  padding-top: 0;
+}
