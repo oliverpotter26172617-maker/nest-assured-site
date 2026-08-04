@@ -372,7 +372,7 @@ final class NA_Site_Setup
      *
      * Scheduling a daily database backup with no remote destination and no
      * encryption phrase wrote unencrypted SQL dumps containing every stored
-     * enquiry — names, email addresses, phone numbers and mortgage references —
+     * enquiry, names, email addresses, phone numbers and mortgage references,
      * into wp-content/updraft/ inside the webroot. The directory ships .htaccess
      * and web.config, which protect nothing on Nginx, and both WordPress.com and
      * Pressable run Nginx.
@@ -433,7 +433,7 @@ final class NA_Site_Setup
     <div class="na-v2-hero__body">
       <p class="na-v2-eyebrow">Protection advice &middot; Harold Wood, Essex &middot; UK-wide</p>
       <h1>Know what your family needs. And what you don&rsquo;t.</h1>
-      <p class="na-v2-lede">Life insurance, income protection and critical illness &mdash; explained by a named adviser who starts with the cover you already have. No online quotes. Nothing sold on this site.</p>
+      <p class="na-v2-lede">Life insurance, income protection and critical illness, explained by a named adviser who starts with the cover you already have. No online quotes. Nothing sold on this site.</p>
       <div class="na-v2-actions">
         <a class="na-v2-btn" href="/enquire/">Arrange a conversation</a>
         <a class="na-v2-link" href="#starting-point">Find my starting point <span aria-hidden="true">&darr;</span></a>
@@ -495,7 +495,7 @@ final class NA_Site_Setup
     </div>
     <div class="na-v2-steps__list">
       <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">01</span><div><strong>Tell us where you are</strong><span>Existing <a href="/already-a-client/">Major Money Matters clients</a> follow their adviser route; new enquiries go straight to Ollie.</span></div></div>
-      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>Talk it through</strong><span>Thirty minutes on your circumstances, existing cover and questions &mdash; in person, by phone or by video.</span></div></div>
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>Talk it through</strong><span>Thirty minutes on your circumstances, existing cover and questions, in person, by phone or by video.</span></div></div>
       <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">03</span><div><strong>Decide in your own time</strong><span>Any recommendation arrives in writing, in plain English, before you commit to anything.</span></div></div>
     </div>
   </div>
@@ -531,7 +531,7 @@ final class NA_Site_Setup
   <div class="na-v2-shell na-v2-close__grid">')
             . self::shortcode('[nest_assured_social_proof]')
             . self::html('<div class="na-v2-close__cta">
-      <h2>Harold Wood, Romford and Essex &mdash; or anywhere by phone.</h2>
+      <h2>Harold Wood, Romford and Essex, or anywhere by phone.</h2>
       <p>Thirty minutes. Your existing cover, your commitments, your budget. Only then, advice.</p>
       <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Arrange a conversation</a>
     </div>
@@ -1411,7 +1411,7 @@ final class NA_Site_Setup
     <div class="na-v2-panel na-v2-panel--paper">
       <p class="na-v2-eyebrow">Editorial standards</p>
       <h2>Every guide reviewed by Ollie</h2>
-      <p>Guides show who wrote them, who reviewed them and when. They carry general information only &mdash; a recommendation happens in a regulated conversation, never on a web page.</p>
+      <p>Guides show who wrote them, who reviewed them and when. They carry general information only. A recommendation happens in a regulated conversation, never on a web page.</p>
       <a class="na-v2-link" href="/editorial-policy/">Read the editorial policy <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
@@ -1477,7 +1477,7 @@ final class NA_Site_Setup
     <div class="na-v2-enquire__intro">
       <p class="na-v2-eyebrow">Talk to an adviser</p>
       <h1 class="na-v2-h1--small">Start the conversation.</h1>
-      <p class="na-v2-lede">Tell us whether you are an existing Major Money Matters client &mdash; the form routes your enquiry to the right place. Nothing is sold or decided at this stage.</p>
+      <p class="na-v2-lede">Tell us whether you are an existing Major Money Matters client, so the form routes your enquiry to the right place. Nothing is sold or decided at this stage.</p>
       <div class="na-v2-steps__list">
         <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">01</span><div><strong>Your enquiry is read</strong><span>The right adviser reviews what you send. Nothing is sold or decided at this stage.</span></div></div>
         <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>A short conversation</strong><span>An adviser arranges a time to understand your situation, existing cover and questions.</span></div></div>

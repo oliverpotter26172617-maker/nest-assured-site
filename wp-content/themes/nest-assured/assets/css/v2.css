@@ -202,7 +202,7 @@
   background: var(--na-mist);
   color: var(--na-navy);
   display: flex;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   justify-content: center;
   letter-spacing: 0.08em;
 }
@@ -510,14 +510,14 @@
 
 .na-v2-index__num {
   color: var(--v2-gold-deep);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: 1.0625rem;
 }
 
 .na-v2-index__title {
   color: var(--na-navy);
   display: block;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: 1.3125rem;
   line-height: 1.25;
 }
@@ -561,7 +561,7 @@
 
 .na-v2-step__num {
   color: var(--v2-gold-deep);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: 1.625rem;
 }
 
@@ -649,7 +649,7 @@
 
 .na-v2-proof p:not(.na-v2-eyebrow) {
   color: var(--v2-navy-soft);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: 1.35rem;
   font-style: italic;
   line-height: 1.5;
@@ -1140,7 +1140,7 @@
   background: var(--na-mist);
   color: var(--na-navy);
   display: flex;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   justify-content: center;
   letter-spacing: 0.08em;
 }
@@ -1319,7 +1319,7 @@
 .na-v2-shape__key {
   color: var(--v2-gold-deep);
   display: block;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: 1.375rem;
   margin-bottom: 0.875rem;
 }
@@ -1386,7 +1386,7 @@
 
 .na-v2-quote {
   color: var(--na-navy);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: clamp(1.4rem, 2.4vw, 1.8rem);
   font-style: italic;
   line-height: 1.4;
@@ -1630,7 +1630,7 @@
 
 .na-v2-form-panel legend {
   color: var(--na-navy);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: 1.25rem;
   font-weight: 500;
   margin-bottom: 0.875rem;
@@ -2097,7 +2097,7 @@ body.na-editorial-guide .na-related {
 
 .na-calc__result-value {
   color: #fff;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Newsreader, Georgia, 'Times New Roman', serif;
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.03em;

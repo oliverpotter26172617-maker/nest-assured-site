@@ -10,23 +10,83 @@
     "color": {
       "defaultPalette": false,
       "palette": [
-        { "slug": "navy", "name": "Nest navy", "color": "#102943" },
-        { "slug": "gold", "name": "Warm gold", "color": "#c79a54" },
-        { "slug": "cream", "name": "Warm cream", "color": "#f7f1e7" },
-        { "slug": "paper", "name": "Paper", "color": "#fffdf9" },
-        { "slug": "ink", "name": "Ink", "color": "#17212b" },
-        { "slug": "mist", "name": "Pale blue", "color": "#eaf0f4" }
+        {
+          "slug": "navy",
+          "name": "Nest navy",
+          "color": "#102943"
+        },
+        {
+          "slug": "gold",
+          "name": "Warm gold",
+          "color": "#c79a54"
+        },
+        {
+          "slug": "cream",
+          "name": "Warm cream",
+          "color": "#f7f1e7"
+        },
+        {
+          "slug": "paper",
+          "name": "Paper",
+          "color": "#fffdf9"
+        },
+        {
+          "slug": "ink",
+          "name": "Ink",
+          "color": "#17212b"
+        },
+        {
+          "slug": "mist",
+          "name": "Pale blue",
+          "color": "#eaf0f4"
+        }
       ]
     },
     "spacing": {
       "blockGap": true,
-      "units": ["px", "rem", "%", "vw", "vh"]
+      "units": [
+        "px",
+        "rem",
+        "%",
+        "vw",
+        "vh"
+      ]
     },
     "typography": {
       "fluid": true,
       "fontFamilies": [
-        { "slug": "heading", "name": "Editorial", "fontFamily": "Georgia, 'Times New Roman', serif" },
-        { "slug": "body", "name": "Clear sans", "fontFamily": "Arial, Helvetica, sans-serif" }
+        {
+          "slug": "heading",
+          "name": "Editorial",
+          "fontFamily": "Newsreader, Georgia, 'Times New Roman', serif",
+          "fontFace": [
+            {
+              "fontFamily": "Newsreader",
+              "fontStyle": "normal",
+              "fontWeight": "200 800",
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/newsreader-variable.woff2"
+              ]
+            }
+          ]
+        },
+        {
+          "slug": "body",
+          "name": "Clear sans",
+          "fontFamily": "'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+          "fontFace": [
+            {
+              "fontFamily": "Public Sans",
+              "fontStyle": "normal",
+              "fontWeight": "100 900",
+              "fontDisplay": "swap",
+              "src": [
+                "file:./assets/fonts/publicsans-variable.woff2"
+              ]
+            }
+          ]
+        }
       ]
     }
   },
@@ -39,26 +99,37 @@
       "blockGap": "1.25rem"
     },
     "typography": {
-      "fontFamily": "Arial, Helvetica, sans-serif",
+      "fontFamily": "'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
       "fontSize": "1.0625rem",
       "lineHeight": "1.7"
     },
     "elements": {
       "heading": {
-        "color": { "text": "#102943" },
+        "color": {
+          "text": "#102943"
+        },
         "typography": {
-          "fontFamily": "Georgia, 'Times New Roman', serif",
+          "fontFamily": "Newsreader, Georgia, 'Times New Roman', serif",
           "fontWeight": "500",
           "lineHeight": "1.12"
         }
       },
       "link": {
-        "color": { "text": "#102943" }
+        "color": {
+          "text": "#102943"
+        }
       },
       "button": {
-        "border": { "radius": "999px" },
-        "color": { "background": "#102943", "text": "#ffffff" },
-        "typography": { "fontWeight": "700" }
+        "border": {
+          "radius": "999px"
+        },
+        "color": {
+          "background": "#102943",
+          "text": "#ffffff"
+        },
+        "typography": {
+          "fontWeight": "700"
+        }
       }
     }
   }

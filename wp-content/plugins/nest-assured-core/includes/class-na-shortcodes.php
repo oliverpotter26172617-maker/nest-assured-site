@@ -464,7 +464,7 @@ final class NA_Shortcodes
 
         return '<figure class="na-v2-portrait">'
             . self::adviser_image('na-v2-portrait__photo', 'na-v2-portrait__plate')
-            . '<figcaption>Ollie Allen &mdash; dedicated protection adviser. Every enquiry is read by him, not a call centre.</figcaption>'
+            . '<figcaption>Ollie Allen, dedicated protection adviser. Every enquiry is read by him, not a call centre.</figcaption>'
             . '</figure>';
     }
 
