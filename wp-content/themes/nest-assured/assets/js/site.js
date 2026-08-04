@@ -93,6 +93,19 @@
       dock.hidden = true;
     }
 
+    // Step aside when the page is already showing a call to action. The dock exists
+    // to keep a route to an adviser available while reading, so sitting on top of
+    // the real button is both redundant and, on a narrow screen, obstructive.
+    const rivals = document.querySelectorAll('.na-guide-cta, .na-v2-callout, .na-v2-close');
+    if (rivals.length && 'IntersectionObserver' in window) {
+      const rivalObserver = new IntersectionObserver((entries) => {
+        const anyVisible = entries.some((entry) => entry.isIntersecting);
+        dock.classList.toggle('is-yielding', anyVisible);
+      }, { threshold: 0.1 });
+
+      rivals.forEach((rival) => rivalObserver.observe(rival));
+    }
+
     dock.querySelector('[data-na-dock-dismiss]')?.addEventListener('click', () => {
       dock.hidden = true;
       try {

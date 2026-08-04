@@ -2324,3 +2324,21 @@ body.na-editorial-guide .na-calc,
     display: grid;
   }
 }
+
+/* The dock steps aside while a real call to action is on screen. */
+.na-v2-dock {
+  transition: opacity 260ms ease, transform 260ms ease, visibility 260ms;
+}
+
+.na-v2-dock.is-yielding {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.75rem);
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .na-v2-dock {
+    transition: none;
+  }
+}
