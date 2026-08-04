@@ -33,6 +33,19 @@ final class NA_Shortcodes
         add_shortcode('nest_assured_footer_reviews', [self::class, 'footer_reviews']);
         add_shortcode('nest_assured_dock', [self::class, 'dock']);
         add_shortcode('nest_assured_ollie_profile', [self::class, 'ollie_profile']);
+        add_shortcode('nest_assured_footer_regulatory', [self::class, 'footer_regulatory']);
+        add_shortcode('nest_assured_copyright', [self::class, 'copyright']);
+
+        add_action('wp_footer', [self::class, 'render_dock']);
+    }
+
+    /**
+     * The exact consent wording presented to the visitor. Kept in one place so the
+     * stored consent record can hash precisely what was agreed to.
+     */
+    public static function consent_text(): string
+    {
+        return 'I consent to Nest Assured using these details to respond to my enquiry and route it to the appropriate adviser.';
     }
 
     /**
@@ -40,8 +53,18 @@ final class NA_Shortcodes
      */
     public static function enquiry(array $atts = []): string
     {
-        if ('production' === wp_get_environment_type() && ! NA_Settings::is_launch_ready()) {
+        if (! NA_Settings::is_launch_ready()) {
             return '<div class="na-status"><h2>Online enquiries are not open yet</h2><p>The secure adviser-routing and approved privacy controls are being completed before this form is made available.</p></div>';
+        }
+
+        // The form carries a per-session nonce, so any page rendering it must never be
+        // cached. Declaring this here means correctness does not depend on host-level
+        // cache exclusions that are not part of this repository.
+        if (! defined('DONOTCACHEPAGE')) {
+            define('DONOTCACHEPAGE', true);
+        }
+        if (! headers_sent()) {
+            nocache_headers();
         }
 
         $atts = shortcode_atts(['mode' => ''], $atts, 'nest_assured_enquiry');
@@ -63,6 +86,7 @@ final class NA_Shortcodes
         $status = sanitize_key((string) filter_input(INPUT_GET, 'enquiry', FILTER_SANITIZE_SPECIAL_CHARS));
         $messages = [
             'received'   => ['success', 'Thank you. Your enquiry has been received and passed to the right adviser team.'],
+            'pending'    => ['success', 'Thank you. Your enquiry has been saved and we will confirm by email shortly.'],
             'validation' => ['error', 'Please check the fields marked as required, including consent, and send again.'],
             'security'   => ['error', 'The form session expired. Please refresh the page and try again.'],
             'rate'       => ['error', 'Please wait a moment before sending another enquiry.'],
@@ -181,7 +205,7 @@ final class NA_Shortcodes
             <div class="na-field">
                 <label class="na-choice">
                     <input type="checkbox" name="consent" value="1" required />
-                    <span>I consent to Nest Assured using these details to respond to my enquiry and route it to the appropriate adviser. I have read the <a href="/legal/privacy/">privacy information</a>.</span>
+                    <span><?php echo esc_html(self::consent_text()); ?> I have read the <a href="<?php echo esc_url(home_url('/legal/privacy/')); ?>">privacy information</a>.</span>
                 </label>
             </div>
 
@@ -294,7 +318,7 @@ final class NA_Shortcodes
         $bio = NA_Settings::get('ollie_bio');
         $photo = NA_Settings::get('ollie_photo_url');
         if ('' === $bio || '' === $photo) {
-            return '<div class="na-card na-team-card"><div class="na-team-card__portrait" aria-hidden="true">OA</div><div><p class="na-eyebrow">Protection adviser</p><h2>Ollie Allen</h2><p>Ollie Allen leads protection advice at Nest Assured and reviews every guide for accuracy.</p><div class="na-status"><p>Approved biography and photography are required before launch. No placeholder biography has been generated.</p></div></div></div>';
+            return '<div class="na-card na-team-card"><div class="na-team-card__portrait" aria-hidden="true">OA</div><div><p class="na-eyebrow">Protection adviser</p><h2>Ollie Allen</h2>' . self::pending('Ollie Allen approved biography and photography') . '</div></div>';
         }
 
         $photo_id = (int) NA_Settings::get('ollie_photo_id');
@@ -329,17 +353,22 @@ final class NA_Shortcodes
         return '<div class="na-card"><h2>Read our Google reviews</h2><p>Reviews are shown only through the verified Google Business Profile.</p><a class="na-button na-button--outline" href="' . esc_url($url) . '" rel="noopener noreferrer">View Google reviews</a></div>';
     }
 
+    /**
+     * Returns anchors only. The surrounding <nav> lives in the template, because the
+     * core shortcode block runs wpautop before do_shortcode and would otherwise wrap
+     * block-level output in a paragraph, producing invalid markup.
+     */
     public static function legal_links(): string
     {
-        $links = ['<a href="/legal/privacy/">Privacy</a>'];
+        $links = ['<a href="' . esc_url(home_url('/legal/privacy/')) . '">Privacy</a>'];
         if ('' !== trim(NA_Settings::get('complaints_copy'))) {
-            $links[] = '<a href="/legal/complaints-procedure/">Complaints procedure</a>';
+            $links[] = '<a href="' . esc_url(home_url('/legal/complaints-procedure/')) . '">Complaints procedure</a>';
         }
         if ('' !== trim(NA_Settings::get('financial_copy'))) {
-            $links[] = '<a href="/legal/financial-promotions/">Financial promotions</a>';
+            $links[] = '<a href="' . esc_url(home_url('/legal/financial-promotions/')) . '">Financial promotions</a>';
         }
 
-        return '<nav class="site-footer__links na-v2-footer__links" aria-label="Legal information">' . implode('', $links) . '</nav>';
+        return implode('', $links);
     }
 
     public static function prelaunch_note(): string
@@ -348,7 +377,29 @@ final class NA_Shortcodes
             return '';
         }
 
-        return '<p>Regulatory wording is subject to compliance approval before launch.</p>';
+        return 'Regulatory wording is subject to compliance approval before launch.';
+    }
+
+    /**
+     * The site-wide regulatory status line. Regulatory status disclosure belongs on
+     * every page, not one page, but the wording is a compliance matter: this renders
+     * only the approved text and never substitutes wording of its own.
+     */
+    public static function footer_regulatory(): string
+    {
+        $copy = trim(NA_Settings::get('regulatory_copy'));
+        $reference = trim(NA_Settings::get('fca_reference'));
+
+        if ('' === $copy || '' === $reference) {
+            return '';
+        }
+
+        return '<p>' . wp_kses_post($copy) . ' FCA reference ' . esc_html($reference) . '.</p>';
+    }
+
+    public static function copyright(): string
+    {
+        return '&copy; ' . esc_html(gmdate('Y'));
     }
 
     /**
@@ -408,15 +459,16 @@ final class NA_Shortcodes
 
         $cells[] = '<div class="na-v2-assurance__cell"><strong>Advice before decisions</strong><span>No instant quotes on this site</span></div>';
 
-        $cells[] = '' !== $reference
-            ? '<div class="na-v2-assurance__cell"><strong>Regulated advice route</strong><span>FCA reference ' . esc_html($reference) . '</span></div>'
-            : '<div class="na-v2-assurance__cell"><strong>Regulated advice route</strong><span>FCA reference published at launch</span></div>';
+        // Regulated claims are omitted entirely until the approved value exists. A cell
+        // reading "published at launch" is itself an unapproved statement of regulatory
+        // status, so there is no placeholder branch here.
+        if ('' !== $reference) {
+            $cells[] = '<div class="na-v2-assurance__cell"><strong>Regulated advice route</strong><span>FCA reference ' . esc_html($reference) . '</span></div>';
+        }
 
-        $cells[] = '<div class="na-v2-assurance__cell"><strong>Advice, then a recommendation</strong><span>Panel and market scope confirmed at launch</span></div>';
-
-        $cells[] = '' !== $reviews
-            ? '<div class="na-v2-assurance__cell"><strong><a href="' . esc_url($reviews) . '" rel="noopener noreferrer">Google reviews</a></strong><span>Read the verified Google Business Profile</span></div>'
-            : '<div class="na-v2-assurance__cell"><strong>Google reviews</strong><span>Verified profile linked at launch</span></div>';
+        if ('' !== $reviews) {
+            $cells[] = '<div class="na-v2-assurance__cell"><strong><a href="' . esc_url($reviews) . '" rel="noopener noreferrer">Google reviews</a></strong><span>Read the verified Google Business Profile</span></div>';
+        }
 
         return '<section class="na-v2-assurance" aria-label="Why Nest Assured"><div class="na-v2-shell na-v2-assurance__grid">'
             . implode('', $cells)
@@ -432,11 +484,10 @@ final class NA_Shortcodes
     {
         $reviews = trim(NA_Settings::get('google_reviews_url'));
 
+        // Render nothing at all until there is a verified profile to link. An empty
+        // "what clients say" block tells a prospect only that there are no reviews.
         if ('' === $reviews) {
-            return '<div class="na-v2-proof na-v2-proof--pending">'
-                . '<p class="na-v2-eyebrow na-v2-eyebrow--light">What clients say</p>'
-                . '<p>Client reviews are published only through the verified Google Business Profile. Nothing is quoted here until real reviews exist.</p>'
-                . '</div>';
+            return '';
         }
 
         return '<div class="na-v2-proof">'
@@ -455,23 +506,38 @@ final class NA_Shortcodes
         $reviews = trim(NA_Settings::get('google_reviews_url'));
 
         if ('' === $reviews) {
-            return '<p class="na-v2-footer__reviews">Verified Google reviews linked at launch</p>';
+            return '';
         }
 
-        return '<p class="na-v2-footer__reviews"><a href="' . esc_url($reviews) . '" rel="noopener noreferrer">Read our verified Google reviews</a></p>';
+        return '<a href="' . esc_url($reviews) . '" rel="noopener noreferrer">Read our verified Google reviews</a>';
     }
 
     /**
-     * Persistent adviser dock. Hidden on small screens by CSS, where the sticky header
-     * already carries the same call to action.
+     * Persistent adviser dock.
+     *
+     * Rendered on wp_footer rather than inside the footer template part: it is a
+     * site-wide call to action, not footer content, so it does not belong inside the
+     * contentinfo landmark. Rendering here also keeps it clear of the core shortcode
+     * block, which runs wpautop before do_shortcode and mangled this markup.
+     */
+    public static function render_dock(): void
+    {
+        echo '<div class="na-v2-dock" data-na-dock>'
+            . self::adviser_image('na-v2-dock__photo', 'na-v2-dock__plate')
+            . '<div class="na-v2-dock__text"><strong>Talk to Ollie</strong><span>Book a callback time</span></div>'
+            . '<a class="na-v2-dock__cta" href="' . esc_url(home_url('/enquire/')) . '">Book</a>'
+            . '<button type="button" class="na-v2-dock__dismiss" data-na-dock-dismiss aria-label="Hide the adviser shortcut">&times;</button>'
+            . '</div>';
+    }
+
+    /**
+     * Retained so any page still carrying the shortcode keeps working.
      */
     public static function dock(): string
     {
-        return '<div class="na-v2-dock">'
-            . self::adviser_image('na-v2-dock__photo', 'na-v2-dock__plate')
-            . '<div class="na-v2-dock__text"><strong>Talk to Ollie</strong><span>Book a callback time</span></div>'
-            . '<a class="na-v2-dock__cta" href="/enquire/">Book</a>'
-            . '</div>';
+        ob_start();
+        self::render_dock();
+        return (string) ob_get_clean();
     }
 
     /**
@@ -487,22 +553,31 @@ final class NA_Shortcodes
         $reference = trim(NA_Settings::get('fca_reference'));
         $bio = trim(NA_Settings::get('ollie_bio'));
 
-        $facts = '<div class="na-v2-facts">'
-            . '<div class="na-v2-fact"><strong>Since November 2023</strong><span>Running protection advice at Major Money Matters</span></div>'
-            . '<div class="na-v2-fact"><strong>Personal and business protection</strong><span>Life, critical illness, income protection, key person and shareholder cover</span></div>';
+        $since = trim(NA_Settings::get('adviser_since'));
+        $permissions = trim(NA_Settings::get('adviser_permissions'));
 
-        $facts .= '' !== $reference
-            ? '<div class="na-v2-fact"><strong>Advice status</strong><span>Published under FCA reference ' . esc_html($reference) . '</span></div>'
-            : '<div class="na-v2-fact"><strong>Advice status</strong><span>Market scope and remuneration confirmed at launch</span></div>';
+        // Experience, permissions and advice status are all regulated credential
+        // claims. Each is published only from its own approved setting, and omitted
+        // entirely otherwise: a "confirmed at launch" placeholder is itself a claim.
+        $facts_list = '';
 
-        $facts .= '</div>';
+        if ('' !== $since) {
+            $facts_list .= '<div class="na-v2-fact"><strong>' . esc_html($since) . '</strong><span>Running protection advice at Major Money Matters</span></div>';
+        }
+
+        if ('' !== $permissions) {
+            $facts_list .= '<div class="na-v2-fact"><strong>Personal and business protection</strong><span>' . esc_html($permissions) . '</span></div>';
+        }
+
+        if ('' !== $reference) {
+            $facts_list .= '<div class="na-v2-fact"><strong>Advice status</strong><span>Published under FCA reference ' . esc_html($reference) . '</span></div>';
+        }
+
+        $facts = '' !== $facts_list ? '<div class="na-v2-facts">' . $facts_list . '</div>' : '';
 
         $body = '' !== $bio
             ? '<div class="na-v2-prose">' . wp_kses_post(wpautop($bio)) . '</div>'
-            : '<div class="na-v2-prose"><div class="na-status"><h3>Approved biography to follow</h3>'
-                . '<p>Ollie Allen leads protection advice at Nest Assured and reviews every guide for accuracy. '
-                . 'His full biography is published here once compliance has approved the wording through the launch controls. '
-                . 'No placeholder biography has been generated.</p></div></div>';
+            : '<div class="na-v2-prose">' . self::pending('Ollie Allen approved biography') . '</div>';
 
         return '<div class="na-v2-profile"><div>'
             . '<h2>Protection as a specialism, not an afterthought.</h2>'

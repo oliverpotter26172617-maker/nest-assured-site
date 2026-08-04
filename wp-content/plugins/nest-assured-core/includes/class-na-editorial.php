@@ -94,21 +94,57 @@ final class NA_Editorial
             return $content;
         }
 
-        $words = str_word_count(wp_strip_all_tags($content));
-        $minutes = max(2, (int) ceil($words / 200));
-        $reviewed = get_the_modified_date('j F Y');
-        $information = sprintf(
-            '<aside class="na-editorial-meta" aria-label="Guide information"><div><span>Written by</span><strong>Nest Assured editorial team</strong></div><div><span>Reviewed by</span><strong><a href="/about/">Ollie Allen, Protection Adviser</a></strong></div><div><span>Last reviewed</span><strong>%1$s</strong></div><div><span>Reading time</span><strong>%2$d minutes</strong></div></aside>%3$s',
-            esc_html($reviewed),
-            $minutes,
-            self::reference_links((string) get_post_field('post_name', get_queried_object_id()))
-        );
+        $post_id = get_queried_object_id();
+        $minutes = self::reading_minutes($content);
 
-        if (str_contains($content, '</nav>')) {
-            return preg_replace('/<\/nav>/', '</nav>' . $information, $content, 1) ?? $content;
+        // The review credit is published only where an actual review has been
+        // recorded against this guide. It was previously stamped on every article
+        // regardless, which asserted a review that had not taken place.
+        $reviewer = trim((string) get_post_meta($post_id, '_na_reviewed_by', true));
+        $reviewed_on = trim((string) get_post_meta($post_id, '_na_reviewed_on', true));
+
+        $review_row = '';
+        if ('' !== $reviewer) {
+            $review_row = '<div><span>Reviewed by</span><strong><a href="' . esc_url(home_url('/about/')) . '">' . esc_html($reviewer) . '</a></strong></div>';
+            if ('' !== $reviewed_on) {
+                $review_row .= '<div><span>Last reviewed</span><strong>' . esc_html(mysql2date('j F Y', $reviewed_on)) . '</strong></div>';
+            }
         }
 
-        return $information . $content;
+        $information = sprintf(
+            '<aside class="na-editorial-meta" aria-label="Guide information"><div><span>Written by</span><strong>Nest Assured editorial team</strong></div>%1$s<div><span>Last updated</span><strong>%2$s</strong></div><div><span>Reading time</span><strong>%3$s</strong></div></aside>%4$s',
+            $review_row,
+            esc_html(get_the_modified_date('j F Y')),
+            esc_html(sprintf(_n('%d minute', '%d minutes', $minutes, 'nest-assured-core'), $minutes)),
+            self::reference_links((string) get_post_field('post_name', $post_id))
+        );
+
+        // Every guide needs a real, visible level-one heading. The template's title
+        // block is suppressed for guides (see the theme's functions.php), so the
+        // heading is published here, immediately after the breadcrumb trail, using the
+        // same string as the page title and the Article headline.
+        $heading = '<h1 class="na-guide-title">' . esc_html(get_the_title($post_id)) . '</h1>';
+
+        if (str_contains($content, '</nav>')) {
+            return preg_replace('/<\/nav>/', '</nav>' . $heading . $information, $content, 1) ?? $content;
+        }
+
+        return $heading . $information . $content;
+    }
+
+    /**
+     * Reading time in whole minutes.
+     *
+     * str_word_count() is not multibyte-safe and undercounts the typographic
+     * apostrophes and dashes used throughout these guides, which pinned every
+     * article to the two-minute floor.
+     */
+    public static function reading_minutes(string $content): int
+    {
+        $text = wp_strip_all_tags($content);
+        $words = preg_match_all('/[\p{L}\p{N}]+/u', $text);
+
+        return max(1, (int) ceil(((int) $words) / 200));
     }
 
     private static function reference_links(string $slug): string
@@ -159,20 +195,23 @@ final class NA_Editorial
                 '@type' => 'Organization',
                 'name'  => 'Nest Assured editorial team',
             ],
-            'reviewedBy'       => [
-                '@type' => 'Person',
-                'name'  => 'Ollie Allen',
-                'jobTitle' => 'Protection Adviser',
-            ],
+            // Point at Yoast's organisation node rather than declaring a second
+            // Organization with a different logo URL, which left two competing
+            // publisher nodes in the graph.
             'publisher'        => [
-                '@type' => 'Organization',
-                'name'  => 'Nest Assured',
-                'logo'  => [
-                    '@type' => 'ImageObject',
-                    'url'   => get_stylesheet_directory_uri() . '/assets/images/nest-assured-bird-512.png',
-                ],
+                '@id' => home_url('/#organization'),
             ],
         ];
+
+        // Machine-readable review claims follow the same rule as the visible byline:
+        // published only where a review has actually been recorded.
+        $reviewer = trim((string) get_post_meta($post_id, '_na_reviewed_by', true));
+        if ('' !== $reviewer) {
+            $schema['reviewedBy'] = [
+                '@type' => 'Person',
+                'name'  => $reviewer,
+            ];
+        }
 
         echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>' . "\n";
     }

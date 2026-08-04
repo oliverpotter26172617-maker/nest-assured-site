@@ -748,11 +748,19 @@
    Site chrome — v2 header, footer and adviser dock. Applies on every page.
    ========================================================================== */
 
+/* The template part emits a wrapper around the header that is exactly as tall as
+   the header itself, so sticking the header inside it gives zero travel and it
+   never detaches. Stick the wrapper instead. */
+.wp-block-template-part:has(.na-v2-header) {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
 .na-v2-header {
   background: rgba(251, 248, 242, 0.94);
   border-bottom: 1px solid var(--v2-line);
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
 }
 
@@ -1458,7 +1466,7 @@
 }
 
 .na-v2-pills a {
-  border: 1px solid rgba(16, 41, 67, 0.25);
+  border: 1px solid rgba(16, 41, 67, 0.55);
   border-radius: 999px;
   color: var(--na-navy);
   font-size: 0.845rem;
@@ -1626,7 +1634,7 @@
 .na-v2-form-panel select,
 .na-v2-form-panel textarea {
   background: #fff;
-  border: 1px solid rgba(16, 41, 67, 0.25);
+  border: 1px solid rgba(16, 41, 67, 0.55);
   border-radius: var(--v2-radius);
   color: var(--na-ink);
   font-size: 0.9375rem;
@@ -1721,7 +1729,10 @@
    ========================================================================== */
 
 .na-reading-progress {
-  background: var(--na-gold);
+  /* The lighter brand gold sits at about 2.4:1 on the page background, which made
+     the progress indicator effectively invisible. Anything carrying meaning uses
+     the deeper gold. */
+  background: var(--v2-gold-deep);
   height: 3px;
   left: 0;
   position: fixed;
@@ -1739,8 +1750,18 @@ body.na-editorial-guide .site-main {
   background: var(--v2-page);
 }
 
+/* The post-title block is removed for guides in functions.php, and the article's
+   own <h1> is published after the breadcrumb trail. This collapses the leftover
+   wrapper; it must not be used to hide a heading. */
 body.na-editorial-guide .na-page-title {
   display: none;
+}
+
+body.na-editorial-guide .na-guide-title {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0 0 1.5rem;
 }
 
 body.na-editorial-guide .na-section {

@@ -15,12 +15,34 @@ final class NA_Settings
 {
     private const OPTION = 'na_settings';
 
+    private const SIGNOFF_OPTION = 'na_compliance_signoff';
+
+    /**
+     * Copy fields whose wording requires compliance approval. A change to any of them
+     * invalidates an existing sign-off, so approval always refers to specific wording.
+     *
+     * @var array<int, string>
+     */
+    private const APPROVED_COPY_FIELDS = [
+        'fca_reference',
+        'regulatory_copy',
+        'privacy_copy',
+        'complaints_copy',
+        'financial_copy',
+        'ollie_bio',
+        'faqs_copy',
+        'adviser_since',
+        'adviser_permissions',
+    ];
+
     public static function init(): void
     {
         add_action('admin_menu', [self::class, 'add_menu']);
         add_action('admin_init', [self::class, 'register_settings']);
         add_action('admin_notices', [self::class, 'configuration_notice']);
+        add_action('admin_notices', [self::class, 'status_term_notice']);
         add_action('update_option_' . self::OPTION, [self::class, 'sync_indexing_after_update'], 10, 2);
+        add_action('admin_post_na_record_signoff', [self::class, 'handle_signoff']);
     }
 
     /**
@@ -44,7 +66,11 @@ final class NA_Settings
             'ollie_photo_url'      => '',
             'ollie_photo_id'       => '',
             'faqs_copy'            => '',
-            'retention_days'       => '',
+            'adviser_since'        => '',
+            'adviser_permissions'  => '',
+            // Never default to empty: absint('') is 0, which silently leaves the
+            // deletion task unscheduled and retains personal data indefinitely.
+            'retention_days'       => '365',
             'send_confirmations'   => '0',
         ];
 
@@ -86,6 +112,13 @@ final class NA_Settings
     public static function sanitize($input): array
     {
         $input = is_array($input) ? $input : [];
+
+        // This callback runs for any update_option() on the option, not just the
+        // settings form. Merging over the stored value stops a partial write from
+        // wiping approved compliance copy and the webhook secret.
+        $existing = get_option(self::OPTION, []);
+        $input = wp_parse_args($input, is_array($existing) ? $existing : []);
+
         $photo_url = esc_url_raw((string) ($input['ollie_photo_url'] ?? ''));
         $photo_id = '' === $photo_url ? 0 : attachment_url_to_postid($photo_url);
 
@@ -105,9 +138,59 @@ final class NA_Settings
             'ollie_photo_url'    => $photo_url,
             'ollie_photo_id'     => (string) $photo_id,
             'faqs_copy'          => wp_kses_post((string) ($input['faqs_copy'] ?? '')),
+            'adviser_since'       => sanitize_text_field((string) ($input['adviser_since'] ?? '')),
+            'adviser_permissions' => sanitize_text_field((string) ($input['adviser_permissions'] ?? '')),
             'retention_days'     => self::sanitize_retention_days($input['retention_days'] ?? ''),
             'send_confirmations' => empty($input['send_confirmations']) ? '0' : '1',
         ];
+    }
+
+    /**
+     * Status terms that carry a specific regulatory meaning. Their presence in stored
+     * copy is not automatically wrong, but it must be a deliberate, approved choice:
+     * an appointed representative advising from a panel is normally restricted rather
+     * than independent, and "whole of market" and "panel" are different disclosure
+     * categories. Nothing is edited or removed here, only surfaced for a human.
+     *
+     * @return array<int, string>
+     */
+    public static function flagged_status_terms(): array
+    {
+        $terms = ['independent', 'whole of market', 'whole-of-market', 'impartial', 'unbiased', 'no commission', 'never on commission'];
+        $haystack = '';
+
+        foreach (self::APPROVED_COPY_FIELDS as $field) {
+            $haystack .= ' ' . wp_strip_all_tags(self::get($field));
+        }
+
+        $haystack = strtolower($haystack);
+        $found = [];
+
+        foreach ($terms as $term) {
+            if (str_contains($haystack, $term)) {
+                $found[] = $term;
+            }
+        }
+
+        return $found;
+    }
+
+    public static function status_term_notice(): void
+    {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        $found = self::flagged_status_terms();
+        if ([] === $found) {
+            return;
+        }
+
+        $url = admin_url('options-general.php?page=nest-assured-settings');
+        echo '<div class="notice notice-error"><p><strong>Nest Assured compliance check:</strong> the approved copy contains regulated status wording ('
+            . esc_html(implode(', ', $found))
+            . '). Confirm with Sesame that this exact wording is approved for an appointed representative before publishing. '
+            . '<a href="' . esc_url($url) . '">Review the launch controls</a>.</p></div>';
     }
 
     public static function configuration_notice(): void
@@ -133,25 +216,23 @@ final class NA_Settings
     }
 
     /**
+     * Controls whose absence is a compliance problem: nothing regulated may be
+     * published, and no personal data may be collected, until every one is supplied.
+     *
      * @return array<string, string>
      */
-    public static function missing_launch_controls(): array
+    public static function missing_compliance_controls(): array
     {
         $checks = [
-            'protection_email'   => 'Protection team email and SMTP provider',
-            'webhook_url'        => 'CRM webhook URL',
-            'webhook_secret'     => 'CRM webhook signing secret',
-            'adviser_routes'     => 'Mortgage adviser routing map',
-            'booking_url'        => 'Adviser diary embed URL',
-            'fca_reference'      => 'Compliance-approved FCA reference',
-            'regulatory_copy'    => 'Compliance-approved regulatory wording',
-            'privacy_copy'       => 'Compliance-approved privacy notice',
-            'complaints_copy'    => 'Compliance-approved complaints wording',
-            'financial_copy'     => 'Compliance-approved financial promotions wording',
-            'ollie_bio'          => 'Ollie Allen approved biography',
-            'ollie_photo_url'    => 'Ollie Allen approved photography',
-            'faqs_copy'          => 'Approved FAQs from real adviser conversations',
-            'retention_days'     => 'Approved enquiry retention period',
+            'fca_reference'    => 'Compliance-approved FCA reference',
+            'regulatory_copy'  => 'Compliance-approved regulatory wording',
+            'privacy_copy'     => 'Compliance-approved privacy notice',
+            'complaints_copy'  => 'Compliance-approved complaints wording',
+            'financial_copy'   => 'Compliance-approved financial promotions wording',
+            'ollie_bio'        => 'Ollie Allen approved biography',
+            'ollie_photo_url'  => 'Ollie Allen approved photography',
+            'faqs_copy'        => 'Approved FAQs from real adviser conversations',
+            'retention_days'   => 'Approved enquiry retention period',
         ];
 
         return array_filter(
@@ -161,9 +242,99 @@ final class NA_Settings
         );
     }
 
+    /**
+     * Integration plumbing. These are operational rather than regulatory, so they are
+     * kept separate: an email-only launch is legitimate and must not require a CRM.
+     *
+     * @return array<string, string>
+     */
+    public static function missing_delivery_controls(): array
+    {
+        $missing = [];
+
+        if (! self::has_delivery_channel()) {
+            $missing['delivery_channel'] = 'A working delivery channel (protection team email, or CRM webhook URL and signing secret)';
+        }
+
+        if ('' === trim(self::get('adviser_routes'))) {
+            $missing['adviser_routes'] = 'Mortgage adviser routing map';
+        }
+
+        return $missing;
+    }
+
+    /**
+     * True when at least one enquiry delivery route is fully configured.
+     */
+    public static function has_delivery_channel(): bool
+    {
+        if (is_email(trim(self::get('protection_email')))) {
+            return true;
+        }
+
+        return '' !== trim(self::get('webhook_url')) && '' !== trim(self::get('webhook_secret'));
+    }
+
+    /**
+     * Every outstanding control, for admin reporting.
+     *
+     * @return array<string, string>
+     */
+    public static function missing_launch_controls(): array
+    {
+        return self::missing_compliance_controls() + self::missing_delivery_controls();
+    }
+
+    /**
+     * A hash of the exact approved wording, so a sign-off can only ever refer to the
+     * copy that was actually approved.
+     */
+    public static function approved_copy_hash(): string
+    {
+        $parts = [];
+        foreach (self::APPROVED_COPY_FIELDS as $field) {
+            $parts[] = $field . ':' . trim(self::get($field));
+        }
+
+        return md5(implode('|', $parts));
+    }
+
+    /**
+     * @return array{approver: string, date: string, hash: string}|null
+     */
+    public static function compliance_signoff(): ?array
+    {
+        $stored = get_option(self::SIGNOFF_OPTION, []);
+        if (! is_array($stored) || ! isset($stored['hash'], $stored['approver'], $stored['date'])) {
+            return null;
+        }
+
+        return [
+            'approver' => (string) $stored['approver'],
+            'date'     => (string) $stored['date'],
+            'hash'     => (string) $stored['hash'],
+        ];
+    }
+
+    /**
+     * True only when a sign-off exists AND it matches the copy currently stored, so
+     * editing approved wording automatically withdraws approval.
+     */
+    public static function is_signed_off(): bool
+    {
+        $signoff = self::compliance_signoff();
+
+        return null !== $signoff && hash_equals($signoff['hash'], self::approved_copy_hash());
+    }
+
+    /**
+     * The single gate for publishing regulated content and collecting personal data.
+     */
     public static function is_launch_ready(): bool
     {
-        return [] === self::missing_launch_controls();
+        return [] === self::missing_compliance_controls()
+            && self::has_delivery_channel()
+            && self::is_signed_off();
     }
 
     /**
@@ -201,6 +372,48 @@ final class NA_Settings
         }
     }
 
+    /**
+     * Record or withdraw a compliance sign-off. The approver name and date are stored
+     * alongside a hash of the exact wording approved, so the record is auditable and
+     * cannot silently outlive an edit to that wording.
+     */
+    public static function handle_signoff(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die('You do not have permission to record a compliance sign-off.', '', ['response' => 403]);
+        }
+
+        check_admin_referer('na_record_signoff');
+
+        $redirect = admin_url('options-general.php?page=nest-assured-settings');
+
+        if (isset($_POST['withdraw'])) {
+            delete_option(self::SIGNOFF_OPTION);
+            wp_safe_redirect(add_query_arg('na_signoff', 'withdrawn', $redirect));
+            exit;
+        }
+
+        $approver = sanitize_text_field(wp_unslash((string) ($_POST['approver'] ?? '')));
+        if ('' === $approver) {
+            wp_safe_redirect(add_query_arg('na_signoff', 'missing-approver', $redirect));
+            exit;
+        }
+
+        if ([] !== self::missing_compliance_controls()) {
+            wp_safe_redirect(add_query_arg('na_signoff', 'incomplete', $redirect));
+            exit;
+        }
+
+        update_option(self::SIGNOFF_OPTION, [
+            'approver' => $approver,
+            'date'     => gmdate('c'),
+            'hash'     => self::approved_copy_hash(),
+        ], false);
+
+        wp_safe_redirect(add_query_arg('na_signoff', 'recorded', $redirect));
+        exit;
+    }
+
     public static function render_page(): void
     {
         if (! current_user_can('manage_options')) {
@@ -222,6 +435,8 @@ final class NA_Settings
                 <div class="notice notice-success inline"><p>All launch controls contain values. Complete human compliance and delivery testing before publishing.</p></div>
             <?php endif; ?>
 
+            <?php self::render_signoff_panel(); ?>
+
             <form method="post" action="options.php">
                 <?php settings_fields('na_settings_group'); ?>
                 <table class="form-table" role="presentation">
@@ -239,6 +454,8 @@ final class NA_Settings
                     <?php self::textarea_row('Ollie Allen approved biography', 'ollie_bio', $settings, 'Do not add generated biography copy. Add approved text only.'); ?>
                     <?php self::text_row('Ollie Allen approved photograph URL', 'ollie_photo_url', $settings, 'Use only a consented, approved media-library or CDN image URL.', 'url'); ?>
                     <?php self::textarea_row('Approved FAQs', 'faqs_copy', $settings, 'Add only questions and answers sourced from real adviser conversations. Basic HTML is allowed.'); ?>
+                    <?php self::text_row('Adviser experience line', 'adviser_since', $settings, 'Approved wording for the credentials panel, for example "Since November 2023". Left blank, the fact is not published.', 'text'); ?>
+                    <?php self::text_row('Adviser permissions line', 'adviser_permissions', $settings, 'Approved description of the product permissions held. Left blank, the fact is not published.', 'text'); ?>
                     <?php self::number_row('Enquiry retention period', 'retention_days', $settings, 'Approved number of days to retain enquiry records. Expired records are permanently deleted by a daily task.'); ?>
                     <tr>
                         <th scope="row">Confirmation emails</th>
@@ -252,6 +469,60 @@ final class NA_Settings
                     </tr>
                 </table>
                 <?php submit_button(); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * The explicit compliance sign-off record. Filling in every field is not the same
+     * as somebody approving the wording, so publication requires this separate act.
+     */
+    private static function render_signoff_panel(): void
+    {
+        $signoff = self::compliance_signoff();
+        $current = self::is_signed_off();
+        $notice = isset($_GET['na_signoff']) ? sanitize_key(wp_unslash((string) $_GET['na_signoff'])) : '';
+        $notices = [
+            'recorded'         => ['success', 'Compliance sign-off recorded.'],
+            'withdrawn'        => ['warning', 'Compliance sign-off withdrawn. Regulated content and the enquiry form are gated again.'],
+            'incomplete'       => ['error', 'Sign-off refused: approved copy is still missing from the controls below.'],
+            'missing-approver' => ['error', 'Sign-off refused: enter the name of the person approving the wording.'],
+        ];
+        ?>
+        <div class="card" style="max-width:40rem;padding:1rem 1.25rem;">
+            <h2 style="margin-top:0;">Compliance sign-off</h2>
+
+            <?php if (isset($notices[$notice])) : ?>
+                <div class="notice notice-<?php echo esc_attr($notices[$notice][0]); ?> inline"><p><?php echo esc_html($notices[$notice][1]); ?></p></div>
+            <?php endif; ?>
+
+            <?php if ($current && null !== $signoff) : ?>
+                <p><strong>Approved by <?php echo esc_html($signoff['approver']); ?></strong> on
+                    <?php echo esc_html(mysql2date(get_option('date_format') . ' H:i', $signoff['date'])); ?> UTC.</p>
+            <?php elseif (null !== $signoff) : ?>
+                <div class="notice notice-error inline">
+                    <p>The approved wording has changed since <?php echo esc_html($signoff['approver']); ?> signed it off.
+                        Regulated content and the enquiry form are gated until it is approved again.</p>
+                </div>
+            <?php else : ?>
+                <p>No sign-off has been recorded. Regulated content stays gated and the enquiry form does not render.</p>
+            <?php endif; ?>
+
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <input type="hidden" name="action" value="na_record_signoff" />
+                <?php wp_nonce_field('na_record_signoff'); ?>
+                <p>
+                    <label for="na-approver">Approved by</label><br />
+                    <input class="regular-text" id="na-approver" type="text" name="approver" autocomplete="off" />
+                </p>
+                <p class="description">Records the approver, the UTC timestamp and a hash of the exact wording approved. Editing any approved copy withdraws the sign-off automatically.</p>
+                <p>
+                    <button type="submit" class="button button-primary">Record sign-off</button>
+                    <?php if (null !== $signoff) : ?>
+                        <button type="submit" name="withdraw" value="1" class="button">Withdraw sign-off</button>
+                    <?php endif; ?>
+                </p>
             </form>
         </div>
         <?php
@@ -314,6 +585,9 @@ final class NA_Settings
     private static function sanitize_retention_days($value): string
     {
         $days = absint($value);
-        return $days > 0 ? (string) $days : '';
+
+        // Fall back to the default rather than an empty string, so retention can never
+        // be switched off by clearing the field.
+        return $days > 0 ? (string) $days : '365';
     }
 }

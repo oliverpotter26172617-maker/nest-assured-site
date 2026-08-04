@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Nest Assured Core
  * Description: Enquiry routing, needs assessment, booking controls and site setup for Nest Assured.
- * Version: 1.5.5
+ * Version: 1.6.3
  * Requires at least: 6.7
  * Requires PHP: 8.1
  * Author: Nest Assured
@@ -22,7 +22,7 @@ if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
     exit('XML-RPC is disabled.');
 }
 
-define('NA_CORE_VERSION', '1.5.5');
+define('NA_CORE_VERSION', '1.6.3');
 define('NA_CORE_FILE', __FILE__);
 define('NA_CORE_DIR', plugin_dir_path(__FILE__));
 define('NA_CORE_URL', plugin_dir_url(__FILE__));
@@ -52,7 +52,33 @@ add_action('init', static function (): void {
         return;
     }
 
-    NA_Site_Setup::install();
+    // Front-end GETs may trigger the installer: with no WP-CLI available on this
+    // stack, curling a route is the only way to deploy seeded content. What must not
+    // trigger it is a form submission, which previously paid for forty page upserts
+    // and a rewrite flush before the enquiry was handled.
+    $is_post = isset($_SERVER['REQUEST_METHOD']) && 'POST' === strtoupper((string) $_SERVER['REQUEST_METHOD']);
+    if ($is_post && ! wp_doing_cron() && ! (defined('WP_CLI') && WP_CLI)) {
+        return;
+    }
+
+    // add_option() is atomic: a concurrent request loses the race and returns, rather
+    // than both running the installer and creating duplicate pages (privacy-2, and so
+    // on) that the indexing gate does not know about.
+    if (! add_option('na_install_lock', time(), '', false)) {
+        $lock = (int) get_option('na_install_lock');
+        if ($lock > time() - (5 * MINUTE_IN_SECONDS)) {
+            return;
+        }
+        // A stale lock means a previous run died mid-way; take it over.
+        update_option('na_install_lock', time(), false);
+    }
+
+    try {
+        NA_Site_Setup::install();
+    } finally {
+        delete_option('na_install_lock');
+    }
+
     if (function_exists('wp_cache_clear_cache')) {
         wp_cache_clear_cache();
     }
@@ -162,6 +188,16 @@ add_filter('rest_endpoints', static function (array $endpoints): array {
 });
 
 add_filter('wp_robots', static function (array $robots): array {
+    // Fail closed. Until compliance has approved the wording and signed it off, every
+    // page is an unapproved financial promotion, so nothing is indexable. Enumerating
+    // a handful of legal slugs left the entire marketing surface open to search.
+    if ([] !== NA_Settings::missing_compliance_controls() || ! NA_Settings::is_signed_off()) {
+        $robots['noindex'] = true;
+        $robots['follow'] = true;
+        unset($robots['index'], $robots['max-image-preview']);
+        return $robots;
+    }
+
     if (! is_singular('page')) {
         return $robots;
     }
@@ -174,7 +210,17 @@ add_filter('wp_robots', static function (array $robots): array {
     $robots['follow'] = true;
     unset($robots['index'], $robots['max-image-preview']);
     return $robots;
-});
+}, PHP_INT_MAX);
+
+// Yoast writes its own robots directive, so the gate is asserted there too rather
+// than relying on filter ordering between the two.
+add_filter('wpseo_robots', static function ($robots) {
+    if ([] !== NA_Settings::missing_compliance_controls() || ! NA_Settings::is_signed_off()) {
+        return 'noindex, follow';
+    }
+
+    return $robots;
+}, PHP_INT_MAX);
 
 add_filter('document_title_separator', static function (string $separator): string {
     return defined('WPSEO_VERSION') ? $separator : '|';

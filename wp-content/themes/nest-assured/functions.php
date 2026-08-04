@@ -15,8 +15,12 @@ add_action('after_setup_theme', static function (): void {
     add_theme_support('title-tag');
     add_theme_support('responsive-embeds');
     add_theme_support('wp-block-styles');
-    add_editor_style('style.css');
 
+    // Without editor-styles support the editor iframe loaded neither stylesheet, so
+    // v2 pages were edited against v1 chrome or none at all.
+    add_theme_support('editor-styles');
+    add_editor_style('style.css');
+    add_editor_style('assets/css/v2.css');
 });
 
 add_action('wp_enqueue_scripts', static function (): void {
@@ -48,18 +52,37 @@ add_action('wp_enqueue_scripts', static function (): void {
 add_filter('should_load_separate_core_block_assets', '__return_true');
 
 /**
- * v2 pages carry their own <h1> inside the content, so the template's post-title
- * block would produce a second one. Suppress it for those pages only; pages still
- * on the original layout keep the template title as their heading.
+ * v2 pages and guide articles carry their own <h1> inside the content, so the
+ * template's post-title block would produce a second one. Suppress it for those
+ * views only; pages still on the original layout keep the template title.
+ *
+ * This is deliberately gated on the queried object. Query loops call
+ * setup_postdata() for each looped post, so an ungated filter blanked the linked
+ * titles in listings and search results as well.
  */
-add_filter('render_block_core/post-title', static function (string $block_content): string {
-    $post = get_post();
-    if ($post instanceof WP_Post && str_contains($post->post_content, 'class="na-v2"')) {
+add_filter('render_block_core/post-title', static function (string $block_content, array $block): string {
+    if (! is_singular()) {
+        return $block_content;
+    }
+
+    $queried_id = get_queried_object_id();
+    $block_post_id = isset($block['attrs']['postId']) ? (int) $block['attrs']['postId'] : $queried_id;
+
+    if ($block_post_id !== $queried_id || $queried_id <= 0) {
+        return $block_content;
+    }
+
+    if (class_exists('NA_Editorial') && NA_Editorial::is_guide($queried_id)) {
+        return '';
+    }
+
+    $post = get_post($queried_id);
+    if ($post instanceof WP_Post && str_contains($post->post_content, 'na-v2')) {
         return '';
     }
 
     return $block_content;
-});
+}, 10, 2);
 
 add_action('init', static function (): void {
     remove_action('wp_head', 'print_emoji_detection_script', 7);

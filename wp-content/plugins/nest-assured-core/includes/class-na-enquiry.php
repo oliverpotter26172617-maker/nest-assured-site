@@ -15,9 +15,15 @@ final class NA_Enquiry
 {
     private const POST_TYPE = 'na_enquiry';
 
+    private const FAILURE_OPTION = 'na_enquiry_failures';
+
+    private const RETENTION_RUN_OPTION = 'na_retention_last_run';
+
     public static function init(): void
     {
         add_action('init', [self::class, 'register_post_type']);
+        add_action('admin_notices', [self::class, 'failure_notice']);
+        add_action('admin_notices', [self::class, 'retention_notice']);
         add_action('admin_post_nopriv_na_submit_enquiry', [self::class, 'handle_submission']);
         add_action('admin_post_na_submit_enquiry', [self::class, 'handle_submission']);
         add_filter('manage_' . self::POST_TYPE . '_posts_columns', [self::class, 'columns']);
@@ -235,16 +241,27 @@ final class NA_Enquiry
         foreach ($data as $key => $value) {
             update_post_meta((int) $post_id, '_na_' . $key, $value);
         }
+        // Record what was consented to, not just that consent happened: the wording
+        // changes between releases, so a bare flag proves nothing in a dispute.
         update_post_meta((int) $post_id, '_na_consent', 'yes');
+        update_post_meta((int) $post_id, '_na_consent_at', gmdate('c'));
+        update_post_meta((int) $post_id, '_na_consent_version', NA_CORE_VERSION);
+        update_post_meta((int) $post_id, '_na_consent_text_hash', md5(NA_Shortcodes::consent_text()));
         update_post_meta((int) $post_id, '_na_route', $route['queue']);
         update_post_meta((int) $post_id, '_na_branch', $branch);
 
+        // Set the rate limit before delivery, so a slow or failing delivery cannot be
+        // used to bypass it by resubmitting while the first request is still running.
+        set_transient($rate_key, '1', 10 * MINUTE_IN_SECONDS);
+
         $delivery_status = self::deliver((int) $post_id, $data, $route);
         update_post_meta((int) $post_id, '_na_delivery_status', $delivery_status);
-        set_transient($rate_key, '1', MINUTE_IN_SECONDS);
 
         self::send_confirmation($data, $delivery_status);
-        self::redirect_with_status($redirect, 'received');
+
+        // Never tell somebody their enquiry reached an adviser when it did not.
+        $delivered = in_array($delivery_status, ['crm-delivered', 'email-accepted'], true);
+        self::redirect_with_status($redirect, $delivered ? 'received' : 'pending');
     }
 
     /**
@@ -269,9 +286,13 @@ final class NA_Enquiry
                 continue;
             }
 
+            // Fall back to the protection team rather than nowhere when an adviser
+            // line carries no email, so a matched route can never be a dead end.
+            $adviser_email = isset($parts[2]) ? sanitize_email($parts[2]) : '';
+
             return [
                 'queue' => sanitize_key($parts[1]),
-                'email' => isset($parts[2]) ? sanitize_email($parts[2]) : '',
+                'email' => is_email($adviser_email) ? $adviser_email : NA_Settings::get('protection_email'),
             ];
         }
 
@@ -303,11 +324,16 @@ final class NA_Enquiry
             if ('' === $secret) {
                 $details[] = 'crm-signing-secret-missing';
             } else {
+                // Sign the timestamp with the body so a captured request cannot be
+                // replayed indefinitely. Receivers should reject a timestamp outside
+                // a five-minute tolerance window.
+                $timestamp = (string) time();
                 $headers = [
                     'Content-Type'                  => 'application/json',
                     'X-Nest-Assured-Event-ID'       => (string) $post_id,
-                    'X-Nest-Assured-Signature'      => hash_hmac('sha256', $body, $secret),
-                    'X-Nest-Assured-Signature-Type' => 'hmac-sha256',
+                    'X-Nest-Assured-Timestamp'      => $timestamp,
+                    'X-Nest-Assured-Signature'      => hash_hmac('sha256', $timestamp . '.' . $body, $secret),
+                    'X-Nest-Assured-Signature-Type' => 'hmac-sha256-timestamped',
                 ];
                 $response = wp_safe_remote_post($webhook, [
                     'timeout'     => 12,
@@ -329,27 +355,47 @@ final class NA_Enquiry
             }
         }
 
-        if (is_email($route['email'])) {
-            $subject = sprintf('Nest Assured %s enquiry: %s', $data['client_type'], $data['full_name']);
-            $message = "A new Nest Assured enquiry is stored in WordPress.\n\n";
-            $message .= 'Queue: ' . $route['queue'] . "\n";
-            $message .= 'Client: ' . $data['full_name'] . "\n";
-            $message .= 'Email: ' . $data['email'] . "\n";
-            $message .= 'Phone: ' . $data['phone'] . "\n";
-            $message .= 'Review: ' . admin_url('post.php?post=' . $post_id . '&action=edit');
+        $subject = sprintf('Nest Assured %s enquiry: %s', $data['client_type'], $data['full_name']);
+        $message = "A new Nest Assured enquiry is stored in WordPress.\n\n";
+        $message .= 'Queue: ' . $route['queue'] . "\n";
+        $message .= 'Client: ' . $data['full_name'] . "\n";
+        $message .= 'Email: ' . $data['email'] . "\n";
+        $message .= 'Phone: ' . $data['phone'] . "\n";
+        $message .= 'Review: ' . admin_url('post.php?post=' . $post_id . '&action=edit');
 
-            if (wp_mail($route['email'], $subject, $message)) {
-                $details[] = 'email-accepted-by-wordpress';
+        // Try the routed adviser, then the protection team, then the site administrator.
+        // A stored enquiry that reaches nobody is a lost client, so the chain only ends
+        // when every configured recipient has been attempted.
+        $recipients = [
+            'route'         => $route['email'],
+            'protection'    => NA_Settings::get('protection_email'),
+            'administrator' => (string) get_option('admin_email'),
+        ];
+
+        $attempted = [];
+        foreach ($recipients as $label => $recipient) {
+            $recipient = trim($recipient);
+            if (! is_email($recipient) || in_array($recipient, $attempted, true)) {
+                continue;
+            }
+
+            $attempted[] = $recipient;
+
+            if (wp_mail($recipient, $subject, $message)) {
+                $details[] = 'email-accepted-' . $label;
                 update_post_meta($post_id, '_na_delivery_detail', implode(';', $details));
                 return 'email-accepted';
             }
-            $details[] = 'email-rejected-by-wordpress';
+
+            $details[] = 'email-rejected-' . $label;
         }
 
         if ([] === $details) {
             $details[] = 'no-configured-delivery-channel';
         }
         update_post_meta($post_id, '_na_delivery_detail', implode(';', $details));
+        self::record_delivery_failure($post_id, implode(';', $details));
+
         return 'stored-pending-integration';
     }
 
@@ -396,7 +442,10 @@ final class NA_Enquiry
         do {
             $post_ids = get_posts([
                 'post_type'              => self::POST_TYPE,
-                'post_status'            => 'private',
+                // A trashed enquiry is still personal data. Restricting this to
+                // 'private' left anything an administrator deleted from the list table
+                // in the database indefinitely, past the approved retention period.
+                'post_status'            => ['private', 'draft', 'pending', 'trash'],
                 'posts_per_page'         => 100,
                 'fields'                 => 'ids',
                 'orderby'                => 'ID',
@@ -417,6 +466,33 @@ final class NA_Enquiry
 
             $batches++;
         } while (100 === count($post_ids) && $batches < 10);
+
+        update_option(self::RETENTION_RUN_OPTION, gmdate('c'), false);
+    }
+
+    /**
+     * Retention depends on WP-Cron, which fires unreliably on a cached, low-traffic
+     * site. Surface a stale run rather than assuming deletion is happening.
+     */
+    public static function retention_notice(): void
+    {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        if (absint(NA_Settings::get('retention_days')) < 1) {
+            return;
+        }
+
+        $last = get_option(self::RETENTION_RUN_OPTION, '');
+        $last_run = is_string($last) && '' !== $last ? strtotime($last) : false;
+
+        if (false !== $last_run && $last_run > time() - (2 * DAY_IN_SECONDS)) {
+            return;
+        }
+
+        echo '<div class="notice notice-warning"><p><strong>Nest Assured:</strong> the enquiry retention task has not completed in the last 48 hours. '
+            . 'Personal data may be held beyond the approved retention period. Check that WP-Cron is running, or configure a server cron.</p></div>';
     }
 
     private static function normalise_adviser_name(string $name): string
@@ -432,12 +508,93 @@ final class NA_Enquiry
 
     private static function redirect_with_status(string $redirect, string $status): void
     {
-        wp_safe_redirect(add_query_arg('enquiry', sanitize_key($status), $redirect));
+        $status = sanitize_key($status);
+
+        // Rejections are otherwise completely silent: no log line, no admin notice and
+        // no counter, on the only conversion path the site has.
+        if (! in_array($status, ['received', 'pending'], true)) {
+            self::record_failure($status);
+        }
+
+        wp_safe_redirect(add_query_arg('enquiry', $status, $redirect));
         exit;
     }
 
+    /**
+     * Count a rejected submission so repeated failures become visible in wp-admin.
+     */
+    private static function record_failure(string $status): void
+    {
+        error_log(sprintf('[nest-assured] enquiry rejected: %s', $status));
+
+        $failures = get_option(self::FAILURE_OPTION, []);
+        $failures = is_array($failures) ? $failures : [];
+        $failures[$status] = (int) ($failures[$status] ?? 0) + 1;
+        $failures['last_failure_at'] = gmdate('c');
+
+        update_option(self::FAILURE_OPTION, $failures, false);
+    }
+
+    private static function record_delivery_failure(int $post_id, string $detail): void
+    {
+        error_log(sprintf('[nest-assured] enquiry %d stored but not delivered: %s', $post_id, $detail));
+        self::record_failure('delivery');
+    }
+
+    /**
+     * Warn in wp-admin when enquiries have been rejected or stranded, so a broken
+     * conversion path cannot sit unnoticed behind a private post type.
+     */
+    public static function failure_notice(): void
+    {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        $failures = get_option(self::FAILURE_OPTION, []);
+        if (! is_array($failures) || ! isset($failures['last_failure_at'])) {
+            return;
+        }
+
+        $last = strtotime((string) $failures['last_failure_at']);
+        if (false === $last || $last < time() - (7 * DAY_IN_SECONDS)) {
+            return;
+        }
+
+        $counts = [];
+        foreach ($failures as $status => $count) {
+            if ('last_failure_at' !== $status) {
+                $counts[] = $status . ': ' . (int) $count;
+            }
+        }
+
+        echo '<div class="notice notice-error"><p><strong>Nest Assured:</strong> enquiry submissions have failed in the last 7 days ('
+            . esc_html(implode(', ', $counts))
+            . '). Check the delivery channel settings and the server error log.</p></div>';
+    }
+
+    /**
+     * The connecting IP.
+     *
+     * A forwarded-for header is trusted only when the site explicitly declares which
+     * header its proxy sets, because a blindly trusted header is attacker-controlled
+     * and defeats rate limiting entirely.
+     */
     private static function client_ip(): string
     {
+        $header = (string) apply_filters('nest_assured_trusted_proxy_header', '');
+
+        if ('' !== $header) {
+            $key = 'HTTP_' . strtoupper(str_replace('-', '_', $header));
+            if (! empty($_SERVER[$key])) {
+                $forwarded = explode(',', (string) wp_unslash($_SERVER[$key]));
+                $candidate = trim((string) reset($forwarded));
+                if (filter_var($candidate, FILTER_VALIDATE_IP)) {
+                    return $candidate;
+                }
+            }
+        }
+
         return sanitize_text_field(wp_unslash((string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown')));
     }
 }
