@@ -224,7 +224,13 @@ final class NA_Editorial
         $heading = '<h1 class="na-guide-title">' . esc_html(get_the_title($post_id)) . '</h1>';
 
         if (str_contains($content, '</nav>')) {
-            return preg_replace('/<\/nav>/', '</nav>' . $heading . $information, $content, 1) ?? $content;
+            // substr_replace, not preg_replace: a guide title containing a dollar sign
+            // would be read as a backreference in a replacement string and silently
+            // mangled, so "Is $1m of cover enough?" would lose the $1.
+            $anchor = strpos($content, '</nav>');
+            if (false !== $anchor) {
+                return substr_replace($content, '</nav>' . $heading . $information, $anchor, 6);
+            }
         }
 
         return $heading . $information . $content;
@@ -384,8 +390,8 @@ final class NA_Editorial
         $schema = [
             '@context'         => 'https://schema.org',
             '@type'            => 'Article',
-            'headline'         => get_the_title($post_id),
-            'description'      => $description,
+            'headline'         => wp_strip_all_tags((string) get_the_title($post_id)),
+            'description'      => wp_strip_all_tags($description),
             'datePublished'    => $published,
             'dateModified'     => $modified,
             'mainEntityOfPage' => get_permalink($post_id),
@@ -408,10 +414,10 @@ final class NA_Editorial
         if ('' !== $reviewer) {
             $schema['reviewedBy'] = [
                 '@type' => 'Person',
-                'name'  => $reviewer,
+                'name'  => wp_strip_all_tags($reviewer),
             ];
         }
 
-        echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>' . "\n";
+        echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . '</script>' . "\n";
     }
 }

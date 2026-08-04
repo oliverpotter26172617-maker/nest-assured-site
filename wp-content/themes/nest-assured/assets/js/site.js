@@ -98,9 +98,20 @@
     // the real button is both redundant and, on a narrow screen, obstructive.
     const rivals = document.querySelectorAll('.na-guide-cta, .na-v2-callout, .na-v2-close');
     if (rivals.length && 'IntersectionObserver' in window) {
+      // Track which rivals are on screen rather than reading the batch, because a
+      // callback only carries the elements whose state just changed. Scrolling
+      // past one CTA while another is still visible would otherwise bring the
+      // dock straight back on top of it.
+      const visibleRivals = new Set();
       const rivalObserver = new IntersectionObserver((entries) => {
-        const anyVisible = entries.some((entry) => entry.isIntersecting);
-        dock.classList.toggle('is-yielding', anyVisible);
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            visibleRivals.add(entry.target);
+          } else {
+            visibleRivals.delete(entry.target);
+          }
+        });
+        dock.classList.toggle('is-yielding', visibleRivals.size > 0);
       }, { threshold: 0.1 });
 
       rivals.forEach((rival) => rivalObserver.observe(rival));

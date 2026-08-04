@@ -83,7 +83,7 @@ final class NA_Guides_Library
     /**
      * Every guide on the site, first and second series, in one place.
      *
-     * The hub used to hand-maintain its own copy of each card's title, which is
+     * The hub used to hand-maintain its own copy of each card\'s title, which is
      * why the home page, the hub and the article had already drifted to three
      * different titles for the same guide.
      *
@@ -717,7 +717,7 @@ final class NA_Guides_Library
 
 <p>Before settling on a figure, take stock of existing provision. Employer death in service benefit is common and is often expressed as a multiple of salary, but it usually ends when the job does, and it may be paid at the discretion of trustees. Old policies bought alongside a previous mortgage may still be running. Pension schemes sometimes pay a lump sum, a dependant\'s pension, or both, and the rules differ between schemes.</p>
 
-<p>State support exists but is limited and conditional. Bereavement Support Payment has eligibility rules tied to circumstances such as marriage, civil partnership and children, and it is not designed to replace a household income. Treat any state entitlement as a small offset rather than a plan.</p>
+<p>State support exists but is limited and conditional. Bereavement Support Payment has eligibility rules tied to your relationship at the date of death, whether you have dependent children, your age and the deceased\'s National Insurance record. Since 2023 it has also been open to surviving cohabiting partners with dependent children. It is not designed to replace a household income, and there are time limits for claiming, so check your own position on GOV.UK. Treat any state entitlement as a small offset rather than a plan.</p>
 
 <ul class="na-checklist">
   <li>Current mortgage balance and remaining term, for each mortgage held</li>
@@ -794,7 +794,7 @@ final class NA_Guides_Library
 
 <p>After a joint life first death claim, the surviving partner has received a lump sum and has no life cover. If they still have dependent children, they now need cover more than before, not less, because they are the only remaining parent. To get it they must apply again, at an older age, and disclose any health conditions that have developed since the original application. Cover may be available on standard terms, it may come with an increased premium or an exclusion, or it may not be available at all. That depends on the individual and on each insurer\'s underwriting.</p>
 
-<p>With two single policies, the survivor\'s cover continues on the terms and at the price agreed when they were younger and, quite possibly, healthier. Some joint policies include a separation or guaranteed insurability option that allows the survivor to take out a new policy without full medical underwriting, but this is not universal, the terms differ, and it is something to check in the wording rather than assume.</p>
+<p>With two single policies, the survivor\'s cover continues on the terms and at the price agreed when they were younger and, quite possibly, healthier. A small number of insurers offer a survivor option, allowing the surviving life to apply for a new individual policy without full medical underwriting within a short window after a claim. It is not a standard feature, it is not the same as the separation option described below, and where it exists it is time limited. Confirm it in the policy wording before placing any weight on it, because a joint life first death policy ends once it has paid.</p>
 
 <h2>What happens if you separate</h2>
 
@@ -873,7 +873,7 @@ final class NA_Guides_Library
 <ul>
 <li>A nil rate band applies to each individual estate, below which no inheritance tax is charged.</li>
 <li>An additional residence nil rate band may be available where a qualifying residential property passes to direct descendants, subject to conditions and to a taper where the estate is large.</li>
-<li>Transfers between spouses and civil partners who are UK domiciled are generally exempt, and unused allowances can often be transferred to the survivor.</li>
+<li>Transfers between spouses and civil partners are generally exempt where the survivor meets the residence test that applies for inheritance tax, and unused allowances can often be transferred to the survivor. A restricted exemption can apply where they do not. The connecting test for inheritance tax changed in recent years, moving away from domicile, so confirm the current position with a tax adviser or solicitor.</li>
 <li>Certain reliefs may apply to qualifying business or agricultural assets, subject to conditions that have been the subject of recent change.</li>
 </ul>
 
@@ -896,7 +896,7 @@ final class NA_Guides_Library
 
 <h2>Lifetime gifts and the seven-year rule</h2>
 
-<p>Many people reduce a potential inheritance tax liability by giving assets away during their lifetime. Most outright gifts to individuals are potentially exempt transfers: if you survive for seven years from the date of the gift, they generally fall outside your estate. If you die within that period, the gift can be brought back into the calculation, and taper relief may reduce the tax due where death occurs later in that period.</p>
+<p>Many people reduce a potential inheritance tax liability by giving assets away during their lifetime. Most outright gifts to individuals are potentially exempt transfers: if you survive for seven years from the date of the gift, they generally fall outside your estate. If you die within that period, the gift can be brought back into the calculation. Where the gift exceeds the available nil rate band, taper relief can reduce the tax charged on the gift itself if death occurs more than three years after it was made. Where the gift falls within the nil rate band there is no tax to taper, so taper relief makes no difference.</p>
 
 <p>Gift inter vivos cover exists to meet that risk. It is a decreasing term policy structured to reflect the reducing exposure over the relevant period. The recipient of the gift is often the person who would face the tax charge, so the policy is normally arranged with that in mind, and it is usually written in trust.</p>
 
@@ -1100,7 +1100,7 @@ final class NA_Guides_Library
 
 <h2>Underwritten cover and guaranteed acceptance plans are not the same thing</h2>
 
-<p>Television advertising in this age bracket is dominated by over-50s guaranteed acceptance plans. They are sold without medical questions to people within a set age band, which is genuinely useful for someone whose health makes underwritten cover difficult.</p>
+<p>Over-50s guaranteed acceptance plans are widely advertised to this age group. They are sold without medical questions to people within a set age band, which is genuinely useful for someone whose health makes underwritten cover difficult.</p>
 
 <p>They also behave differently from underwritten life insurance. There is normally a waiting period at the start, during which death from natural causes returns premiums or a limited amount rather than the full sum assured. Premiums typically continue for life or until a stated age, which means it is possible to pay in more than the plan will pay out if you live long enough. Stopping payments usually ends the plan with no value. None of this makes them wrong; it makes them a different product with a different purpose, and the individual plan terms decide the detail.</p>
 
@@ -1542,7 +1542,7 @@ final class NA_Guides_Library
 
 <h2>The gap is wider than most people assume</h2>
 
-<p>An employee who cannot work usually has something between them and nothing: contractual sick pay for a period, then Statutory Sick Pay, then whatever group income protection or death in service benefit the employer provides. Self-employed people have none of that. Statutory Sick Pay is a payment from an employer to an employee, so if you are a sole trader you are outside it entirely. If you run your own limited company and pay yourself a salary through PAYE, you are technically an employee of that company, which means the company is the one that would have to fund any sick pay, and the company usually depends on you being at work.</p>
+<p>An employee who cannot work usually has something between them and nothing: contractual sick pay for a period under their employment contract, Statutory Sick Pay where they qualify, which contractual sick pay normally includes rather than follows, and then any group income protection the employer provides. Death in service is a separate benefit that pays on death and does nothing for someone who is off sick. Self-employed people have none of that. Statutory Sick Pay is a payment from an employer to an employee, so if you are a sole trader you are outside it entirely. If you run your own limited company and pay yourself a salary through PAYE, you are technically an employee of that company, which means the company is the one that would have to fund any sick pay, and the company usually depends on you being at work.</p>
 
 <p>The state does provide contribution-based and means-tested benefits for people unable to work, but eligibility depends on your National Insurance record, your household circumstances, savings and other income. It is not designed to replace a working income, and it is not something to build a business or a mortgage around. Check your own entitlement on GOV.UK rather than assuming.</p>
 

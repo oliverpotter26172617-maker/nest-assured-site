@@ -17,11 +17,19 @@
   var MAX_MONTHS = 600;
 
   function toNumber(value) {
-    var cleaned = String(value == null ? '' : value).replace(/[^0-9.]/g, '');
-    var n = parseFloat(cleaned);
+    var raw = String(value == null ? '' : value);
+
+    // Check for a minus before stripping it, otherwise "-3" silently becomes 3
+    // and a negative entry is reported back as a positive figure.
+    if (/^\s*-/.test(raw)) {
+      return 0;
+    }
+
+    var n = parseFloat(raw.replace(/[^0-9.]/g, ''));
     if (!isFinite(n) || n <= 0) {
       return 0;
     }
+
     return Math.min(n, MAX_AMOUNT);
   }
 
@@ -158,20 +166,49 @@
         return;
       }
 
-      var covered = fullMonths;
+      // One rule for every stage: pay comes in, essentials go out, any shortfall
+      // is met from savings until they run out.
+      //
+      // The full-pay stage used to be credited in full without checking whether
+      // full pay actually covered the outgoings, so somebody earning less than
+      // they spend was told their income would hold up for the whole sick-pay
+      // period. The error always ran in the direction of reassurance, which is
+      // the worst direction for it to run in.
+      //
+      // Surplus income is deliberately not banked: the question is how long what
+      // you already have holds up, not how much you could save first.
       var shortfallDuringHalf = Math.max(0, essential - (monthly / 2));
+      var shortfallDuringFull = Math.max(0, essential - monthly);
+      var pot = reserve;
+      var covered = 0;
+      var stagePay = [
+        { months: fullMonths, pay: monthly },
+        { months: halfMonths, pay: monthly / 2 },
+        { months: MAX_MONTHS, pay: 0 }
+      ];
 
-      if (halfMonths > 0) {
-        if (shortfallDuringHalf === 0) {
-          covered += halfMonths;
-        } else {
-          covered += Math.min(halfMonths, reserve / shortfallDuringHalf);
-          reserve = Math.max(0, reserve - (halfMonths * shortfallDuringHalf));
+      for (var i = 0; i < stagePay.length; i++) {
+        var stage = stagePay[i];
+        if (stage.months <= 0) {
+          continue;
         }
-      }
 
-      if (essential > 0) {
-        covered += reserve / essential;
+        var shortfall = Math.max(0, essential - stage.pay);
+        if (shortfall === 0) {
+          covered += stage.months;
+          continue;
+        }
+
+        var affordable = pot / shortfall;
+        if (affordable >= stage.months) {
+          covered += stage.months;
+          pot -= stage.months * shortfall;
+          continue;
+        }
+
+        covered += affordable;
+        pot = 0;
+        break;
       }
 
       covered = Math.min(covered, MAX_MONTHS);
@@ -187,8 +224,11 @@
       if (fullMonths > 0) {
         stages.push({
           label: 'Full employer sick pay',
-          detail: fullMonths + ' ' + plural(fullMonths, 'month', 'months') + ' at ' + money.format(Math.round(monthly)) + ' a month',
-          tone: 'ok'
+          detail: fullMonths + ' ' + plural(fullMonths, 'month', 'months') + ' at ' + money.format(Math.round(monthly)) + ' a month'
+            + (shortfallDuringFull > 0
+              ? ', which is ' + money.format(Math.round(shortfallDuringFull)) + ' a month short of your outgoings already'
+              : ''),
+          tone: shortfallDuringFull > 0 ? 'warn' : 'ok'
         });
       }
       if (halfMonths > 0) {
