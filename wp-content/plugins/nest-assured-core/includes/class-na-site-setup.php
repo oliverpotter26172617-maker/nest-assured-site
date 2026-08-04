@@ -84,7 +84,7 @@ final class NA_Site_Setup
             ['When should you review protection insurance?', 'when-to-review-protection-insurance', self::guide_when_to_review()],
         ];
 
-        $guide_pages = array_merge($guide_pages, NA_Content_Expansion::guides());
+        $guide_pages = array_merge($guide_pages, NA_Content_Expansion::guides(), NA_Guides_Library::guides());
 
         foreach ($guide_pages as [$title, $slug, $content]) {
             $ids[$slug] = self::upsert_page($title, $slug, $content, $guides_id);
@@ -282,7 +282,13 @@ final class NA_Site_Setup
             'about'                  => 'Nest Assured is the protection advice service connected to mortgage broker Major Money Matters, built around a regulated adviser conversation.',
             'contact'                => 'Choose the correct Nest Assured contact route for an existing-client or new protection enquiry.',
             'enquire'                => 'Start an advice-led protection conversation through the correct existing-client or new-enquiry route.',
+            'calculators'            => 'Two planning tools that work only with figures you already know: a cover gap estimator and an income timeline. No quotes, nothing stored.',
         ];
+
+        // The second guide series carries its own descriptions.
+        foreach (NA_Guides_Library::meta() as $guide_slug => $guide_meta) {
+            $descriptions[$guide_slug] = $guide_meta['description'];
+        }
 
         foreach ($descriptions as $slug => $description) {
             $page_id = (int) ($ids[$slug] ?? 0);
@@ -1056,90 +1062,67 @@ final class NA_Site_Setup
 </div>');
     }
 
+    /**
+     * The guide hub, rendered from the shared catalogue rather than hand-written
+     * cards, so the count and every title stay correct as guides are added.
+     */
     private static function guides(): string
     {
-        return self::html('
-<div class="na-v2">
-<section class="na-v2-section na-v2-section--short">
-  <div class="na-v2-shell">
-    <p class="na-v2-eyebrow">The Nest Assured library &middot; 13 guides</p>
-    <h1>Good questions lead to better conversations.</h1>
-    <p class="na-v2-lede na-v2-lede--wide">Plain-English explainers, each reviewed by a named adviser. General information &mdash; never a personal recommendation.</p>
-    <nav class="na-v2-pills" aria-label="Guide topics"><a href="#personal">Personal protection</a><a href="#health">Health</a><a href="#business">Business</a><a href="#home">Home</a><a href="#support">Support and basics</a></nav>
-  </div>
-</section>
+        $catalogue = NA_Guides_Library::catalogue();
+        $count = count($catalogue);
 
-<section class="na-v2-section na-v2-section--short">
-  <div class="na-v2-shell">
-    <a class="na-v2-feature" href="/guides/life-insurance-vs-critical-illness-cover/">
-      <div class="na-v2-feature__body">
-        <p class="na-v2-eyebrow na-v2-eyebrow--light">Start here</p>
-        <h2>Life insurance or critical illness cover?</h2>
-        <p>Two policies that both pay a lump sum, designed for completely different events. The comparison worth reading first.</p>
-        <span class="na-v2-feature__more">Read the comparison <span aria-hidden="true">&rarr;</span></span>
-      </div>
-      <div class="na-v2-feature__mark" aria-hidden="true">
-        <img src="/wp-content/themes/nest-assured/assets/images/nest-assured-bird-256.webp" width="200" height="200" alt="" />
-      </div>
-    </a>
-  </div>
-</section>
+        $out = '<div class="na-v2">'
+            . '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+            . '<p class="na-v2-eyebrow">The Nest Assured library &middot; ' . (int) $count . ' guides</p>'
+            . '<h1>Good questions lead to better conversations.</h1>'
+            . '<p class="na-v2-lede na-v2-lede--wide">Plain-English explainers on how UK protection insurance actually works. '
+            . 'General information, never a personal recommendation, and never a quote.</p>'
+            . '<nav class="na-v2-pills" aria-label="Guide topics">';
 
-<section class="na-v2-section na-v2-section--short">
-  <div class="na-v2-shell">
-    <div class="na-v2-group" id="personal">
-      <div class="na-v2-group__head"><h2>Personal protection</h2><span class="na-v2-group__count">5 guides</span></div>
-      <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/"><p class="na-v2-eyebrow">Compare cover</p><h3>Life insurance or critical illness cover?</h3><p class="na-v2-guide__desc">What triggers each policy and how the benefits differ.</p></a>
-        <a class="na-v2-guide" href="/guides/income-protection-and-sick-pay/"><p class="na-v2-eyebrow">Protecting income</p><h3>Income protection and employer sick pay</h3><p class="na-v2-guide__desc">How work benefits, savings and waiting periods fit together.</p></a>
-        <a class="na-v2-guide" href="/guides/income-protection-for-self-employed/"><p class="na-v2-eyebrow">Self-employed</p><h3>Income protection for self-employed people</h3><p class="na-v2-guide__desc">Earnings evidence, waiting periods and the real gap.</p></a>
-        <a class="na-v2-guide" href="/guides/life-insurance-and-trusts/"><p class="na-v2-eyebrow">Ownership</p><h3>Life insurance and trusts</h3><p class="na-v2-guide__desc">Trustees, beneficiaries and why policy ownership matters.</p></a>
-        <a class="na-v2-guide" href="/guides/when-to-review-protection-insurance/"><p class="na-v2-eyebrow">Reviews</p><h3>When should you review protection insurance?</h3><p class="na-v2-guide__desc">The life, mortgage and work changes that justify another look.</p></a>
-      </div>
-    </div>
-    <div class="na-v2-group" id="health">
-      <div class="na-v2-group__head"><h2>Health</h2><span class="na-v2-group__count">2 guides</span></div>
-      <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/choosing-private-medical-insurance/"><p class="na-v2-eyebrow">Choosing cover</p><h3>Choosing private medical insurance</h3><p class="na-v2-guide__desc">Access, underwriting, benefits and the levers behind cost.</p></a>
-        <a class="na-v2-guide" href="/guides/leaving-company-private-medical-insurance/"><p class="na-v2-eyebrow">Changing jobs</p><h3>Leaving a company private medical scheme</h3><p class="na-v2-guide__desc">Continuation terms, underwriting and ongoing treatment.</p></a>
-      </div>
-    </div>
-    <div class="na-v2-group" id="business">
-      <div class="na-v2-group__head"><h2>Business</h2><span class="na-v2-group__count">2 guides</span></div>
-      <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/types-of-business-protection/"><p class="na-v2-eyebrow">Explainer</p><h3>Types of business protection explained</h3><p class="na-v2-guide__desc">Key person, shareholder, loan, relevant life and executive cover.</p></a>
-        <a class="na-v2-guide" href="/guides/relevant-life-vs-key-person-cover/"><p class="na-v2-eyebrow">Compare</p><h3>Relevant life cover or key person cover?</h3><p class="na-v2-guide__desc">Two company-funded arrangements protecting different interests.</p></a>
-      </div>
-    </div>
-    <div class="na-v2-group" id="home">
-      <div class="na-v2-group__head"><h2>Home</h2><span class="na-v2-group__count">1 guide</span></div>
-      <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/buildings-and-contents-insurance/"><p class="na-v2-eyebrow">Explainer</p><h3>Buildings and contents insurance explained</h3><p class="na-v2-guide__desc">What sits on each side, plus the limits worth checking.</p></a>
-      </div>
-    </div>
-    <div class="na-v2-group" id="support">
-      <div class="na-v2-group__head"><h2>Support and basics</h2><span class="na-v2-group__count">3 guides</span></div>
-      <div class="na-v2-guides">
-        <a class="na-v2-guide" href="/guides/making-a-protection-insurance-claim/"><p class="na-v2-eyebrow">Practical</p><h3>Making a protection insurance claim</h3><p class="na-v2-guide__desc">First contact, evidence and record-keeping steps.</p></a>
-        <a class="na-v2-guide" href="/guides/insurance-jargon-buster/"><p class="na-v2-eyebrow">Glossary &middot; browse</p><h3>Insurance jargon buster</h3><p class="na-v2-guide__desc">Common protection and insurance terms in plain English.</p></a>
-        <a class="na-v2-guide" href="/guides/preparing-for-protection-appointment/"><p class="na-v2-eyebrow">Checklist</p><h3>Preparing for a protection appointment</h3><p class="na-v2-guide__desc">The policies, benefits and questions that make a call useful.</p></a>
-      </div>
-    </div>
-  </div>
-</section>
+        foreach (NA_Guides_Library::groups() as $key => $label) {
+            $out .= '<a href="#' . esc_attr($key) . '">' . esc_html($label) . '</a>';
+        }
 
-<section class="na-v2-section na-v2-section--short">
-  <div class="na-v2-shell">
-    <div class="na-v2-callout na-v2-callout--paper">
-      <div>
-        <h2>Read something that raised a question?</h2>
-        <p>That is the point. Bring it to a conversation &mdash; Ollie will answer it in plain English, for your situation.</p>
-      </div>
-      <a class="na-v2-btn" href="/enquire/">Talk to an adviser</a>
-    </div>
-  </div>
-</section>
-</div>');
+        $out .= '</nav></div></section>';
+
+        $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+            . '<a class="na-v2-feature" href="/calculators/"><div class="na-v2-feature__body">'
+            . '<p class="na-v2-eyebrow na-v2-eyebrow--light">Start with the numbers</p>'
+            . '<h2>Work out the size of the gap first</h2>'
+            . '<p>Two planning tools that use only figures you already know, so the conversation starts from arithmetic rather than guesswork.</p>'
+            . '<span class="na-v2-feature__more">Open the calculators <span aria-hidden="true">&rarr;</span></span>'
+            . '</div><div class="na-v2-feature__mark" aria-hidden="true">'
+            . '<img src="' . esc_url(get_theme_file_uri('assets/images/editorial/notebook-800.webp')) . '" width="400" height="225" alt="" loading="lazy" decoding="async" />'
+            . '</div></a></div></section>';
+
+        foreach (NA_Guides_Library::groups() as $key => $label) {
+            $cards = '';
+            foreach ($catalogue as $slug => $guide) {
+                if ($guide['group'] !== $key) {
+                    continue;
+                }
+                $cards .= '<a class="na-v2-guide" href="/guides/' . esc_attr($slug) . '/">'
+                    . '<p class="na-v2-eyebrow">' . esc_html($guide['eyebrow']) . '</p>'
+                    . '<h3>' . esc_html($guide['title']) . '</h3>'
+                    . '</a>';
+            }
+
+            if ('' === $cards) {
+                continue;
+            }
+
+            $out .= '<section class="na-v2-section na-v2-section--short" id="' . esc_attr($key) . '">'
+                . '<div class="na-v2-shell"><div class="na-v2-headrow"><h2>' . esc_html($label) . '</h2></div>'
+                . '<div class="na-v2-guides">' . $cards . '</div></div></section>';
+        }
+
+        $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+            . '<div class="na-v2-callout"><div><h2>A guide can frame the question.</h2>'
+            . '<p>What it cannot do is weigh your health, your budget and the cover you already hold. That happens in a conversation.</p></div>'
+            . '<a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Talk to an adviser</a></div>'
+            . '</div></section></div>';
+
+        return self::html($out);
     }
 
     private static function guide_life_vs_critical(): string

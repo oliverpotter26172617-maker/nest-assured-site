@@ -121,6 +121,25 @@ final class NA_Editorial
         return array_values($crumbs);
     }
 
+    /**
+     * Every guide slug, including the second series.
+     *
+     * @return array<int, string>
+     */
+    private static function all_guide_slugs(): array
+    {
+        static $slugs = null;
+
+        if (null === $slugs) {
+            $slugs = self::GUIDE_SLUGS;
+            if (class_exists('NA_Guides_Library')) {
+                $slugs = array_merge($slugs, array_keys(NA_Guides_Library::meta()));
+            }
+        }
+
+        return $slugs;
+    }
+
     public static function is_guide(?int $post_id = null): bool
     {
         $post_id = $post_id ?? get_queried_object_id();
@@ -128,7 +147,7 @@ final class NA_Editorial
             return false;
         }
 
-        return in_array((string) get_post_field('post_name', $post_id), self::GUIDE_SLUGS, true);
+        return in_array((string) get_post_field('post_name', $post_id), self::all_guide_slugs(), true);
     }
 
     public static function social_image(string $current = ''): string
