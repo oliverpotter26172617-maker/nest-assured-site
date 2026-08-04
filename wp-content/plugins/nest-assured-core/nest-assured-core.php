@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Nest Assured Core
  * Description: Enquiry routing, needs assessment, booking controls and site setup for Nest Assured.
- * Version: 1.6.6
+ * Version: 1.6.8
  * Requires at least: 6.7
  * Requires PHP: 8.1
  * Author: Nest Assured
@@ -22,7 +22,7 @@ if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
     exit('XML-RPC is disabled.');
 }
 
-define('NA_CORE_VERSION', '1.6.6');
+define('NA_CORE_VERSION', '1.6.8');
 define('NA_CORE_FILE', __FILE__);
 define('NA_CORE_DIR', plugin_dir_path(__FILE__));
 define('NA_CORE_URL', plugin_dir_url(__FILE__));
@@ -153,9 +153,28 @@ add_action('send_headers', static function (): void {
             }
         }
 
+        // Analytics origins are not hardcoded, but the policy must be extensible:
+        // script-src 'self' blocks every tag manager, so the tracking calls already
+        // present in the theme cannot fire until the chosen origins are added here.
+        // Add them with add_filter('nest_assured_csp_sources', ...) at launch.
+        $sources = apply_filters('nest_assured_csp_sources', [
+            'script-src'  => [],
+            'connect-src' => [],
+            'img-src'     => [],
+            'frame-src'   => [],
+        ]);
+
+        $extra = static function (string $directive) use ($sources): string {
+            $values = isset($sources[$directive]) && is_array($sources[$directive]) ? $sources[$directive] : [];
+            $values = array_filter(array_map('trim', $values));
+
+            return [] === $values ? '' : ' ' . implode(' ', $values);
+        };
+
         $policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; "
-            . "img-src 'self' data: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src " . implode(' ', $frame_sources);
+            . "img-src 'self' data: https:" . $extra('img-src') . '; font-src \'self\' data:; style-src \'self\' \'unsafe-inline\'; '
+            . "script-src 'self' 'unsafe-inline'" . $extra('script-src') . "; connect-src 'self'" . $extra('connect-src')
+            . '; frame-src ' . trim(implode(' ', $frame_sources) . $extra('frame-src'));
         header('Content-Security-Policy: ' . $policy, true);
 
         if (is_ssl()) {

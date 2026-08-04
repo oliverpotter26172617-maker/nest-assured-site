@@ -4,13 +4,21 @@
   const navigationMenus = Array.from(document.querySelectorAll('.na-nav-menu, .na-mobile-nav, .na-v2-menu, .na-v2-mobile'));
 
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
-  document.querySelectorAll('.site-nav a, .na-nav-menu__panel a, .na-mobile-nav__panel a, .site-footer__links a, .na-v2-nav a, .na-v2-menu__panel a, .na-v2-mobile__panel a, .na-v2-footer__links a').forEach((link) => {
+  document.querySelectorAll('.na-v2-nav a, .na-v2-menu__panel a, .na-v2-mobile__panel a, .na-v2-footer__links a').forEach((link) => {
     const href = link.getAttribute('href');
     if (!href || href.startsWith('#')) {
       return;
     }
 
-    const linkUrl = new URL(link.href, window.location.origin);
+    // link.href is an SVGAnimatedString on an SVG anchor, which new URL() cannot
+    // parse, so read the attribute and resolve it explicitly.
+    let linkUrl;
+    try {
+      linkUrl = new URL(href, window.location.origin);
+    } catch (error) {
+      return;
+    }
+
     if (linkUrl.origin !== window.location.origin || linkUrl.hash) {
       return;
     }
@@ -40,7 +48,13 @@
       return;
     }
 
-    const targetUrl = new URL(link.href, window.location.origin);
+    let targetUrl;
+    try {
+      targetUrl = new URL(link.getAttribute('href'), window.location.origin);
+    } catch (error) {
+      return;
+    }
+
     window.NestAssuredTrack('product_to_enquiry', {
       topic: targetUrl.searchParams.get('topic') || 'general',
       link_text: link.textContent.trim()
@@ -57,8 +71,37 @@
 
   const mobileNav = document.querySelector('.na-v2-mobile') || document.querySelector('.na-mobile-nav');
   mobileNav?.addEventListener('toggle', () => {
-    document.documentElement.style.overflow = mobileNav.open ? 'hidden' : '';
+    // Lock the body rather than the root element: iOS Safari ignores overflow
+    // hidden on <html> and scrolls the page behind the open panel anyway.
+    const locked = mobileNav.open;
+    document.body.style.overflow = locked ? 'hidden' : '';
+    document.body.style.touchAction = locked ? 'none' : '';
   });
+
+  // The adviser dock follows the reader on every page, so it needs a way to go
+  // away. The choice is remembered for the session only.
+  const dock = document.querySelector('[data-na-dock]');
+  if (dock) {
+    let dismissed = false;
+    try {
+      dismissed = window.sessionStorage.getItem('naDockDismissed') === '1';
+    } catch (error) {
+      dismissed = false;
+    }
+
+    if (dismissed) {
+      dock.hidden = true;
+    }
+
+    dock.querySelector('[data-na-dock-dismiss]')?.addEventListener('click', () => {
+      dock.hidden = true;
+      try {
+        window.sessionStorage.setItem('naDockDismissed', '1');
+      } catch (error) {
+        // Storage unavailable (private mode); dismissing for this page is enough.
+      }
+    });
+  }
 
   // Reading-progress bar on guide articles. Progressive enhancement: if this does
   // not run, the page simply renders without the bar.
@@ -91,10 +134,19 @@
       return;
     }
 
+    // Close every open menu, but return focus only to the one that is actually
+    // visible at this breakpoint. Focusing each in turn meant focus landed on
+    // whichever call happened to run last, including a menu display:none hides.
     navigationMenus.forEach((menu) => {
-      if (menu.open) {
-        menu.open = false;
-        menu.querySelector('summary')?.focus();
+      if (!menu.open) {
+        return;
+      }
+
+      menu.open = false;
+
+      const summary = menu.querySelector('summary');
+      if (summary && summary.getClientRects().length > 0) {
+        summary.focus();
       }
     });
   });

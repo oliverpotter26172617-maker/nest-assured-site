@@ -260,10 +260,15 @@ final class NA_Enquiry
         }
 
         $route = self::resolve_route($data);
+
+        // Title with a reference, not the client's name: the title generates the post
+        // slug and appears in admin search indexes, so putting a real person's name
+        // there spreads it further than the record itself. The name is in meta.
+        $reference = strtoupper(substr(md5($email . '|' . microtime(true)), 0, 8));
         $post_id = wp_insert_post([
             'post_type'   => self::POST_TYPE,
             'post_status' => 'private',
-            'post_title'  => sprintf('%s enquiry: %s', ucfirst($branch), $name),
+            'post_title'  => sprintf('%s enquiry %s', ucfirst($branch), $reference),
         ], true);
 
         if (is_wp_error($post_id)) {
