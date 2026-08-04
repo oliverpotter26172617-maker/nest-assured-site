@@ -150,6 +150,13 @@
         });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
 
+      // Safety net. Hiding content until an observer fires means any failure to
+      // fire hides content permanently, so everything is revealed unconditionally
+      // after a few seconds regardless of what the observer did.
+      window.setTimeout(() => {
+        revealTargets.forEach((target) => target.classList.add('is-revealed'));
+      }, 4000);
+
       revealTargets.forEach((target, index) => {
         // Anything already in view on load is shown immediately, so the first
         // screen never animates in underneath the reader.

@@ -10,10 +10,19 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  // Upper bounds so a mistyped figure produces an obviously bounded answer rather
+  // than a confident nonsense one. A household does not have a billion-pound
+  // mortgage, and eight million months is not a useful thing to tell anybody.
+  var MAX_AMOUNT = 100000000;
+  var MAX_MONTHS = 600;
+
   function toNumber(value) {
     var cleaned = String(value == null ? '' : value).replace(/[^0-9.]/g, '');
     var n = parseFloat(cleaned);
-    return isFinite(n) && n > 0 ? n : 0;
+    if (!isFinite(n) || n <= 0) {
+      return 0;
+    }
+    return Math.min(n, MAX_AMOUNT);
   }
 
   var money = new Intl.NumberFormat('en-GB', {
@@ -165,6 +174,7 @@
         covered += reserve / essential;
       }
 
+      covered = Math.min(covered, MAX_MONTHS);
       covered = Math.round(covered * 10) / 10;
 
       animateTo(totalEl, previous, covered, function (n) {
