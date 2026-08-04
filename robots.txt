@@ -1,4 +1,11 @@
 User-agent: *
 Disallow:
 
-Sitemap: http://localhost:8886/sitemap_index.xml
+# No Sitemap line while the compliance gate is closed: there is no reason to
+# advertise an index of unapproved financial promotions. Crawling stays permitted
+# so the noindex on each page can actually be read.
+#
+# This static file shadows the one WordPress generates, which means the gating in
+# nest-assured-core.php cannot apply here. Delete this file at launch and let
+# WordPress serve robots.txt, so the sitemap appears automatically once compliance
+# has signed off.

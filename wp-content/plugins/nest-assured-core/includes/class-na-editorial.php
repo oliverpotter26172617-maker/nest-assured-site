@@ -116,10 +116,37 @@ final class NA_Editorial
         }
 
         $tail = array_pop($crumbs);
+
+        // Google expects the markup to correspond to the breadcrumb the reader can
+        // see. The visible trail uses a short crumb; the schema was using the full
+        // page title, so thirty of the thirty-three guides disagreed with
+        // themselves.
+        $visible = self::visible_crumb_label();
+        if ('' !== $visible) {
+            $tail['text'] = $visible;
+        }
+
         $crumbs[] = ['url' => $guides_url, 'text' => 'Guides'];
         $crumbs[] = $tail;
 
         return array_values($crumbs);
+    }
+
+    /**
+     * The last crumb as rendered in the article's own breadcrumb nav.
+     */
+    private static function visible_crumb_label(): string
+    {
+        $post = get_post(get_queried_object_id());
+        if (! $post instanceof WP_Post) {
+            return '';
+        }
+
+        if (preg_match('#<nav class="na-breadcrumbs".*?<span>([^<]{1,80})</span>\s*</nav>#s', $post->post_content, $m)) {
+            return trim(wp_strip_all_tags($m[1]));
+        }
+
+        return '';
     }
 
     /**

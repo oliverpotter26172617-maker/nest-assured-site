@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Nest Assured Core
  * Description: Enquiry routing, needs assessment, booking controls and site setup for Nest Assured.
- * Version: 2.2.1
+ * Version: 2.3.0
  * Requires at least: 6.7
  * Requires PHP: 8.1
  * Author: Nest Assured
@@ -22,7 +22,7 @@ if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
     exit('XML-RPC is disabled.');
 }
 
-define('NA_CORE_VERSION', '2.2.1');
+define('NA_CORE_VERSION', '2.3.0');
 define('NA_CORE_FILE', __FILE__);
 define('NA_CORE_DIR', plugin_dir_path(__FILE__));
 define('NA_CORE_URL', plugin_dir_url(__FILE__));
@@ -121,7 +121,13 @@ add_action('wp_enqueue_scripts', static function (): void {
 add_filter('robots_txt', static function (string $output): string {
     header('Content-Type: text/plain; charset=UTF-8', true);
 
-    // Point crawlers at the sitemap that already exists but was never advertised.
+    // Nothing is approved yet, so there is no reason to advertise a sitemap of
+    // unapproved financial promotions. Crawling stays permitted so the noindex on
+    // each page can actually be read.
+    if ([] !== NA_Settings::missing_compliance_controls() || ! NA_Settings::is_signed_off()) {
+        return $output;
+    }
+
     if (! str_contains($output, 'Sitemap:')) {
         $sitemap = defined('WPSEO_VERSION') ? home_url('/sitemap_index.xml') : home_url('/wp-sitemap.xml');
         $output = rtrim($output) . "\n\nSitemap: " . $sitemap . "\n";
@@ -138,6 +144,12 @@ add_action('send_headers', static function (): void {
 
     if ('/robots.txt' === $path) {
         header('Content-Type: text/plain; charset=UTF-8', true);
+    }
+
+    // Feeds bypass the wp_robots filter entirely, so they were the one route out
+    // of the pre-launch gate.
+    if (is_feed() && ([] !== NA_Settings::missing_compliance_controls() || ! NA_Settings::is_signed_off())) {
+        header('X-Robots-Tag: noindex, follow', true);
     }
 
     if (! is_admin()) {

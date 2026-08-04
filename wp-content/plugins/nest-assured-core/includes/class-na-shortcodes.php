@@ -373,13 +373,16 @@ final class NA_Shortcodes
      */
     public static function legal_links(): string
     {
-        $links = ['<a href="' . esc_url(home_url('/legal/privacy/')) . '">Privacy</a>'];
-        if ('' !== trim(NA_Settings::get('complaints_copy'))) {
-            $links[] = '<a href="' . esc_url(home_url('/legal/complaints-procedure/')) . '">Complaints procedure</a>';
-        }
-        if ('' !== trim(NA_Settings::get('financial_copy'))) {
-            $links[] = '<a href="' . esc_url(home_url('/legal/financial-promotions/')) . '">Financial promotions</a>';
-        }
+        // The complaints procedure is the page a regulator, an ombudsman or an
+        // unhappy client goes looking for, so it is always reachable. Hiding it
+        // until its copy is approved left it linked from nowhere at all, which is
+        // a worse failure than linking to a page that says it is being prepared.
+        $links = [
+            '<a href="' . esc_url(home_url('/legal/privacy/')) . '">Privacy</a>',
+            '<a href="' . esc_url(home_url('/legal/complaints-procedure/')) . '">Complaints procedure</a>',
+            '<a href="' . esc_url(home_url('/legal/financial-promotions/')) . '">Financial promotions</a>',
+            '<a href="' . esc_url(home_url('/legal/')) . '">All legal information</a>',
+        ];
 
         return implode('', $links);
     }
@@ -563,10 +566,17 @@ final class NA_Shortcodes
      */
     public static function render_dock(): void
     {
+        // Do not offer to book a callback through a form that is switched off.
+        // Promising an action the site cannot deliver is the "clear, fair and not
+        // misleading" problem, not merely a broken conversion path.
+        $open = NA_Settings::is_launch_ready();
+        $subtitle = $open ? 'Book a callback time' : 'Enquiries open shortly';
+        $action = $open ? 'Book' : 'More';
+
         echo '<div class="na-v2-dock" data-na-dock>'
             . self::adviser_image('na-v2-dock__photo', 'na-v2-dock__plate')
-            . '<div class="na-v2-dock__text"><strong>Talk to Ollie</strong><span>Book a callback time</span></div>'
-            . '<a class="na-v2-dock__cta" href="' . esc_url(home_url('/enquire/')) . '">Book</a>'
+            . '<div class="na-v2-dock__text"><strong>Talk to Ollie</strong><span>' . esc_html($subtitle) . '</span></div>'
+            . '<a class="na-v2-dock__cta" href="' . esc_url(home_url('/enquire/')) . '">' . esc_html($action) . '</a>'
             . '<button type="button" class="na-v2-dock__dismiss" data-na-dock-dismiss aria-label="Hide the adviser shortcut">&times;</button>'
             . '</div>';
     }

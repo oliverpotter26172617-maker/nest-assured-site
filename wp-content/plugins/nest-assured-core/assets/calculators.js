@@ -178,8 +178,11 @@
     function recalculate() {
       var monthly = val(root, 'na-calc-monthly');
       var essential = val(root, 'na-calc-essential');
-      var fullMonths = Math.round(val(root, 'na-calc-full-months'));
-      var halfMonths = Math.round(val(root, 'na-calc-half-months'));
+      // Bound the months themselves, not just the result: an unbounded entry was
+      // still printed verbatim in the visible timeline even though the headline
+      // figure was clamped.
+      var fullMonths = Math.min(MAX_MONTHS, Math.round(val(root, 'na-calc-full-months')));
+      var halfMonths = Math.min(MAX_MONTHS, Math.round(val(root, 'na-calc-half-months')));
       var reserve = val(root, 'na-calc-reserve');
 
       timelineEl.innerHTML = '';

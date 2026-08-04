@@ -283,6 +283,10 @@ final class NA_Site_Setup
             'contact'                => 'Choose the correct Nest Assured contact route for an existing-client or new protection enquiry.',
             'enquire'                => 'Start an advice-led protection conversation through the correct existing-client or new-enquiry route.',
             'calculators'            => 'Two planning tools that work only with figures you already know: a cover gap estimator and an income timeline. No quotes, nothing stored.',
+            'legal'                  => 'Legal, privacy and regulatory information for the Nest Assured protection advice service.',
+            'privacy'                => 'How Nest Assured collects, uses and retains the information you send through an enquiry.',
+            'complaints-procedure'   => 'How to raise a concern about Nest Assured and how a complaint will be handled.',
+            'financial-promotions'   => 'The scope and status of the information published on the Nest Assured website.',
         ];
 
         // The second guide series carries its own descriptions.
@@ -1410,8 +1414,8 @@ final class NA_Site_Setup
             . self::html('</div>
     <div class="na-v2-panel na-v2-panel--paper">
       <p class="na-v2-eyebrow">Editorial standards</p>
-      <h2>Every guide reviewed by Ollie</h2>
-      <p>Guides show who wrote them, who reviewed them and when. They carry general information only. A recommendation happens in a regulated conversation, never on a web page.</p>
+      <h2>Guides that say who stands behind them</h2>
+      <p>Guides show who wrote them, when they were last updated, and name a reviewer once a review has been recorded. They carry general information only. A recommendation happens in a regulated conversation, never on a web page.</p>
       <a class="na-v2-link" href="/editorial-policy/">Read the editorial policy <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
