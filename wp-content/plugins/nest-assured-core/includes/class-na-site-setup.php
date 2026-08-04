@@ -1191,42 +1191,131 @@ final class NA_Site_Setup
     private static function already_client(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Existing Major Money Matters clients</p>
-  <p class="na-lede">Your mortgage adviser may already have introduced this conversation. Use the form below to keep your protection enquiry connected to that journey.</p>
-  <div class="na-note"><h2>This is a distinct client route</h2><p>Your mortgage adviser’s name and mortgage stage are captured so the enquiry can be matched to the correct adviser queue. It is not placed into the standard new-enquiry route.</p></div>
-  <h2>Before you start</h2><ul class="na-checklist"><li>Your mortgage adviser’s name, if known</li><li>Your mortgage reference, if available</li><li>A general idea of where you are in the mortgage process</li></ul>
-</div><div class="na-shell">')
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Existing Major Money Matters clients</p>
+      <h1 class="na-v2-h1--small">Keep it connected to your mortgage journey.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">Your mortgage adviser may already have introduced this conversation. Use the form below to keep your protection enquiry connected to that journey.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <span class="na-v2-note">A distinct client route &middot; not the standard new-enquiry queue</span>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--paper na-v2-section--short">
+  <div class="na-v2-shell na-v2-twocol">
+    <div>
+      <h2 class="na-v2-h2--small">This is a distinct client route</h2>
+      <p>Your mortgage adviser&rsquo;s name and mortgage stage are captured so the enquiry can be matched to the correct adviser queue. It is not placed into the standard new-enquiry route.</p>
+    </div>
+    <div>
+      <h2 class="na-v2-h2--small">Before you start</h2>
+      <ul class="na-v2-list na-v2-list--yes">
+        <li>Your mortgage adviser&rsquo;s name, if known</li>
+        <li>Your mortgage reference, if available</li>
+        <li>A general idea of where you are in the mortgage process</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-form-panel">')
             . self::shortcode('[nest_assured_enquiry mode="existing"]')
-            . self::html('</div></section>');
+            . self::html('</div>
+</section>
+</div>');
     }
 
     private static function how_it_works(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell">
-  <div class="na-section-heading"><div><p class="na-eyebrow">Advice-led means</p><h2>Understanding first, recommendation later.</h2></div><p>The website helps you prepare for a conversation. It does not sell policies, calculate premiums or decide which cover is suitable.</p></div>
-  <div class="na-grid na-grid--3">
-    <div class="na-card"><span class="na-card__number">1</span><h3>Choose the right route</h3><p>Existing Major Money Matters clients identify their mortgage adviser. New enquiries go to the protection team.</p></div>
-    <div class="na-card"><span class="na-card__number">2</span><h3>Describe the starting point</h3><p>Share contact details and the subject you want to understand. Sensitive medical information is not requested online.</p></div>
-    <div class="na-card"><span class="na-card__number">3</span><h3>Have the adviser conversation</h3><p>The adviser reviews needs, existing arrangements, affordability, policy terms and any relevant exclusions.</p></div>
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Advice-led means</p>
+      <h1>Understanding first, recommendation later.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">The website helps you prepare for a conversation. It does not sell policies, calculate premiums or decide which cover is suitable.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <a class="na-v2-btn" href="/enquire/">Start an enquiry</a>
+      <span class="na-v2-note">No quotes on this site &middot; advice first</span>
+    </div>
   </div>
-</div></section>
-<section class="na-section na-section--cream"><div class="na-shell na-prose">
-  <h2>What happens after an enquiry?</h2><p>The team on your assigned route reviews the information you submitted. A conversation is then used to establish whether advice is appropriate and what further information is needed. No cover begins because a form was submitted.</p>
-  <h2>What should you bring?</h2><ul class="na-checklist"><li>Existing policy schedules or workplace benefit information</li><li>Mortgage and household commitment information</li><li>Questions you want answered in plain English</li></ul>
-  <p class="na-disclaimer">Policy eligibility, pricing, definitions and exclusions depend on individual circumstances and the insurer’s terms. These are discussed during the advice process.</p>
-</div></section>
-<section class="na-section"><div class="na-shell na-prose"><h2>Book a conversation</h2><p>Online booking will appear here soon. Until then, start with an enquiry and an adviser will arrange a time with you.</p>')
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <h2>Three steps, in order</h2>
+    <div class="na-v2-steps__list">
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">01</span><div><strong>Choose the right route</strong><span>Existing Major Money Matters clients identify their mortgage adviser. New enquiries go to the protection team.</span></div></div>
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>Describe the starting point</strong><span>Share contact details and the subject you want to understand. Sensitive medical information is not requested online.</span></div></div>
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">03</span><div><strong>Have the adviser conversation</strong><span>The adviser reviews needs, existing arrangements, affordability, policy terms and any relevant exclusions.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--paper na-v2-section--short">
+  <div class="na-v2-shell na-v2-twocol">
+    <div>
+      <h2 class="na-v2-h2--small">What happens after an enquiry?</h2>
+      <p>The team on your assigned route reviews the information you submitted. A conversation is then used to establish whether advice is appropriate and what further information is needed. No cover begins because a form was submitted.</p>
+    </div>
+    <div>
+      <h2 class="na-v2-h2--small">What should you bring?</h2>
+      <ul class="na-v2-list na-v2-list--yes">
+        <li>Existing policy schedules or workplace benefit information</li>
+        <li>Mortgage and household commitment information</li>
+        <li>Questions you want answered in plain English</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">')
             . self::shortcode('[nest_assured_booking]')
-            . self::html('</div></section>');
+            . self::html('<p class="na-v2-note na-v2-note--block">Policy eligibility, pricing, definitions and exclusions depend on individual circumstances and the insurer&rsquo;s terms. These are discussed during the advice process.</p>
+    <div class="na-v2-callout">
+      <div>
+        <h2>Start with a conversation</h2>
+        <p>Send an enquiry and an adviser will arrange a time that suits you.</p>
+      </div>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Talk to an adviser</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function faqs(): string
     {
-        return self::html('<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">This page is reserved for questions drawn from real Nest Assured adviser conversations.</p>')
+        return self::html('
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Questions</p>
+      <h1>Questions from real conversations.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">This page is reserved for questions drawn from real Nest Assured adviser conversations.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <a class="na-v2-btn" href="/enquire/">Ask an adviser</a>
+      <span class="na-v2-note">No quotes on this site &middot; advice first</span>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">')
             . self::shortcode('[nest_assured_faqs]')
-            . self::html('</div></section>');
+            . self::html('</div>
+</section>
+</div>');
     }
 
     private static function about(): string
@@ -1286,13 +1375,38 @@ final class NA_Site_Setup
     private static function contact(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell">
-  <div class="na-section-heading"><div><p class="na-eyebrow">Choose the right contact route</p><h2>Keep the conversation connected.</h2></div><p>We ask existing clients to identify their mortgage adviser so their enquiry can follow the established journey.</p></div>
-  <div class="na-grid na-grid--2">
-    <a class="na-card na-audience-card" href="/already-a-client/"><h3>I am an existing Major Money Matters client</h3><p>Continue with your adviser-connected protection route.</p><span class="na-product-card__link">Use the existing-client route</span></a>
-    <a class="na-card na-audience-card" href="/enquire/"><h3>I am making a new enquiry</h3><p>Contact the protection team about a new advice conversation.</p><span class="na-product-card__link">Make a new enquiry</span></a>
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Choose the right contact route</p>
+      <h1>Keep the conversation connected.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">We ask existing clients to identify their mortgage adviser so their enquiry can follow the established journey.</p>
+    </div>
+    <div class="na-v2-masthead__aside">')
+            . self::shortcode('[nest_assured_contact_details]')
+            . self::html('<span class="na-v2-note">Harold Wood, Essex &middot; UK-wide by phone or video</span>
+    </div>
   </div>
-</div></section>');
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-mis">
+    <a class="na-v2-guide" href="/already-a-client/">
+      <p class="na-v2-eyebrow">Existing client</p>
+      <h3>I am an existing Major Money Matters client</h3>
+      <p class="na-v2-guide__desc">Continue with your adviser-connected protection route.</p>
+      <span class="na-v2-guide__more">Use the existing-client route <span aria-hidden="true">&rarr;</span></span>
+    </a>
+    <a class="na-v2-guide" href="/enquire/">
+      <p class="na-v2-eyebrow">New enquiry</p>
+      <h3>I am making a new enquiry</h3>
+      <p class="na-v2-guide__desc">Contact the protection team about a new advice conversation.</p>
+      <span class="na-v2-guide__more">Make a new enquiry <span aria-hidden="true">&rarr;</span></span>
+    </a>
+  </div>
+</section>
+</div>');
     }
 
     private static function enquire(): string
@@ -1323,37 +1437,98 @@ final class NA_Site_Setup
     private static function legal_index(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">Legal, privacy and regulatory information for the Nest Assured website.</p>
-  <div class="na-grid na-grid--3">
-    <a class="na-card" href="/legal/privacy/"><h2>Privacy</h2><p>How enquiry information is collected, used and retained.</p></a>
-    <a class="na-card" href="/legal/complaints-procedure/"><h2>Complaints</h2><p>The approved complaints process and escalation information.</p></a>
-    <a class="na-card" href="/legal/financial-promotions/"><h2>Financial promotions</h2><p>The scope and status of information published on this site.</p></a>
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Legal</p>
+      <h1 class="na-v2-h1--small">Legal and regulatory information.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">Legal, privacy and regulatory information for the Nest Assured website.</p>
+    </div>
   </div>
-</div></section>');
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-guides">
+    <a class="na-v2-guide" href="/legal/privacy/"><h3>Privacy</h3><p class="na-v2-guide__desc">How enquiry information is collected, used and retained.</p></a>
+    <a class="na-v2-guide" href="/legal/complaints-procedure/"><h3>Complaints</h3><p class="na-v2-guide__desc">The approved complaints process and escalation information.</p></a>
+    <a class="na-v2-guide" href="/legal/financial-promotions/"><h3>Financial promotions</h3><p class="na-v2-guide__desc">The scope and status of information published on this site.</p></a>
+  </div>
+</section>
+</div>');
     }
 
     private static function privacy(): string
     {
-        return self::html('<section class="na-section"><div class="na-shell na-prose">')
+        return self::html('
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Legal</p>
+      <h1 class="na-v2-h1--small">Privacy notice.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">How enquiry information is collected, used and retained.</p>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-prose">')
             . self::shortcode('[nest_assured_privacy]')
-            . self::html('</div></section>');
+            . self::html('</div>
+</section>
+</div>');
     }
 
     private static function complaints(): string
     {
-        return self::html('<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">How to raise a concern and how it will be handled.</p>')
+        return self::html('
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Legal</p>
+      <h1 class="na-v2-h1--small">Complaints procedure.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">How to raise a concern and how it will be handled.</p>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-prose">')
             . self::shortcode('[nest_assured_complaints]')
-            . self::html('</div></section>');
+            . self::html('</div>
+</section>
+</div>');
     }
 
     private static function financial_promotions(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-lede">This website provides general education and a route into an adviser conversation.</p>
-  <h2>What the site does not do</h2><ul><li>It does not generate an insurance quote.</li><li>It does not provide a personal recommendation.</li><li>It does not compare premiums or policy terms for purchase.</li><li>It does not allow a visitor to buy or begin cover online.</li></ul>
-  <p class="na-disclaimer">Eligibility, policy definitions, exclusions, premiums and suitability depend on individual circumstances and the insurer’s terms.</p>')
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Legal</p>
+      <h1 class="na-v2-h1--small">Financial promotions.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">This website provides general education and a route into an adviser conversation.</p>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-prose">
+    <h2 class="na-v2-h2--small">What the site does not do</h2>
+    <ul class="na-v2-list na-v2-list--no">
+      <li>It does not generate an insurance quote.</li>
+      <li>It does not provide a personal recommendation.</li>
+      <li>It does not compare premiums or policy terms for purchase.</li>
+      <li>It does not allow a visitor to buy or begin cover online.</li>
+    </ul>
+    <p class="na-v2-note na-v2-note--block">Eligibility, policy definitions, exclusions, premiums and suitability depend on individual circumstances and the insurer&rsquo;s terms.</p>')
             . self::shortcode('[nest_assured_financial]')
-            . self::html('</div></section>');
+            . self::html('</div>
+</section>
+</div>');
     }
 }

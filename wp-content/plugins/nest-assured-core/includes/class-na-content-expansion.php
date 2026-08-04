@@ -16,15 +16,54 @@ final class NA_Content_Expansion
     public static function editorial_policy(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">How we publish</p><p class="na-lede">Nest Assured guides are designed to make an adviser conversation easier to understand. They provide general education, not a quote or personal recommendation.</p>
-  <h2>Who writes and reviews the guides</h2><p>The Nest Assured editorial team prepares guide content using established product concepts, policy terminology and official consumer information. Ollie Allen, Protection Adviser, reviews the material for practical clarity and alignment with the advice journey.</p>
-  <h2>Sources we prioritise</h2><ul class="na-checklist"><li>Financial Conduct Authority consumer information and applicable regulatory principles</li><li>UK Government and HMRC guidance where legal or tax context is mentioned</li><li>MoneyHelper consumer education</li><li>Association of British Insurers consumer resources</li><li>Insurer policy documents when explaining product-specific wording</li></ul>
-  <h2>How we keep content clear</h2><p>We distinguish general explanations from personal advice, avoid promises about eligibility or claims, describe important trade-offs and direct readers back to policy wording where definitions vary. Medical information is never requested through editorial tools or the public enquiry form.</p>
-  <h2>Review and correction process</h2><p>Each guide shows its most recent review date. We review content when products, regulation, official guidance or the Nest Assured advice journey materially change. If you believe a guide is unclear or inaccurate, use the <a href="/contact/">contact route</a> and identify the page and wording concerned. The team will assess the point and record any material correction through the page review date.</p>
-  <h2>Commercial independence</h2><p>Guide placement is not sold to insurers and the library does not rank providers. A recommendation, if appropriate, is made only after an adviser has considered the client’s circumstances, existing arrangements, affordability and relevant policy terms.</p>
-  <div class="na-cta"><div><h2>Need guidance about your own circumstances?</h2><p>A guide can frame the questions. An adviser conversation is where individual needs and options can be considered.</p></div><a class="na-button na-button--light" href="/enquire/">Talk to an adviser</a></div>
-</div></section>');
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">How we publish</p>
+      <h1 class="na-v2-h1--small">Editorial policy</h1>
+      <p class="na-v2-lede na-v2-lede--wide">Nest Assured guides are designed to make an adviser conversation easier to understand. They provide general education, not a quote or personal recommendation.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <a class="na-v2-btn" href="/enquire/">Talk to an adviser</a>
+      <span class="na-v2-note">No quotes on this site &middot; advice first</span>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-prose">
+    <h2 class="na-v2-h2--small">Who writes and reviews the guides</h2>
+    <p>The Nest Assured editorial team prepares guide content using established product concepts, policy terminology and official consumer information. Guides are reviewed by a named protection adviser for practical clarity and alignment with the advice journey before a review credit is published against them.</p>
+    <h2 class="na-v2-h2--small">Sources we prioritise</h2>
+    <ul class="na-v2-list na-v2-list--yes">
+      <li>Financial Conduct Authority consumer information and applicable regulatory principles</li>
+      <li>UK Government and HMRC guidance where legal or tax context is mentioned</li>
+      <li>MoneyHelper consumer education</li>
+      <li>Association of British Insurers consumer resources</li>
+      <li>Insurer policy documents when explaining product-specific wording</li>
+    </ul>
+    <h2 class="na-v2-h2--small">How we keep content clear</h2>
+    <p>We distinguish general explanations from personal advice, avoid promises about eligibility or claims, describe important trade-offs and direct readers back to policy wording where definitions vary. Medical information is never requested through editorial tools or the public enquiry form.</p>
+    <h2 class="na-v2-h2--small">Review and correction process</h2>
+    <p>Each guide shows when it was last updated, and names its reviewer once a review has been recorded. We review content when products, regulation, official guidance or the Nest Assured advice journey materially change. If you believe a guide is unclear or inaccurate, use the <a href="/contact/">contact route</a> and identify the page and wording concerned. The team will assess the point and record any material correction.</p>
+    <h2 class="na-v2-h2--small">Commercial independence</h2>
+    <p>Guide placement is not sold to insurers and the library does not rank providers. A recommendation, if appropriate, is made only after an adviser has considered the client&rsquo;s circumstances, existing arrangements, affordability and relevant policy terms.</p>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <div class="na-v2-callout">
+      <div>
+        <h2>Need guidance about your own circumstances?</h2>
+        <p>A guide can frame the questions. An adviser conversation is where individual needs and options can be considered.</p>
+      </div>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Talk to an adviser</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     /**

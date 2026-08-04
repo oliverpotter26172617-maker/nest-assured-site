@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const navigationMenus = Array.from(document.querySelectorAll('.na-nav-menu, .na-mobile-nav, .na-v2-menu, .na-v2-mobile'));
+  const navigationMenus = Array.from(document.querySelectorAll('.na-v2-menu, .na-v2-mobile'));
 
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
   document.querySelectorAll('.na-v2-nav a, .na-v2-menu__panel a, .na-v2-mobile__panel a, .na-v2-footer__links a').forEach((link) => {
@@ -69,7 +69,7 @@
     });
   });
 
-  const mobileNav = document.querySelector('.na-v2-mobile') || document.querySelector('.na-mobile-nav');
+  const mobileNav = document.querySelector('.na-v2-mobile');
   mobileNav?.addEventListener('toggle', () => {
     // Lock the body rather than the root element: iOS Safari ignores overflow
     // hidden on <html> and scrolls the page behind the open panel anyway.
