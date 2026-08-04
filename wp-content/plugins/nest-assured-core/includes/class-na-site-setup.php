@@ -556,6 +556,7 @@ final class NA_Site_Setup
       <span class="na-v2-note">No quotes on this site &middot; advice first</span>
     </div>
   </div>
+  <figure class="na-v2-masthead__figure"><img src="/wp-content/themes/nest-assured/assets/images/editorial/hallway.webp" srcset="/wp-content/themes/nest-assured/assets/images/editorial/hallway-800.webp 800w, /wp-content/themes/nest-assured/assets/images/editorial/hallway.webp 1600w" sizes="100vw" width="1600" height="900" alt="" loading="lazy" decoding="async" /></figure>
 </section>
 
 <section class="na-v2-section na-v2-section--short">
@@ -635,6 +636,22 @@ final class NA_Site_Setup
      *
      * @param array<string, mixed> $spec Page content.
      */
+    /**
+     * Masthead photography. Decorative: the alt text is empty because the image
+     * repeats nothing the heading does not already say, and a description would
+     * only add noise for anyone using a screen reader.
+     */
+    private static function masthead_image(string $name, string $alt = ''): string
+    {
+        $base = get_theme_file_uri('assets/images/editorial/');
+
+        return '<figure class="na-v2-masthead__figure">'
+            . '<img src="' . esc_url($base . $name . '.webp') . '" '
+            . 'srcset="' . esc_url($base . $name . '-800.webp') . ' 800w, ' . esc_url($base . $name . '.webp') . ' 1600w" '
+            . 'sizes="100vw" width="1600" height="900" alt="' . esc_attr($alt) . '" loading="lazy" decoding="async" />'
+            . '</figure>';
+    }
+
     private static function cover_page(array $spec): string
     {
         $topic = (string) $spec['topic'];
@@ -647,7 +664,9 @@ final class NA_Site_Setup
             . '</div><div class="na-v2-masthead__aside">'
             . '<a class="na-v2-btn" href="/enquire/?topic=' . $topic . '">' . $spec['cta_short'] . '</a>'
             . '<span class="na-v2-note">No quotes on this site &middot; advice first</span>'
-            . '</div></div></section>';
+            . '</div></div>'
+            . (isset($spec['image']) ? self::masthead_image($spec['image'], $spec['image_alt']) : '')
+            . '</section>';
 
         if (isset($spec['intro'])) {
             $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
@@ -728,6 +747,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'income-protection',
+            'image'     => 'empty-desk',
+            'image_alt' => '',
             'eyebrow'   => 'Cover II &middot; Plain-English guide',
             'title'     => 'Income protection',
             'lede'      => 'Income protection is designed to pay a regular income if illness or injury prevents the insured person working, subject to the policy definition and terms.',
@@ -780,6 +801,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'critical-illness',
+            'image'     => 'quiet-room',
+            'image_alt' => '',
             'eyebrow'   => 'Cover III &middot; Plain-English guide',
             'title'     => 'Critical illness cover',
             'lede'      => 'Critical illness cover is designed to pay a lump sum if the insured person is diagnosed with a condition covered by the policy and meets its definition.',
@@ -832,6 +855,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'family-protection',
+            'image'     => 'kitchen-table',
+            'image_alt' => '',
             'eyebrow'   => 'Cover IV &middot; A broader conversation',
             'title'     => 'Family protection',
             'lede'      => 'Family protection is not one policy type. It is a way to consider how life insurance, income protection, critical illness cover and existing benefits may fit together.',
@@ -884,6 +909,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'private-medical-insurance',
+            'image'     => 'quiet-room',
+            'image_alt' => '',
             'eyebrow'   => 'Cover V &middot; Health cover, explained clearly',
             'title'     => 'Private medical insurance',
             'lede'      => 'Private medical insurance can help meet the cost of eligible private diagnosis and treatment. The useful question is not simply who is cheapest, but which cover fits how you want to access care.',
@@ -932,6 +959,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'business-protection',
+            'image'     => 'workshop',
+            'image_alt' => '',
             'eyebrow'   => 'Cover VI &middot; Protecting the people behind the business',
             'title'     => 'Business protection',
             'lede'      => 'Business protection is a group of policies designed to help a company manage the financial impact of death or serious illness affecting an owner, director or key employee.',
@@ -978,6 +1007,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'general-insurance',
+            'image'     => 'rooflines',
+            'image_alt' => '',
             'eyebrow'   => 'Cover VII &middot; Home and general insurance',
             'title'     => 'Home and general insurance',
             'lede'      => 'The right home insurance conversation goes beyond a renewal price. It checks that the building, belongings and valuable items are described accurately and covered on terms you understand.',

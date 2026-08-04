@@ -34,16 +34,16 @@ final class NA_Guides_Library
             ['Joint or single life insurance policies?', 'joint-vs-single-life-insurance', self::guide_joint_vs_single_life_insurance()],
             ['Life insurance and inheritance tax', 'life-insurance-and-inheritance-tax', self::guide_life_insurance_and_inheritance_tax()],
             ['Life insurance and your mortgage', 'life-insurance-and-mortgages', self::guide_life_insurance_and_mortgages()],
-            ['Life insurance in your fifties and sixties | Nest Assured', 'life-insurance-for-over-50s', self::guide_life_insurance_for_over_50s()],
+            ['Life insurance in your fifties and sixties', 'life-insurance-for-over-50s', self::guide_life_insurance_for_over_50s()],
             ['What happens during medical underwriting', 'life-insurance-medical-underwriting', self::guide_life_insurance_medical_underwriting()],
             ['Life insurance with a pre-existing condition', 'life-insurance-pre-existing-conditions', self::guide_life_insurance_pre_existing_conditions()],
-            ['What happens if you miss a premium | Nest Assured', 'missed-premium-payments', self::guide_missed_premium_payments()],
+            ['What happens if you miss a premium', 'missed-premium-payments', self::guide_missed_premium_payments()],
             ['Own occupation or any occupation cover?', 'own-occupation-vs-any-occupation', self::guide_own_occupation_vs_any_occupation()],
-            ['Protection when you work for yourself | Nest Assured', 'protection-when-self-employed', self::guide_protection_when_self_employed()],
+            ['Protection when you work for yourself', 'protection-when-self-employed', self::guide_protection_when_self_employed()],
             ['Smoking, vaping and protection insurance', 'smoking-vaping-and-life-insurance', self::guide_smoking_vaping_and_life_insurance()],
-            ['Switching or cancelling a protection policy | Nest Assured', 'switching-or-cancelling-protection', self::guide_switching_or_cancelling_protection()],
+            ['Switching or cancelling a protection policy', 'switching-or-cancelling-protection', self::guide_switching_or_cancelling_protection()],
             ['Waiver of premium explained', 'waiver-of-premium-explained', self::guide_waiver_of_premium_explained()],
-            ['Whole of life insurance explained | Nest Assured', 'whole-of-life-insurance-explained', self::guide_whole_of_life_insurance_explained()],
+            ['Whole of life insurance explained', 'whole-of-life-insurance-explained', self::guide_whole_of_life_insurance_explained()],
             ['Putting life insurance in trust, step by step', 'writing-life-insurance-in-trust', self::guide_writing_life_insurance_in_trust()],
         ];
     }
@@ -65,16 +65,16 @@ final class NA_Guides_Library
             'joint-vs-single-life-insurance' => ['title' => 'Joint or single life insurance policies?', 'description' => 'Joint life cover pays once and ends. Two single policies pay twice. What that means for the survivor, for separation, and for how much each of you holds.', 'eyebrow' => 'Life insurance'],
             'life-insurance-and-inheritance-tax' => ['title' => 'Life insurance and inheritance tax', 'description' => 'How a life policy can add to your estate or help pay an inheritance tax bill, why trusts matter, and where legal or tax advice is needed alongside.', 'eyebrow' => 'Estate planning'],
             'life-insurance-and-mortgages' => ['title' => 'Life insurance and your mortgage', 'description' => 'Is life cover compulsory with a UK mortgage? What happens to the loan if a borrower dies, how property ownership affects it, and when to arrange cover.', 'eyebrow' => 'Mortgage protection'],
-            'life-insurance-for-over-50s' => ['title' => 'Life insurance in your fifties and sixties | Nest Assured', 'description' => 'What changes about life cover in your fifties and sixties: underwriting, existing policies, term limits, over-50s plans, and providing for family.', 'eyebrow' => 'Life stages'],
+            'life-insurance-for-over-50s' => ['title' => 'Life insurance in your fifties and sixties', 'description' => 'What changes about life cover in your fifties and sixties: underwriting, existing policies, term limits, over-50s plans, and providing for family.', 'eyebrow' => 'Life stages'],
             'life-insurance-medical-underwriting' => ['title' => 'What happens during medical underwriting', 'description' => 'What medical underwriting involves for UK protection cover: application questions, GP reports, medical screenings, and the decisions insurers can make.', 'eyebrow' => 'Health and underwriting'],
             'life-insurance-pre-existing-conditions' => ['title' => 'Life insurance with a pre-existing condition', 'description' => 'How UK life insurance underwriting handles a pre-existing condition, the terms insurers can offer, and why full, accurate answers matter at application.', 'eyebrow' => 'Health and underwriting'],
-            'missed-premium-payments' => ['title' => 'What happens if you miss a premium | Nest Assured', 'description' => 'What happens when a protection premium fails: grace periods, arrears, lapse, reinstatement, and the options to discuss before cover is lost for good.', 'eyebrow' => 'Keeping cover'],
+            'missed-premium-payments' => ['title' => 'What happens if you miss a premium', 'description' => 'What happens when a protection premium fails: grace periods, arrears, lapse, reinstatement, and the options to discuss before cover is lost for good.', 'eyebrow' => 'Keeping cover'],
             'own-occupation-vs-any-occupation' => ['title' => 'Own occupation or any occupation cover?', 'description' => 'Own occupation, suited occupation, any occupation and activity based tests explained, why insurers offer different ones, and where claims come unstuck.', 'eyebrow' => 'Income protection'],
-            'protection-when-self-employed' => ['title' => 'Protection when you work for yourself | Nest Assured', 'description' => 'Self-employed protection in the UK: income protection, how insurers define your earnings, business cover, and the gaps that catch sole traders out.', 'eyebrow' => 'Working for yourself'],
+            'protection-when-self-employed' => ['title' => 'Protection when you work for yourself', 'description' => 'Self-employed protection in the UK: income protection, how insurers define your earnings, business cover, and the gaps that catch sole traders out.', 'eyebrow' => 'Working for yourself'],
             'smoking-vaping-and-life-insurance' => ['title' => 'Smoking, vaping and protection insurance', 'description' => 'How UK insurers treat smoking, vaping and nicotine use on life, critical illness and income protection, and what to do after you have given up.', 'eyebrow' => 'Lifestyle and cover'],
-            'switching-or-cancelling-protection' => ['title' => 'Switching or cancelling a protection policy | Nest Assured', 'description' => 'Why you should never cancel existing cover before a replacement is in force, what you may give up, and safer alternatives to cancelling a UK policy.', 'eyebrow' => 'Existing policies'],
+            'switching-or-cancelling-protection' => ['title' => 'Switching or cancelling a protection policy', 'description' => 'Why you should never cancel existing cover before a replacement is in force, what you may give up, and safer alternatives to cancelling a UK policy.', 'eyebrow' => 'Existing policies'],
             'waiver-of-premium-explained' => ['title' => 'Waiver of premium explained', 'description' => 'What waiver of premium does on a UK protection policy, how deferred periods and incapacity definitions work, and the gaps people most often miss.', 'eyebrow' => 'Policy features'],
-            'whole-of-life-insurance-explained' => ['title' => 'Whole of life insurance explained | Nest Assured', 'description' => 'How whole of life cover works in the UK: guaranteed and reviewable premiums, premium reviews, trusts, and what commonly goes wrong with these plans.', 'eyebrow' => 'Types of cover'],
+            'whole-of-life-insurance-explained' => ['title' => 'Whole of life insurance explained', 'description' => 'How whole of life cover works in the UK: guaranteed and reviewable premiums, premium reviews, trusts, and what commonly goes wrong with these plans.', 'eyebrow' => 'Types of cover'],
             'writing-life-insurance-in-trust' => ['title' => 'Putting life insurance in trust, step by step', 'description' => 'A step by step guide to putting a UK life policy in trust: trust types, choosing trustees, signing and witnessing, and the mistakes that undo it all.', 'eyebrow' => 'Estate planning'],
         ];
     }
@@ -83,9 +83,9 @@ final class NA_Guides_Library
     /**
      * Every guide on the site, first and second series, in one place.
      *
-     * The hub used to hand-maintain its own copy of each card's title and
-     * description, which is why the home page, the hub and the article had
-     * already drifted to three different titles for the same guide.
+     * The hub used to hand-maintain its own copy of each card's title, which is
+     * why the home page, the hub and the article had already drifted to three
+     * different titles for the same guide.
      *
      * @return array<string, array{title:string,eyebrow:string,group:string}>
      */
@@ -95,7 +95,7 @@ final class NA_Guides_Library
             'life-insurance-vs-critical-illness-cover'  => ['Life insurance or critical illness cover?', 'Compare cover', 'personal'],
             'income-protection-and-sick-pay'            => ['Income protection and employer sick pay', 'Protecting income', 'personal'],
             'income-protection-for-self-employed'       => ['Income protection for self-employed people', 'Self-employed', 'personal'],
-            'life-insurance-and-trusts'                 => ['Life insurance and trusts', 'Ownership', 'personal'],
+            'life-insurance-and-trusts'                 => ['Life insurance and trusts', 'Ownership', 'estate'],
             'when-to-review-protection-insurance'       => ['When should you review protection insurance?', 'Reviews', 'support'],
             'choosing-private-medical-insurance'        => ['Choosing private medical insurance', 'Choosing cover', 'health'],
             'leaving-company-private-medical-insurance' => ['Leaving a company private medical scheme', 'Changing jobs', 'health'],
@@ -107,7 +107,6 @@ final class NA_Guides_Library
             'preparing-for-protection-appointment'      => ['Preparing for a protection appointment', 'Checklist', 'support'],
         ];
 
-        // Which section of the hub each second-series guide belongs in.
         $groups = [
             'how-much-life-insurance-do-i-need'       => 'personal',
             'decreasing-vs-level-term-life-insurance' => 'personal',
@@ -138,7 +137,7 @@ final class NA_Guides_Library
 
         foreach (self::meta() as $slug => $meta) {
             $catalogue[$slug] = [
-                'title'   => $meta['title'],
+                'title'   => preg_replace('/\s*\|.*$/', '', $meta['title']),
                 'eyebrow' => $meta['eyebrow'],
                 'group'   => $groups[$slug] ?? 'support',
             ];
@@ -169,7 +168,8 @@ final class NA_Guides_Library
 
     public static function guide_critical_illness_cover_for_children(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Children\'s critical illness</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Children\'s critical illness</span></nav>
 
 <p class="na-eyebrow">Critical illness cover</p>
 
@@ -256,12 +256,14 @@ final class NA_Guides_Library
 <li>Whether existing policies are written in trust.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_death_in_service_and_life_insurance(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Death in service</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Death in service</span></nav>
 
 <p class="na-eyebrow">Life cover</p>
 
@@ -347,12 +349,14 @@ final class NA_Guides_Library
 <li>Your health now, since terms for personal cover are set on current circumstances.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_decreasing_vs_level_term_life_insurance(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Decreasing or level term</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Decreasing or level term</span></nav>
 
 <p class="na-eyebrow">Life insurance</p>
 
@@ -449,12 +453,14 @@ final class NA_Guides_Library
   <li>The monthly premium you could keep paying through a difficult period</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_family_income_benefit_explained(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Family income benefit</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Family income benefit</span></nav>
 
 <p class="na-eyebrow">Life insurance</p>
 
@@ -546,12 +552,14 @@ final class NA_Guides_Library
   <li>Who should receive the payments, and whether a trust has been considered</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_how_much_income_protection_can_i_get(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>How much income protection</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>How much income protection</span></nav>
 
 <p class="na-eyebrow">Income protection</p>
 
@@ -639,12 +647,14 @@ final class NA_Guides_Library
 <li>How long the cover needs to run, and what event ends the need.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_how_much_life_insurance_do_i_need(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>How much cover</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>How much cover</span></nav>
 
 <p class="na-eyebrow">Life insurance</p>
 
@@ -736,12 +746,14 @@ final class NA_Guides_Library
   <li>Any changes you can already see coming, such as a house move or a child starting school</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_joint_vs_single_life_insurance(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Joint or single</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Joint or single</span></nav>
 
 <p class="na-eyebrow">Life insurance</p>
 
@@ -827,12 +839,14 @@ final class NA_Guides_Library
   <li>Your total monthly budget for protection across both lives</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_life_insurance_and_inheritance_tax(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Life cover and IHT</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Life cover and IHT</span></nav>
 
 <p class="na-eyebrow">Estate planning</p>
 
@@ -921,12 +935,14 @@ final class NA_Guides_Library
 <li>How you feel about premiums that can be reviewed, compared with paying more for a guaranteed rate.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_life_insurance_and_mortgages(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Life cover and your mortgage</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Life cover and your mortgage</span></nav>
 
 <p class="na-eyebrow">Mortgage protection</p>
 
@@ -1016,12 +1032,14 @@ final class NA_Guides_Library
   <li>The monthly amount you could sustain alongside the new mortgage payment</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_life_insurance_for_over_50s(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Cover in your fifties and sixties</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Cover in your fifties and sixties</span></nav>
 
 <p class="na-eyebrow">Life stages</p>
 
@@ -1113,12 +1131,14 @@ final class NA_Guides_Library
 <li>What premium is genuinely sustainable once you are no longer earning, and whether affordability or certainty matters more to you.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_life_insurance_medical_underwriting(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Medical underwriting</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Medical underwriting</span></nav>
 
 <p class="na-eyebrow">Health and underwriting</p>
 
@@ -1207,12 +1227,14 @@ final class NA_Guides_Library
 <li>How quickly the cover is needed, for example where a property purchase is involved.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_life_insurance_pre_existing_conditions(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Pre-existing conditions</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Pre-existing conditions</span></nav>
 
 <p class="na-eyebrow">Health and underwriting</p>
 
@@ -1295,12 +1317,14 @@ final class NA_Guides_Library
 <li>Existing cover already in place, including anything through an employer.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_missed_premium_payments(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Missed premiums</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Missed premiums</span></nav>
 
 <p class="na-eyebrow">Keeping cover</p>
 
@@ -1416,12 +1440,14 @@ final class NA_Guides_Library
 <li>Whether the policy is in trust, jointly held, or connected to a mortgage or business arrangement.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_own_occupation_vs_any_occupation(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Occupation definitions</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Occupation definitions</span></nav>
 
 <p class="na-eyebrow">Income protection</p>
 
@@ -1501,12 +1527,14 @@ final class NA_Guides_Library
 <li>Whether you also hold critical illness or life cover, and what definitions those use.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_protection_when_self_employed(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Self-employed protection</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Self-employed protection</span></nav>
 
 <p class="na-eyebrow">Working for yourself</p>
 
@@ -1605,12 +1633,14 @@ final class NA_Guides_Library
 <li>Your full medical history and the physical demands of the work you actually do, which affects how insurers class your occupation.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_smoking_vaping_and_life_insurance(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Smoking and vaping</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Smoking and vaping</span></nav>
 
 <p class="na-eyebrow">Lifestyle and cover</p>
 
@@ -1701,12 +1731,14 @@ final class NA_Guides_Library
 <li>Whether any existing policy is written in trust or assigned.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_switching_or_cancelling_protection(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Switching or cancelling</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Switching or cancelling</span></nav>
 
 <p class="na-eyebrow">Existing policies</p>
 
@@ -1819,12 +1851,14 @@ final class NA_Guides_Library
 <li>Your timescales, particularly if a mortgage completion or other deadline is driving the decision.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_waiver_of_premium_explained(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Waiver of premium</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Waiver of premium</span></nav>
 
 <p class="na-eyebrow">Policy features</p>
 
@@ -1907,12 +1941,14 @@ final class NA_Guides_Library
 <li>The term remaining on the cover and what it is protecting.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_whole_of_life_insurance_explained(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Whole of life insurance</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Whole of life insurance</span></nav>
 
 <p class="na-eyebrow">Types of cover</p>
 
@@ -2007,12 +2043,14 @@ final class NA_Guides_Library
 <li>Your wider estate position, including your will, so the policy and the will do not pull in different directions.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 
     public static function guide_writing_life_insurance_in_trust(): string
     {
-        return self::html('<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Life cover in trust</span></nav>
+        return self::html('<section class="na-section"><div class="na-shell na-prose">
+<nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> <span aria-hidden="true">/</span> <a href="/guides/">Guides</a> <span aria-hidden="true">/</span> <span>Life cover in trust</span></nav>
 
 <p class="na-eyebrow">Estate planning</p>
 
@@ -2098,6 +2136,7 @@ final class NA_Guides_Library
 <li>Whether a solicitor or accountant is already advising you, so the arrangements line up.</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>');
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+</div></section>');
     }
 }

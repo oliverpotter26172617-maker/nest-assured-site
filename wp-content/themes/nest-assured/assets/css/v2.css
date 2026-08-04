@@ -2233,3 +2233,31 @@ body.na-editorial-guide .na-related {
     }
   }
 }
+
+/* Masthead photography. Full-bleed under the heading block, cropped short so it
+   sets a tone without pushing the content the reader came for below the fold. */
+.na-v2-masthead__figure {
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  overflow: hidden;
+}
+
+.na-v2-masthead__figure img {
+  aspect-ratio: 21 / 6;
+  filter: saturate(0.9) contrast(1.02);
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+@media (max-width: 60rem) {
+  .na-v2-masthead__figure img {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.na-v2-feature__mark img {
+  border-radius: var(--v2-radius);
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
