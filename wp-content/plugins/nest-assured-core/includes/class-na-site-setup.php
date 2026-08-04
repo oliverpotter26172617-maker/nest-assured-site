@@ -618,115 +618,397 @@ final class NA_Site_Setup
 </div>');
     }
 
+    /**
+     * Shared renderer for the cover pages.
+     *
+     * Every cover page used to carry its own hand-written markup, which is how six
+     * of the seven ended up on the old layout while the seventh was redesigned, so
+     * a visitor moving between two products crossed a visible change of design.
+     * The approved prose is unchanged; only the structure around it is shared.
+     *
+     * @param array<string, mixed> $spec Page content.
+     */
+    private static function cover_page(array $spec): string
+    {
+        $topic = (string) $spec['topic'];
+        $out = '<div class="na-v2">';
+
+        $out .= '<section class="na-v2-masthead"><div class="na-v2-shell na-v2-masthead__grid"><div>'
+            . '<p class="na-v2-eyebrow">' . $spec['eyebrow'] . '</p>'
+            . '<h1>' . $spec['title'] . '</h1>'
+            . '<p class="na-v2-lede na-v2-lede--wide">' . $spec['lede'] . '</p>'
+            . '</div><div class="na-v2-masthead__aside">'
+            . '<a class="na-v2-btn" href="/enquire/?topic=' . $topic . '">' . $spec['cta_short'] . '</a>'
+            . '<span class="na-v2-note">No quotes on this site &middot; advice first</span>'
+            . '</div></div></section>';
+
+        if (isset($spec['intro'])) {
+            $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+                . '<h2>' . $spec['intro']['h'] . '</h2>'
+                . '<p class="na-v2-subhead">' . $spec['intro']['p'] . '</p>'
+                . '</div></section>';
+        }
+
+        if (isset($spec['shapes'])) {
+            $keys = ['a.', 'b.', 'c.', 'd.', 'e.'];
+            $items = '';
+            foreach (array_values($spec['shapes']) as $i => $shape) {
+                $items .= '<div class="na-v2-shape"><span class="na-v2-shape__key" aria-hidden="true">'
+                    . ($keys[$i] ?? '') . '</span><h3>' . $shape['h'] . '</h3><p>' . $shape['p'] . '</p></div>';
+            }
+
+            $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+                . '<h2>' . $spec['shapes_heading'] . '</h2>'
+                . (isset($spec['shapes_note']) ? '<p class="na-v2-subhead">' . $spec['shapes_note'] . '</p>' : '')
+                . '<div class="na-v2-shapes">' . $items . '</div></div></section>';
+        }
+
+        if (isset($spec['twocol'])) {
+            $columns = '';
+            foreach ($spec['twocol'] as $column) {
+                $list = '';
+                foreach ($column['items'] as $item) {
+                    $list .= '<li>' . $item . '</li>';
+                }
+                $columns .= '<div><h2 class="na-v2-h2--small">' . $column['h'] . '</h2>'
+                    . '<ul class="na-v2-list na-v2-list--' . $column['tone'] . '">' . $list . '</ul></div>';
+            }
+
+            $out .= '<section class="na-v2-section na-v2-section--paper na-v2-section--short">'
+                . '<div class="na-v2-shell na-v2-twocol">' . $columns . '</div></section>';
+        }
+
+        if (isset($spec['checklist'])) {
+            $list = '';
+            foreach ($spec['checklist']['items'] as $item) {
+                $list .= '<li>' . $item . '</li>';
+            }
+
+            $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+                . '<h2 class="na-v2-h2--small">' . $spec['checklist']['h'] . '</h2>'
+                . '<ul class="na-v2-list na-v2-list--yes">' . $list . '</ul>'
+                . (isset($spec['checklist']['note']) ? '<p class="na-v2-subhead">' . $spec['checklist']['note'] . '</p>' : '')
+                . '</div></section>';
+        }
+
+        if (isset($spec['mis'])) {
+            $guide = '';
+            if (isset($spec['guide'])) {
+                $guide = '<a class="na-v2-guide" href="' . $spec['guide']['href'] . '">'
+                    . '<p class="na-v2-eyebrow">' . $spec['guide']['eyebrow'] . '</p>'
+                    . '<h3>' . $spec['guide']['h'] . '</h3>'
+                    . '<p class="na-v2-guide__desc">' . $spec['guide']['p'] . '</p>'
+                    . '<span class="na-v2-guide__more">' . $spec['guide']['more'] . ' <span aria-hidden="true">&rarr;</span></span></a>';
+            }
+
+            $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell na-v2-mis"><div>'
+                . '<p class="na-v2-eyebrow">A common misunderstanding</p>'
+                . '<p class="na-v2-quote">&ldquo;' . $spec['mis']['quote'] . '&rdquo;</p>'
+                . '<p class="na-v2-subhead">' . $spec['mis']['p'] . '</p>'
+                . '</div>' . $guide . '</div></section>';
+        }
+
+        $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+            . '<p class="na-v2-note na-v2-note--block">' . $spec['disclaimer'] . '</p>'
+            . '<div class="na-v2-callout"><div><h2>' . $spec['cta']['h'] . '</h2><p>' . $spec['cta']['p'] . '</p></div>'
+            . '<a class="na-v2-btn na-v2-btn--gold" href="/enquire/?topic=' . $topic . '">Talk to an adviser</a>'
+            . '</div></div></section>';
+
+        return self::html($out . '</div>');
+    }
+
     private static function income_protection(): string
     {
-        return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Plain-English guide</p>
-  <p class="na-lede">Income protection is designed to pay a regular income if illness or injury prevents the insured person working, subject to the policy definition and terms.</p>
-  <h2>What it is</h2><p>The policy normally replaces part of earnings after an agreed waiting period. The amount, waiting period, definition of incapacity and maximum payment period are important parts of the cover.</p>
-  <h2>Four details that make a material difference</h2><div class="na-feature-list"><div><span>01</span><h3>Incapacity definition</h3><p>The policy wording determines how inability to work is assessed.</p></div><div><span>02</span><h3>Waiting period</h3><p>The period before an eligible claim can begin paying should be considered alongside sick pay and savings.</p></div><div><span>03</span><h3>Payment period</h3><p>Some plans limit how long each claim can pay, while others can continue until the end of the policy term, subject to its conditions.</p></div><div><span>04</span><h3>Premium basis</h3><p>Premiums may be guaranteed, reviewable or age-related depending on the product.</p></div></div>
-  <h2>What it is not</h2><ul><li>It is not unemployment cover.</li><li>It does not replace every pound of earnings.</li><li>It is not the same as critical illness cover, which usually pays a lump sum for specified conditions.</li><li>It does not remove the need to understand sick pay and workplace benefits.</li></ul>
-  <h2>What an adviser needs to understand</h2><ul class="na-checklist"><li>Your employment status, occupation and income</li><li>Employer sick pay and any existing protection</li><li>How long savings could support essential outgoings</li><li>Which policy definition and waiting period may be relevant</li></ul>
-  <h2>A common misunderstanding</h2><p>“I can only claim if I am permanently unable to work.” Policies differ. Some are designed around a temporary inability to work, but the exact definition, waiting period and claim requirements must be checked.</p>
-  <div class="na-related"><p class="na-eyebrow">Build the timeline</p><a class="na-card" href="/guides/income-protection-and-sick-pay/"><h3>How does income protection fit with sick pay?</h3><p>Map employer support, savings and a potential policy waiting period.</p><span class="na-product-card__link">Read the guide</span></a></div>
-  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
-  <div class="na-cta"><div><h2>Discuss income protection with an adviser</h2><p>Bring any information you have about sick pay, savings and existing workplace benefits.</p></div><a class="na-button na-button--light" href="/enquire/?topic=income-protection">Talk to an adviser</a></div>
-</div></section>');
+        return self::cover_page([
+            'topic'     => 'income-protection',
+            'eyebrow'   => 'Cover II &middot; Plain-English guide',
+            'title'     => 'Income protection',
+            'lede'      => 'Income protection is designed to pay a regular income if illness or injury prevents the insured person working, subject to the policy definition and terms.',
+            'cta_short' => 'Discuss income protection',
+            'intro'     => [
+                'h' => 'What it is',
+                'p' => 'The policy normally replaces part of earnings after an agreed waiting period. The amount, waiting period, definition of incapacity and maximum payment period are important parts of the cover.',
+            ],
+            'shapes_heading' => 'Four details that make a material difference',
+            'shapes'    => [
+                ['h' => 'Incapacity definition', 'p' => 'The policy wording determines how inability to work is assessed.'],
+                ['h' => 'Waiting period', 'p' => 'The period before an eligible claim can begin paying should be considered alongside sick pay and savings.'],
+                ['h' => 'Payment period', 'p' => 'Some plans limit how long each claim can pay, while others can continue until the end of the policy term, subject to its conditions.'],
+                ['h' => 'Premium basis', 'p' => 'Premiums may be guaranteed, reviewable or age-related depending on the product.'],
+            ],
+            'twocol'    => [
+                ['h' => 'What it is not', 'tone' => 'no', 'items' => [
+                    'It is not unemployment cover.',
+                    'It does not replace every pound of earnings.',
+                    'It is not the same as critical illness cover, which usually pays a lump sum for specified conditions.',
+                    'It does not remove the need to understand sick pay and workplace benefits.',
+                ]],
+                ['h' => 'What an adviser needs to understand', 'tone' => 'yes', 'items' => [
+                    'Your employment status, occupation and income',
+                    'Employer sick pay and any existing protection',
+                    'How long savings could support essential outgoings',
+                    'Which policy definition and waiting period may be relevant',
+                ]],
+            ],
+            'mis'       => [
+                'quote' => 'I can only claim if I am permanently unable to work.',
+                'p'     => 'Policies differ. Some are designed around a temporary inability to work, but the exact definition, waiting period and claim requirements must be checked.',
+            ],
+            'guide'     => [
+                'href'    => '/guides/income-protection-and-sick-pay/',
+                'eyebrow' => 'Build the timeline',
+                'h'       => 'How does income protection fit with sick pay?',
+                'p'       => 'Map employer support, savings and a potential policy waiting period.',
+                'more'    => 'Read the guide',
+            ],
+            'disclaimer' => 'This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.',
+            'cta'       => [
+                'h' => 'Discuss income protection with an adviser',
+                'p' => 'Bring any information you have about sick pay, savings and existing workplace benefits.',
+            ],
+        ]);
     }
 
     private static function critical_illness(): string
     {
-        return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Plain-English guide</p>
-  <p class="na-lede">Critical illness cover is designed to pay a lump sum if the insured person is diagnosed with a condition covered by the policy and meets its definition.</p>
-  <h2>What it is</h2><p>The policy lists the conditions it covers and the definition that a diagnosis must meet. The payment may be considered for financial commitments, changes at home or time away from work, but how it is used is the policyholder’s decision.</p>
-  <h2>What deserves attention in a comparison</h2><div class="na-callout-grid"><div class="na-callout"><h3>Definitions, not just counts</h3><p>The number of listed conditions does not show how each definition works or how relevant it is to you.</p></div><div class="na-callout"><h3>Full and additional payments</h3><p>Some policies include lower payments for specified less-severe conditions without ending all cover.</p></div><div class="na-callout"><h3>Children’s cover</h3><p>Availability, limits and definitions vary and may be included or optional.</p></div><div class="na-callout"><h3>Extra support</h3><p>Some policies include services such as remote GP access, counselling or rehabilitation support.</p></div></div>
-  <h2>What it is not</h2><ul><li>It does not cover every illness.</li><li>A diagnosis does not automatically qualify unless the policy definition is met.</li><li>It is not private medical insurance and does not pay for treatment directly.</li><li>It is not a substitute for income protection.</li></ul>
-  <h2>What an adviser needs to understand</h2><ul class="na-checklist"><li>Your existing cover and workplace benefits</li><li>The financial commitments a lump sum might need to address</li><li>Whether children’s cover or other policy features are relevant</li><li>Your budget and the policy definitions being compared</li></ul>
-  <h2>A common misunderstanding</h2><p>“All providers cover exactly the same illnesses.” Policy lists and definitions vary. The number of listed conditions alone does not explain the quality or relevance of cover.</p>
-  <div class="na-related"><p class="na-eyebrow">Related guide</p><a class="na-card" href="/guides/life-insurance-vs-critical-illness-cover/"><h3>Life insurance or critical illness cover?</h3><p>Understand why two lump-sum policies can still serve different purposes.</p><span class="na-product-card__link">Read the comparison</span></a></div>
-  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
-  <div class="na-cta"><div><h2>Discuss critical illness cover with an adviser</h2><p>An adviser can explain policy definitions and how a lump-sum benefit differs from other protection.</p></div><a class="na-button na-button--light" href="/enquire/?topic=critical-illness">Talk to an adviser</a></div>
-</div></section>');
+        return self::cover_page([
+            'topic'     => 'critical-illness',
+            'eyebrow'   => 'Cover III &middot; Plain-English guide',
+            'title'     => 'Critical illness cover',
+            'lede'      => 'Critical illness cover is designed to pay a lump sum if the insured person is diagnosed with a condition covered by the policy and meets its definition.',
+            'cta_short' => 'Discuss critical illness cover',
+            'intro'     => [
+                'h' => 'What it is',
+                'p' => 'The policy lists the conditions it covers and the definition that a diagnosis must meet. The payment may be considered for financial commitments, changes at home or time away from work, but how it is used is the policyholder&rsquo;s decision.',
+            ],
+            'shapes_heading' => 'What deserves attention in a comparison',
+            'shapes'    => [
+                ['h' => 'Definitions, not just counts', 'p' => 'The number of listed conditions does not show how each definition works or how relevant it is to you.'],
+                ['h' => 'Full and additional payments', 'p' => 'Some policies include lower payments for specified less-severe conditions without ending all cover.'],
+                ['h' => 'Children&rsquo;s cover', 'p' => 'Availability, limits and definitions vary and may be included or optional.'],
+                ['h' => 'Extra support', 'p' => 'Some policies include services such as remote GP access, counselling or rehabilitation support.'],
+            ],
+            'twocol'    => [
+                ['h' => 'What it is not', 'tone' => 'no', 'items' => [
+                    'It does not cover every illness.',
+                    'A diagnosis does not automatically qualify unless the policy definition is met.',
+                    'It is not private medical insurance and does not pay for treatment directly.',
+                    'It is not a substitute for income protection.',
+                ]],
+                ['h' => 'What an adviser needs to understand', 'tone' => 'yes', 'items' => [
+                    'Your existing cover and workplace benefits',
+                    'The financial commitments a lump sum might need to address',
+                    'Whether children&rsquo;s cover or other policy features are relevant',
+                    'Your budget and the policy definitions being compared',
+                ]],
+            ],
+            'mis'       => [
+                'quote' => 'All providers cover exactly the same illnesses.',
+                'p'     => 'Policy lists and definitions vary. The number of listed conditions alone does not explain the quality or relevance of cover.',
+            ],
+            'guide'     => [
+                'href'    => '/guides/life-insurance-vs-critical-illness-cover/',
+                'eyebrow' => 'Related guide',
+                'h'       => 'Life insurance or critical illness cover?',
+                'p'       => 'Understand why two lump-sum policies can still serve different purposes.',
+                'more'    => 'Read the comparison',
+            ],
+            'disclaimer' => 'This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.',
+            'cta'       => [
+                'h' => 'Discuss critical illness cover with an adviser',
+                'p' => 'An adviser can explain policy definitions and how a lump-sum benefit differs from other protection.',
+            ],
+        ]);
     }
 
     private static function family_protection(): string
     {
-        return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">A broader conversation</p>
-  <p class="na-lede">Family protection is not one policy type. It is a way to consider how life insurance, income protection, critical illness cover and existing benefits may fit together.</p>
-  <h2>What the conversation covers</h2><p>An adviser can help map the people and commitments that depend on household income, then review which risks are already covered and which questions remain unanswered.</p>
-  <div class="na-milestones"><div><span>People</span><p>Who relies on income, care or other contributions from the household?</p></div><div><span>Commitments</span><p>Which mortgages, debts and regular costs would still need to be met?</p></div><div><span>Existing support</span><p>What policies, savings and workplace benefits are already available?</p></div><div><span>Priorities</span><p>Which risks matter most and what premium could remain comfortable?</p></div></div>
-  <h2>What it is not</h2><ul><li>It is not a pre-packaged bundle.</li><li>It does not mean every household needs every type of policy.</li><li>It is not an online comparison or instant quote.</li><li>It does not replace a review of trusts, nominations or other arrangements where relevant.</li></ul>
-  <h2>Useful information to gather</h2><ul class="na-checklist"><li>Mortgage and other shared financial commitments</li><li>Monthly essential household costs</li><li>Existing personal policies and workplace benefits</li><li>Savings and the length of time they could support the household</li></ul>
-  <h2>A common misunderstanding</h2><p>“One policy should cover every situation.” Different policies are designed to respond to different events. The advice process is used to decide which subjects are relevant and which are not.</p>
-  <div class="na-related"><p class="na-eyebrow">Keep cover relevant</p><a class="na-card" href="/guides/when-to-review-protection-insurance/"><h3>When should you review protection insurance?</h3><p>Use a practical checklist of life, work and mortgage changes.</p><span class="na-product-card__link">Read the guide</span></a></div>
-  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
-  <div class="na-cta"><div><h2>Start a family protection conversation</h2><p>Begin with the commitments, people and existing cover you want the adviser to understand.</p></div><a class="na-button na-button--light" href="/enquire/?topic=family-protection">Talk to an adviser</a></div>
-</div></section>');
+        return self::cover_page([
+            'topic'     => 'family-protection',
+            'eyebrow'   => 'Cover IV &middot; A broader conversation',
+            'title'     => 'Family protection',
+            'lede'      => 'Family protection is not one policy type. It is a way to consider how life insurance, income protection, critical illness cover and existing benefits may fit together.',
+            'cta_short' => 'Start the conversation',
+            'intro'     => [
+                'h' => 'What the conversation covers',
+                'p' => 'An adviser can help map the people and commitments that depend on household income, then review which risks are already covered and which questions remain unanswered.',
+            ],
+            'shapes_heading' => 'Four things worth mapping first',
+            'shapes'    => [
+                ['h' => 'People', 'p' => 'Who relies on income, care or other contributions from the household?'],
+                ['h' => 'Commitments', 'p' => 'Which mortgages, debts and regular costs would still need to be met?'],
+                ['h' => 'Existing support', 'p' => 'What policies, savings and workplace benefits are already available?'],
+                ['h' => 'Priorities', 'p' => 'Which risks matter most and what premium could remain comfortable?'],
+            ],
+            'twocol'    => [
+                ['h' => 'What it is not', 'tone' => 'no', 'items' => [
+                    'It is not a pre-packaged bundle.',
+                    'It does not mean every household needs every type of policy.',
+                    'It is not an online comparison or instant quote.',
+                    'It does not replace a review of trusts, nominations or other arrangements where relevant.',
+                ]],
+                ['h' => 'Useful information to gather', 'tone' => 'yes', 'items' => [
+                    'Mortgage and other shared financial commitments',
+                    'Monthly essential household costs',
+                    'Existing personal policies and workplace benefits',
+                    'Savings and the length of time they could support the household',
+                ]],
+            ],
+            'mis'       => [
+                'quote' => 'One policy should cover every situation.',
+                'p'     => 'Different policies are designed to respond to different events. The advice process is used to decide which subjects are relevant and which are not.',
+            ],
+            'guide'     => [
+                'href'    => '/guides/when-to-review-protection-insurance/',
+                'eyebrow' => 'Keep cover relevant',
+                'h'       => 'When should you review protection insurance?',
+                'p'       => 'Use a practical checklist of life, work and mortgage changes.',
+                'more'    => 'Read the guide',
+            ],
+            'disclaimer' => 'This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.',
+            'cta'       => [
+                'h' => 'Start a family protection conversation',
+                'p' => 'Begin with the commitments, people and existing cover you want the adviser to understand.',
+            ],
+        ]);
     }
 
     private static function private_medical_insurance(): string
     {
-        return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Health cover, explained clearly</p>
-  <p class="na-lede">Private medical insurance can help meet the cost of eligible private diagnosis and treatment. The useful question is not simply who is cheapest, but which cover fits how you want to access care.</p>
-  <div class="na-topic-nav" aria-label="On this page"><strong>On this page</strong><a href="#pmi-covers">What it may cover</a><a href="#pmi-choices">Choices that shape a plan</a><a href="#pmi-prepare">What to prepare</a></div>
-  <h2 id="pmi-covers">What private medical insurance is designed to do</h2><p>Policies are generally designed around eligible acute conditions that begin after cover starts. Depending on the plan, benefits may include consultations, diagnostic tests, hospital treatment, therapies, mental health support and cancer care. Exact benefits, limits and routes to treatment vary.</p>
-  <div class="na-callout-grid"><div class="na-callout"><h3>It works alongside the NHS</h3><p>Having private cover does not remove your right to NHS care. A plan can provide another route for eligible treatment.</p></div><div class="na-callout"><h3>It is not designed for everything</h3><p>Pre-existing conditions, chronic conditions, routine care and some treatments may be excluded or limited.</p></div></div>
-  <h2 id="pmi-choices">The choices that can shape cover and cost</h2><ul class="na-checklist"><li>Individual, couple, family or company-funded cover</li><li>The hospital list and consultant access available to you</li><li>Outpatient limits, therapies, mental health and cancer options</li><li>The excess you agree to pay towards eligible claims</li><li>Full medical underwriting or a moratorium approach, where recent conditions are initially excluded and may later be reconsidered</li><li>Any guided care or open referral pathways, and six-week options that use private treatment only when the NHS wait would be longer than six weeks</li></ul>
-  <h2 id="pmi-prepare">What an adviser needs to understand</h2><p>Your priorities may be speed, consultant choice, a particular hospital network, wider outpatient benefits or keeping premiums manageable. An adviser also needs to explain how underwriting works and what will not be covered.</p>
-  <p class="na-disclaimer">This guide is general information. Cover, underwriting, exclusions, excesses and provider networks depend on the policy and your circumstances.</p>
-  <div class="na-related"><p class="na-eyebrow">Keep exploring</p><h2>Useful next reads</h2><div class="na-grid na-grid--2"><a class="na-card" href="/guides/choosing-private-medical-insurance/"><h3>How to compare private medical insurance</h3><p>A practical checklist for benefits, access and cost controls.</p></a><a class="na-card" href="/critical-illness-cover/"><h3>Critical illness is different</h3><p>See why a lump-sum policy is not the same as paying for treatment.</p></a></div></div>
-  <div class="na-cta"><div><h2>Discuss private medical insurance</h2><p>Start with who needs cover, how you want to access care and the budget you want to keep comfortable.</p></div><a class="na-button na-button--light" href="/enquire/?topic=private-medical-insurance">Talk to an adviser</a></div>
-</div></section>');
+        return self::cover_page([
+            'topic'     => 'private-medical-insurance',
+            'eyebrow'   => 'Cover V &middot; Health cover, explained clearly',
+            'title'     => 'Private medical insurance',
+            'lede'      => 'Private medical insurance can help meet the cost of eligible private diagnosis and treatment. The useful question is not simply who is cheapest, but which cover fits how you want to access care.',
+            'cta_short' => 'Discuss private medical cover',
+            'intro'     => [
+                'h' => 'What private medical insurance is designed to do',
+                'p' => 'Policies are generally designed around eligible acute conditions that begin after cover starts. Depending on the plan, benefits may include consultations, diagnostic tests, hospital treatment, therapies, mental health support and cancer care. Exact benefits, limits and routes to treatment vary.',
+            ],
+            'shapes_heading' => 'Two things to hold in mind',
+            'shapes'    => [
+                ['h' => 'It works alongside the NHS', 'p' => 'Having private cover does not remove your right to NHS care. A plan can provide another route for eligible treatment.'],
+                ['h' => 'It is not designed for everything', 'p' => 'Pre-existing conditions, chronic conditions, routine care and some treatments may be excluded or limited.'],
+            ],
+            'checklist' => [
+                'h'     => 'The choices that can shape cover and cost',
+                'items' => [
+                    'Individual, couple, family or company-funded cover',
+                    'The hospital list and consultant access available to you',
+                    'Outpatient limits, therapies, mental health and cancer options',
+                    'The excess you agree to pay towards eligible claims',
+                    'Full medical underwriting or a moratorium approach, where recent conditions are initially excluded and may later be reconsidered',
+                    'Any guided care or open referral pathways, and six-week options that use private treatment only when the NHS wait would be longer than six weeks',
+                ],
+                'note'  => 'Your priorities may be speed, consultant choice, a particular hospital network, wider outpatient benefits or keeping premiums manageable. An adviser also needs to explain how underwriting works and what will not be covered.',
+            ],
+            'mis'       => [
+                'quote' => 'Private cover means I no longer need the NHS.',
+                'p'     => 'A policy is designed to provide another route for eligible treatment, not to replace NHS care. What is covered depends on the plan, its exclusions and how underwriting was arranged.',
+            ],
+            'guide'     => [
+                'href'    => '/guides/choosing-private-medical-insurance/',
+                'eyebrow' => 'Keep exploring',
+                'h'       => 'How to compare private medical insurance',
+                'p'       => 'A practical checklist for benefits, access and cost controls.',
+                'more'    => 'Read the guide',
+            ],
+            'disclaimer' => 'This guide is general information. Cover, underwriting, exclusions, excesses and provider networks depend on the policy and your circumstances.',
+            'cta'       => [
+                'h' => 'Discuss private medical insurance',
+                'p' => 'Start with who needs cover, how you want to access care and the budget you want to keep comfortable.',
+            ],
+        ]);
     }
 
     private static function business_protection(): string
     {
-        return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Protecting the people behind the business</p>
-  <p class="na-lede">Business protection is a group of policies designed to help a company manage the financial impact of death or serious illness affecting an owner, director or key employee.</p>
-  <div class="na-topic-nav" aria-label="On this page"><strong>On this page</strong><a href="#business-types">Types of cover</a><a href="#business-questions">Questions to map</a><a href="#business-advice">Why advice matters</a></div>
-  <h2 id="business-types">Five conversations that serve different purposes</h2>
-  <div class="na-feature-list">
-    <div><span>01</span><h3>Key person cover</h3><p>Designed to pay the business if a person whose skills, relationships or leadership are important dies or meets a covered critical illness definition.</p></div>
-    <div><span>02</span><h3>Shareholder or partnership protection</h3><p>Can help provide funds for the remaining owners to buy an affected owner’s interest, alongside an appropriately drafted agreement.</p></div>
-    <div><span>03</span><h3>Business loan protection</h3><p>Designed around borrowing that could become difficult to repay if a person connected to the debt dies or becomes critically ill.</p></div>
-    <div><span>04</span><h3>Relevant life cover</h3><p>An employer-funded life policy for an eligible employee or director, arranged for the benefit of their loved ones rather than the business.</p></div>
-    <div><span>05</span><h3>Executive income protection</h3><p>Designed to help a business continue paying an eligible employee when illness or injury prevents them from working, subject to policy terms.</p></div>
-  </div>
-  <h2 id="business-questions">Start with the risk, not the product</h2><ul class="na-checklist"><li>Which people materially affect revenue, operations or lender confidence?</li><li>How would ownership transfer if a shareholder or partner died?</li><li>Which debts have personal guarantees or depend on a key individual?</li><li>What benefits already exist for directors and employees?</li><li>Who should own the policy and receive any benefit?</li></ul>
-  <h2 id="business-advice">Why the setup matters</h2><p>Policy ownership, valuation, agreements and potential tax treatment need to align with the purpose of the cover. Tax treatment depends on circumstances and may change, so legal and tax advice can be needed alongside insurance advice.</p>
-  <p class="na-disclaimer">This guide is general information and is not legal or tax advice. Eligibility, taxation and policy treatment depend on the arrangement and current rules.</p>
-  <div class="na-related"><p class="na-eyebrow">Go deeper</p><h2>A guide for business owners</h2><a class="na-card" href="/guides/types-of-business-protection/"><h3>Which type of business protection does what?</h3><p>Compare who pays, who receives the benefit and what each arrangement is intended to protect.</p><span class="na-product-card__link">Read the guide</span></a></div>
-  <div class="na-cta"><div><h2>Map your business protection needs</h2><p>Bring your ownership structure, borrowing and a simple view of the people the business relies on.</p></div><a class="na-button na-button--light" href="/enquire/?topic=business-protection">Talk to an adviser</a></div>
-</div></section>');
+        return self::cover_page([
+            'topic'     => 'business-protection',
+            'eyebrow'   => 'Cover VI &middot; Protecting the people behind the business',
+            'title'     => 'Business protection',
+            'lede'      => 'Business protection is a group of policies designed to help a company manage the financial impact of death or serious illness affecting an owner, director or key employee.',
+            'cta_short' => 'Map your cover',
+            'shapes_heading' => 'Five conversations that serve different purposes',
+            'shapes'    => [
+                ['h' => 'Key person cover', 'p' => 'Designed to pay the business if a person whose skills, relationships or leadership are important dies or meets a covered critical illness definition.'],
+                ['h' => 'Shareholder or partnership protection', 'p' => 'Can help provide funds for the remaining owners to buy an affected owner&rsquo;s interest, alongside an appropriately drafted agreement.'],
+                ['h' => 'Business loan protection', 'p' => 'Designed around borrowing that could become difficult to repay if a person connected to the debt dies or becomes critically ill.'],
+                ['h' => 'Relevant life cover', 'p' => 'An employer-funded life policy for an eligible employee or director, arranged for the benefit of their loved ones rather than the business.'],
+                ['h' => 'Executive income protection', 'p' => 'Designed to help a business continue paying an eligible employee when illness or injury prevents them from working, subject to policy terms.'],
+            ],
+            'checklist' => [
+                'h'     => 'Start with the risk, not the product',
+                'items' => [
+                    'Which people materially affect revenue, operations or lender confidence?',
+                    'How would ownership transfer if a shareholder or partner died?',
+                    'Which debts have personal guarantees or depend on a key individual?',
+                    'What benefits already exist for directors and employees?',
+                    'Who should own the policy and receive any benefit?',
+                ],
+                'note'  => 'Policy ownership, valuation, agreements and potential tax treatment need to align with the purpose of the cover. Tax treatment depends on circumstances and may change, so legal and tax advice can be needed alongside insurance advice.',
+            ],
+            'mis'       => [
+                'quote' => 'The business is small, so none of this applies.',
+                'p'     => 'The question is not size but dependency: whether revenue, borrowing or ownership would be materially affected by the loss of one person. That can matter more in a small company, not less.',
+            ],
+            'guide'     => [
+                'href'    => '/guides/types-of-business-protection/',
+                'eyebrow' => 'Go deeper',
+                'h'       => 'Which type of business protection does what?',
+                'p'       => 'Compare who pays, who receives the benefit and what each arrangement is intended to protect.',
+                'more'    => 'Read the guide',
+            ],
+            'disclaimer' => 'This guide is general information and is not legal or tax advice. Eligibility, taxation and policy treatment depend on the arrangement and current rules.',
+            'cta'       => [
+                'h' => 'Map your business protection needs',
+                'p' => 'Bring your ownership structure, borrowing and a simple view of the people the business relies on.',
+            ],
+        ]);
     }
 
     private static function general_insurance(): string
     {
-        return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Home and general insurance</p>
-  <p class="na-lede">The right home insurance conversation goes beyond a renewal price. It checks that the building, belongings and valuable items are described accurately and covered on terms you understand.</p>
-  <div class="na-topic-nav" aria-label="On this page"><strong>On this page</strong><a href="#gi-building">Buildings</a><a href="#gi-contents">Contents</a><a href="#gi-check">What to check</a></div>
-  <div class="na-comparison" role="region" aria-label="Buildings and contents comparison" tabindex="0">
-    <div class="na-comparison__head"><span>Cover</span><span>Designed around</span><span>Examples to discuss</span></div>
-    <div id="gi-building"><strong>Buildings insurance</strong><span data-label="Designed around">The structure of the home and permanent fixtures</span><span data-label="Examples to discuss">Rebuild cost, extensions, garages, subsidence and escape of water</span></div>
-    <div id="gi-contents"><strong>Contents insurance</strong><span data-label="Designed around">Belongings you would normally take if you moved</span><span data-label="Examples to discuss">Replacement basis, valuables, bicycles and accidental damage</span></div>
-  </div>
-  <h2 id="gi-check">Details worth checking before you choose</h2><ul class="na-checklist"><li>The rebuild value of the property, which is different from its market value</li><li>Single-item and total limits for jewellery, technology and other valuables</li><li>Whether belongings away from home need personal possessions cover</li><li>Accidental damage, home emergency and legal expenses options</li><li>Security requirements, unoccupancy limits and relevant exclusions</li><li>The excess that applies to different types of claim</li></ul>
-  <h2>Mortgage requirement and personal choice</h2><p>A mortgage lender will usually require suitable buildings insurance by exchange or completion. Contents insurance is normally optional, but the cost of replacing a household’s belongings can still be substantial. Leasehold arrangements may already include buildings cover, so the documents need checking.</p>
-  <p class="na-disclaimer">This page provides general information. Policy limits, exclusions, optional benefits and eligibility vary between insurers and properties.</p>
-  <div class="na-related"><p class="na-eyebrow">Practical guide</p><h2>Understand the two halves of home cover</h2><a class="na-card" href="/guides/buildings-and-contents-insurance/"><h3>Buildings and contents insurance explained</h3><p>Work through examples, common gaps and the information that helps a useful comparison.</p><span class="na-product-card__link">Read the guide</span></a></div>
-  <div class="na-cta"><div><h2>Review home and general insurance</h2><p>Start with the property, who lives there and the belongings or risks you do not want overlooked.</p></div><a class="na-button na-button--light" href="/enquire/?topic=general-insurance">Talk to an adviser</a></div>
-</div></section>');
+        return self::cover_page([
+            'topic'     => 'general-insurance',
+            'eyebrow'   => 'Cover VII &middot; Home and general insurance',
+            'title'     => 'Home and general insurance',
+            'lede'      => 'The right home insurance conversation goes beyond a renewal price. It checks that the building, belongings and valuable items are described accurately and covered on terms you understand.',
+            'cta_short' => 'Review your cover',
+            'shapes_heading' => 'The two halves of home cover',
+            'shapes'    => [
+                ['h' => 'Buildings insurance', 'p' => 'Designed around the structure of the home and permanent fixtures. Worth discussing: rebuild cost, extensions, garages, subsidence and escape of water.'],
+                ['h' => 'Contents insurance', 'p' => 'Designed around belongings you would normally take if you moved. Worth discussing: replacement basis, valuables, bicycles and accidental damage.'],
+            ],
+            'checklist' => [
+                'h'     => 'Details worth checking before you choose',
+                'items' => [
+                    'The rebuild value of the property, which is different from its market value',
+                    'Single-item and total limits for jewellery, technology and other valuables',
+                    'Whether belongings away from home need personal possessions cover',
+                    'Accidental damage, home emergency and legal expenses options',
+                    'Security requirements, unoccupancy limits and relevant exclusions',
+                    'The excess that applies to different types of claim',
+                ],
+                'note'  => 'A mortgage lender will usually require suitable buildings insurance by exchange or completion. Contents insurance is normally optional, but the cost of replacing a household&rsquo;s belongings can still be substantial. Leasehold arrangements may already include buildings cover, so the documents need checking.',
+            ],
+            'mis'       => [
+                'quote' => 'The rebuild value is the same as what the house is worth.',
+                'p'     => 'Rebuild cost and market value are different figures, and insuring against the wrong one is a common way for a policy to fall short at the point of a claim.',
+            ],
+            'guide'     => [
+                'href'    => '/guides/buildings-and-contents-insurance/',
+                'eyebrow' => 'Practical guide',
+                'h'       => 'Buildings and contents insurance explained',
+                'p'       => 'Work through examples, common gaps and the information that helps a useful comparison.',
+                'more'    => 'Read the guide',
+            ],
+            'disclaimer' => 'This page provides general information. Policy limits, exclusions, optional benefits and eligibility vary between insurers and properties.',
+            'cta'       => [
+                'h' => 'Review home and general insurance',
+                'p' => 'Start with the property, who lives there and the belongings or risks you do not want overlooked.',
+            ],
+        ]);
     }
 
     private static function guides(): string

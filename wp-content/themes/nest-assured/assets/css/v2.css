@@ -818,12 +818,15 @@
   gap: 2rem;
 }
 
-.na-v2-nav > a {
+/* Excludes the call-to-action deliberately: this selector is more specific than
+   .na-v2-nav__cta, so without the :not() it repainted the button's label navy on
+   a navy background and the primary call to action was invisible on every page. */
+.na-v2-nav > a:not(.na-v2-nav__cta) {
   color: var(--na-navy);
   text-decoration: none;
 }
 
-.na-v2-nav > a:hover {
+.na-v2-nav > a:not(.na-v2-nav__cta):hover {
   color: var(--v2-gold-deep);
 }
 
@@ -983,7 +986,9 @@
   z-index: 10;
 }
 
-.na-v2-mobile__panel a {
+/* Same exclusion as the desktop navigation: this selector outranks
+   .na-v2-mobile__cta and would otherwise paint the button's label navy on navy. */
+.na-v2-mobile__panel a:not(.na-v2-mobile__cta) {
   border-radius: var(--v2-radius);
   color: var(--na-navy);
   font-size: 0.9375rem;
@@ -992,7 +997,7 @@
   text-decoration: none;
 }
 
-.na-v2-mobile__panel a:hover {
+.na-v2-mobile__panel a:not(.na-v2-mobile__cta):hover {
   background: #f8f4ed;
 }
 
@@ -1197,9 +1202,17 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* The sticky header already carries the same call to action on small screens,
-     and a fixed dock would sit over page content and the browser UI. */
+  /* The small-screen header carries only the menu button, so hiding the dock left
+     no persistent route to an adviser once the reader scrolled. It becomes a
+     full-width bar instead, and it can be dismissed. */
   .na-v2-dock {
+    border-radius: var(--v2-radius);
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .na-v2-dock__text span {
     display: none;
   }
 }

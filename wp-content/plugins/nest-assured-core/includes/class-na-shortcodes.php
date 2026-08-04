@@ -410,9 +410,14 @@ final class NA_Shortcodes
         return '<p>' . wp_kses_post($copy) . ' FCA reference ' . esc_html($reference) . '.</p>';
     }
 
+    /**
+     * The whole copyright line, not just the year. The core shortcode block wraps
+     * its output in a paragraph, so a shortcode sitting inside a template paragraph
+     * produced nested <p> elements and the line broke apart.
+     */
     public static function copyright(): string
     {
-        return '&copy; ' . esc_html(gmdate('Y'));
+        return '&copy; ' . esc_html(gmdate('Y')) . ' Nest Assured. All rights reserved. &middot; 133 Shepherds Hill, Harold Wood, RM3 0NR';
     }
 
     /**
