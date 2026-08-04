@@ -102,3 +102,25 @@ add_action('wp_head', static function (): void {
         remove_action('wp_head', '_block_template_render_title_tag', 1);
     }
 }, 0);
+
+/**
+ * Preload the two typefaces.
+ *
+ * WordPress prints its @font-face block at wp_head priority 50, after the
+ * stylesheet links, so the browser could not begin fetching either file until it
+ * had parsed almost the whole head. The heading face is on the critical path for
+ * the largest element on most pages.
+ */
+add_action('wp_head', static function (): void {
+    foreach (['newsreader-variable.woff2', 'publicsans-variable.woff2'] as $font) {
+        if (! is_file(get_stylesheet_directory() . '/assets/fonts/' . $font)) {
+            continue;
+        }
+
+        printf(
+            '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin />' . "
+",
+            esc_url(get_stylesheet_directory_uri() . '/assets/fonts/' . $font)
+        );
+    }
+}, 1);

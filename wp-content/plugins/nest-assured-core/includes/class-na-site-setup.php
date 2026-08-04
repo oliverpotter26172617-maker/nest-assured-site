@@ -656,6 +656,42 @@ final class NA_Site_Setup
             . '</figure>';
     }
 
+    /**
+     * Guides relevant to a cover page. Each cover page linked to exactly one guide
+     * while thirty-three existed, so the library was doing almost nothing for the
+     * pages that most need to send readers into it.
+     *
+     * @param array<int, string> $slugs Guide slugs, in the order to show them.
+     */
+    private static function guide_rail(string $heading, array $slugs): string
+    {
+        if (! class_exists('NA_Guides_Library')) {
+            return '';
+        }
+
+        $catalogue = NA_Guides_Library::catalogue();
+        $cards = '';
+
+        foreach ($slugs as $slug) {
+            if (! isset($catalogue[$slug])) {
+                continue;
+            }
+
+            $cards .= '<a class="na-v2-guide" href="' . esc_url(home_url('/guides/' . $slug . '/')) . '">'
+                . '<p class="na-v2-eyebrow">' . esc_html($catalogue[$slug]['eyebrow']) . '</p>'
+                . '<h3>' . esc_html($catalogue[$slug]['title']) . '</h3></a>';
+        }
+
+        if ('' === $cards) {
+            return '';
+        }
+
+        return '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
+            . '<div class="na-v2-headrow"><h2>' . esc_html($heading) . '</h2>'
+            . '<a class="na-v2-link" href="' . esc_url(home_url('/guides/')) . '">All guides <span aria-hidden="true">&rarr;</span></a></div>'
+            . '<div class="na-v2-guides">' . $cards . '</div></div></section>';
+    }
+
     private static function cover_page(array $spec): string
     {
         $topic = (string) $spec['topic'];
@@ -738,6 +774,10 @@ final class NA_Site_Setup
                 . '</div>' . $guide . '</div></section>';
         }
 
+        if (isset($spec['guides'])) {
+            $out .= self::guide_rail($spec['guides_heading'] ?? 'Guides on this subject', $spec['guides']);
+        }
+
         $out .= '<section class="na-v2-section na-v2-section--short"><div class="na-v2-shell">'
             . '<p class="na-v2-note na-v2-note--block">' . $spec['disclaimer'] . '</p>'
             . '<div class="na-v2-callout"><div><h2>' . $spec['cta']['h'] . '</h2><p>' . $spec['cta']['p'] . '</p></div>'
@@ -751,6 +791,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'income-protection',
+            'guides_heading' => 'Guides on protecting income',
+            'guides'    => ['how-much-income-protection-can-i-get', 'own-occupation-vs-any-occupation', 'income-protection-and-sick-pay', 'protection-when-self-employed', 'income-protection-for-self-employed', 'waiver-of-premium-explained'],
             'image'     => 'empty-desk',
             'image_alt' => '',
             'eyebrow'   => 'Cover II &middot; Plain-English guide',
@@ -805,6 +847,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'critical-illness',
+            'guides_heading' => 'Guides on critical illness',
+            'guides'    => ['life-insurance-vs-critical-illness-cover', 'critical-illness-cover-for-children', 'life-insurance-pre-existing-conditions', 'life-insurance-medical-underwriting', 'waiver-of-premium-explained', 'when-to-review-protection-insurance'],
             'image'     => 'quiet-room',
             'image_alt' => '',
             'eyebrow'   => 'Cover III &middot; Plain-English guide',
@@ -859,6 +903,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'family-protection',
+            'guides_heading' => 'Guides for families',
+            'guides'    => ['how-much-life-insurance-do-i-need', 'family-income-benefit-explained', 'joint-vs-single-life-insurance', 'critical-illness-cover-for-children', 'when-to-review-protection-insurance', 'writing-life-insurance-in-trust'],
             'image'     => 'kitchen-table',
             'image_alt' => '',
             'eyebrow'   => 'Cover IV &middot; A broader conversation',
@@ -913,6 +959,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'private-medical-insurance',
+            'guides_heading' => 'Guides on health cover',
+            'guides'    => ['choosing-private-medical-insurance', 'leaving-company-private-medical-insurance', 'life-insurance-medical-underwriting', 'life-insurance-pre-existing-conditions'],
             'image'     => 'quiet-room',
             'image_alt' => '',
             'eyebrow'   => 'Cover V &middot; Health cover, explained clearly',
@@ -963,6 +1011,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'business-protection',
+            'guides_heading' => 'Guides for business owners',
+            'guides'    => ['types-of-business-protection', 'relevant-life-vs-key-person-cover', 'protection-when-self-employed', 'death-in-service-and-life-insurance'],
             'image'     => 'workshop',
             'image_alt' => '',
             'eyebrow'   => 'Cover VI &middot; Protecting the people behind the business',
@@ -1011,6 +1061,8 @@ final class NA_Site_Setup
     {
         return self::cover_page([
             'topic'     => 'general-insurance',
+            'guides_heading' => 'Guides on home cover',
+            'guides'    => ['buildings-and-contents-insurance', 'life-insurance-and-mortgages', 'when-to-review-protection-insurance', 'making-a-protection-insurance-claim'],
             'image'     => 'rooflines',
             'image_alt' => '',
             'eyebrow'   => 'Cover VII &middot; Home and general insurance',
