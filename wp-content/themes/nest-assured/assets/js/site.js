@@ -1,10 +1,10 @@
 (function () {
   'use strict';
 
-  const navigationMenus = Array.from(document.querySelectorAll('.na-nav-menu, .na-mobile-nav'));
+  const navigationMenus = Array.from(document.querySelectorAll('.na-nav-menu, .na-mobile-nav, .na-v2-menu, .na-v2-mobile'));
 
   const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
-  document.querySelectorAll('.site-nav a, .na-nav-menu__panel a, .na-mobile-nav__panel a, .site-footer__links a').forEach((link) => {
+  document.querySelectorAll('.site-nav a, .na-nav-menu__panel a, .na-mobile-nav__panel a, .site-footer__links a, .na-v2-nav a, .na-v2-menu__panel a, .na-v2-mobile__panel a, .na-v2-footer__links a').forEach((link) => {
     const href = link.getAttribute('href');
     if (!href || href.startsWith('#')) {
       return;
@@ -55,10 +55,36 @@
     });
   });
 
-  const mobileNav = document.querySelector('.na-mobile-nav');
+  const mobileNav = document.querySelector('.na-v2-mobile') || document.querySelector('.na-mobile-nav');
   mobileNav?.addEventListener('toggle', () => {
     document.documentElement.style.overflow = mobileNav.open ? 'hidden' : '';
   });
+
+  // Reading-progress bar on guide articles. Progressive enhancement: if this does
+  // not run, the page simply renders without the bar.
+  if (document.body.classList.contains('na-editorial-guide')) {
+    const bar = document.createElement('div');
+    bar.className = 'na-reading-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.prepend(bar);
+
+    let ticking = false;
+    const update = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+      bar.style.width = pct.toFixed(1) + '%';
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    }, { passive: true });
+    update();
+  }
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') {

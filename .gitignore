@@ -3,6 +3,7 @@
 # personal data), caches and uploads are reinstallable or must not be committed.
 /*
 !/.gitignore
+!/.gitattributes
 !/*.md
 !/wp-content/
 /wp-content/*

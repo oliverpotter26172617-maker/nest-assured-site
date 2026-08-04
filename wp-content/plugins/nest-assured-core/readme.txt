@@ -4,7 +4,7 @@ Tags: protection, enquiry, routing, accessibility
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 1.5.2
+Stable tag: 1.5.5
 License: GPL-2.0-or-later
 
 Secure enquiry routing and advice-led guidance for the Nest Assured website.
@@ -48,8 +48,30 @@ Enquiries are stored as private `na_enquiry` posts. The form records contact det
 * `[nest_assured_faqs]`
 * `[nest_assured_reviews]`
 * `[nest_assured_prelaunch_note]`
+* `[nest_assured_adviser]`
+* `[nest_assured_assurance]`
+* `[nest_assured_social_proof]`
 
 == Changelog ==
+
+= 1.5.5 =
+
+* Rebuilt the site header and footer to the v2 direction, including the persistent adviser dock (hidden on small screens, where the sticky header carries the same call to action).
+* Rebuilt the About, Life insurance, Protection guides and Enquire pages to the v2 direction.
+* Added `[nest_assured_ollie_profile]`, so advice-status claims appear only once compliance has supplied an FCA reference, and the biography comes only from the approved setting.
+* Added `[nest_assured_footer_reviews]` and `[nest_assured_dock]`.
+* Suppressed the template post-title on v2 pages, which now carry their own single h1.
+* Kept the live enquiry form and restyled it in place; no change to enquiry storage, routing, consent records or webhook delivery.
+* Brought the thirteen guide articles into the v2 look through styling and a reading-progress bar only, leaving their published prose unchanged.
+
+= 1.5.4 =
+
+* Rebuilt the home page to the Home v2 editorial direction.
+* Kept the existing Major Money Matters client route on the home page as a dedicated band, so adviser-route enquiries stay separate from the new-enquiry queue.
+* Added `[nest_assured_adviser]` so adviser photography is published only from the approved Settings value, with a monogram plate until then.
+* Added `[nest_assured_assurance]` so the FCA reference and Google reviews link appear only once approved values exist.
+* Added `[nest_assured_social_proof]` so the review slot never carries an unverified quotation.
+* Darkened the gold used for numerals and link underlines on light surfaces to #8a6a33, so home-page text and link affordances clear the 4.5:1 and 3:1 contrast targets.
 
 = 1.5.2 =
 

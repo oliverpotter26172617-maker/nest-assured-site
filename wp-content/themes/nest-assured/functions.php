@@ -35,9 +35,31 @@ add_action('wp_enqueue_scripts', static function (): void {
         is_file($script) ? (string) filemtime($script) : '1.0.0',
         true
     );
+
+    $v2 = get_stylesheet_directory() . '/assets/css/v2.css';
+    wp_enqueue_style(
+        'nest-assured-v2',
+        get_stylesheet_directory_uri() . '/assets/css/v2.css',
+        ['nest-assured'],
+        is_file($v2) ? (string) filemtime($v2) : '1.0.0'
+    );
 });
 
 add_filter('should_load_separate_core_block_assets', '__return_true');
+
+/**
+ * v2 pages carry their own <h1> inside the content, so the template's post-title
+ * block would produce a second one. Suppress it for those pages only; pages still
+ * on the original layout keep the template title as their heading.
+ */
+add_filter('render_block_core/post-title', static function (string $block_content): string {
+    $post = get_post();
+    if ($post instanceof WP_Post && str_contains($post->post_content, 'class="na-v2"')) {
+        return '';
+    }
+
+    return $block_content;
+});
 
 add_action('init', static function (): void {
     remove_action('wp_head', 'print_emoji_detection_script', 7);

@@ -27,6 +27,12 @@ final class NA_Shortcodes
         add_shortcode('nest_assured_reviews', [self::class, 'reviews']);
         add_shortcode('nest_assured_legal_links', [self::class, 'legal_links']);
         add_shortcode('nest_assured_prelaunch_note', [self::class, 'prelaunch_note']);
+        add_shortcode('nest_assured_adviser', [self::class, 'adviser']);
+        add_shortcode('nest_assured_assurance', [self::class, 'assurance']);
+        add_shortcode('nest_assured_social_proof', [self::class, 'social_proof']);
+        add_shortcode('nest_assured_footer_reviews', [self::class, 'footer_reviews']);
+        add_shortcode('nest_assured_dock', [self::class, 'dock']);
+        add_shortcode('nest_assured_ollie_profile', [self::class, 'ollie_profile']);
     }
 
     /**
@@ -333,7 +339,7 @@ final class NA_Shortcodes
             $links[] = '<a href="/legal/financial-promotions/">Financial promotions</a>';
         }
 
-        return '<nav class="site-footer__links" aria-label="Legal information">' . implode('', $links) . '</nav>';
+        return '<nav class="site-footer__links na-v2-footer__links" aria-label="Legal information">' . implode('', $links) . '</nav>';
     }
 
     public static function prelaunch_note(): string
@@ -343,6 +349,165 @@ final class NA_Shortcodes
         }
 
         return '<p>Regulatory wording is subject to compliance approval before launch.</p>';
+    }
+
+    /**
+     * Adviser imagery for the home page. Renders the approved photograph when one has
+     * been supplied in Settings, and a neutral monogram plate until then, so that no
+     * unapproved likeness is ever published.
+     *
+     * @param array<string, mixed> $atts Shortcode attributes.
+     */
+    public static function adviser(array $atts = []): string
+    {
+        $atts = shortcode_atts(['variant' => 'portrait'], is_array($atts) ? $atts : [], 'nest_assured_adviser');
+        $variant = 'pill' === $atts['variant'] ? 'pill' : 'portrait';
+
+        if ('pill' === $variant) {
+            return '<p class="na-v2-pill">'
+                . self::adviser_image('na-v2-pill__photo', 'na-v2-pill__plate')
+                . '<span>Every enquiry is read by Ollie Allen, not a call centre. <a href="/enquire/">Book a callback time</a>.</span>'
+                . '</p>';
+        }
+
+        return '<figure class="na-v2-portrait">'
+            . self::adviser_image('na-v2-portrait__photo', 'na-v2-portrait__plate')
+            . '<figcaption>Ollie Allen &mdash; dedicated protection adviser. Every enquiry is read by him, not a call centre.</figcaption>'
+            . '</figure>';
+    }
+
+    private static function adviser_image(string $photo_class, string $plate_class): string
+    {
+        $photo = NA_Settings::get('ollie_photo_url');
+        if ('' === $photo) {
+            return '<span class="' . esc_attr($plate_class) . '" role="img" aria-label="Photograph of Ollie Allen to follow">OA</span>';
+        }
+
+        $photo_id = (int) NA_Settings::get('ollie_photo_id');
+        if ($photo_id > 0) {
+            return (string) wp_get_attachment_image($photo_id, 'medium_large', false, [
+                'class'   => $photo_class,
+                'alt'     => 'Ollie Allen, protection adviser',
+                'loading' => 'lazy',
+            ]);
+        }
+
+        return '<img class="' . esc_attr($photo_class) . '" src="' . esc_url($photo) . '" alt="Ollie Allen, protection adviser" loading="lazy" />';
+    }
+
+    /**
+     * The assurance strip beneath the hero. Regulated claims appear only once the
+     * matching approved value has been entered in Settings.
+     */
+    public static function assurance(): string
+    {
+        $reference = trim(NA_Settings::get('fca_reference'));
+        $reviews = trim(NA_Settings::get('google_reviews_url'));
+
+        $cells = [];
+
+        $cells[] = '<div class="na-v2-assurance__cell"><strong>Advice before decisions</strong><span>No instant quotes on this site</span></div>';
+
+        $cells[] = '' !== $reference
+            ? '<div class="na-v2-assurance__cell"><strong>Regulated advice route</strong><span>FCA reference ' . esc_html($reference) . '</span></div>'
+            : '<div class="na-v2-assurance__cell"><strong>Regulated advice route</strong><span>FCA reference published at launch</span></div>';
+
+        $cells[] = '<div class="na-v2-assurance__cell"><strong>Advice, then a recommendation</strong><span>Panel and market scope confirmed at launch</span></div>';
+
+        $cells[] = '' !== $reviews
+            ? '<div class="na-v2-assurance__cell"><strong><a href="' . esc_url($reviews) . '" rel="noopener noreferrer">Google reviews</a></strong><span>Read the verified Google Business Profile</span></div>'
+            : '<div class="na-v2-assurance__cell"><strong>Google reviews</strong><span>Verified profile linked at launch</span></div>';
+
+        return '<section class="na-v2-assurance" aria-label="Why Nest Assured"><div class="na-v2-shell na-v2-assurance__grid">'
+            . implode('', $cells)
+            . '</div></section>';
+    }
+
+    /**
+     * The review slot on the home page. Nothing is shown in place of a real review:
+     * either the verified Google profile is linked, or the slot states that reviews
+     * are still to come.
+     */
+    public static function social_proof(): string
+    {
+        $reviews = trim(NA_Settings::get('google_reviews_url'));
+
+        if ('' === $reviews) {
+            return '<div class="na-v2-proof na-v2-proof--pending">'
+                . '<p class="na-v2-eyebrow na-v2-eyebrow--light">What clients say</p>'
+                . '<p>Client reviews are published only through the verified Google Business Profile. Nothing is quoted here until real reviews exist.</p>'
+                . '</div>';
+        }
+
+        return '<div class="na-v2-proof">'
+            . '<p class="na-v2-eyebrow na-v2-eyebrow--light">What clients say</p>'
+            . '<p>Reviews are published only through the verified Google Business Profile, so you can read every one of them in full.</p>'
+            . '<a class="na-v2-link na-v2-link--light" href="' . esc_url($reviews) . '" rel="noopener noreferrer">Read the Google reviews &rarr;</a>'
+            . '</div>';
+    }
+
+    /**
+     * Footer review line. The star rating is published only once a verified Google
+     * Business Profile URL exists, so no rating is implied before there are reviews.
+     */
+    public static function footer_reviews(): string
+    {
+        $reviews = trim(NA_Settings::get('google_reviews_url'));
+
+        if ('' === $reviews) {
+            return '<p class="na-v2-footer__reviews">Verified Google reviews linked at launch</p>';
+        }
+
+        return '<p class="na-v2-footer__reviews"><a href="' . esc_url($reviews) . '" rel="noopener noreferrer">Read our verified Google reviews</a></p>';
+    }
+
+    /**
+     * Persistent adviser dock. Hidden on small screens by CSS, where the sticky header
+     * already carries the same call to action.
+     */
+    public static function dock(): string
+    {
+        return '<div class="na-v2-dock">'
+            . self::adviser_image('na-v2-dock__photo', 'na-v2-dock__plate')
+            . '<div class="na-v2-dock__text"><strong>Talk to Ollie</strong><span>Book a callback time</span></div>'
+            . '<a class="na-v2-dock__cta" href="/enquire/">Book</a>'
+            . '</div>';
+    }
+
+    /**
+     * The adviser profile on the About page: a credentials list beside the biography.
+     *
+     * Advice-status claims (market scope, independence, remuneration) are regulated
+     * statements, so they are shown only once compliance has supplied an FCA reference
+     * through the launch controls. The biography itself comes from the approved
+     * `ollie_bio` setting and is never substituted with placeholder prose.
+     */
+    public static function ollie_profile(): string
+    {
+        $reference = trim(NA_Settings::get('fca_reference'));
+        $bio = trim(NA_Settings::get('ollie_bio'));
+
+        $facts = '<div class="na-v2-facts">'
+            . '<div class="na-v2-fact"><strong>Since November 2023</strong><span>Running protection advice at Major Money Matters</span></div>'
+            . '<div class="na-v2-fact"><strong>Personal and business protection</strong><span>Life, critical illness, income protection, key person and shareholder cover</span></div>';
+
+        $facts .= '' !== $reference
+            ? '<div class="na-v2-fact"><strong>Advice status</strong><span>Published under FCA reference ' . esc_html($reference) . '</span></div>'
+            : '<div class="na-v2-fact"><strong>Advice status</strong><span>Market scope and remuneration confirmed at launch</span></div>';
+
+        $facts .= '</div>';
+
+        $body = '' !== $bio
+            ? '<div class="na-v2-prose">' . wp_kses_post(wpautop($bio)) . '</div>'
+            : '<div class="na-v2-prose"><div class="na-status"><h3>Approved biography to follow</h3>'
+                . '<p>Ollie Allen leads protection advice at Nest Assured and reviews every guide for accuracy. '
+                . 'His full biography is published here once compliance has approved the wording through the launch controls. '
+                . 'No placeholder biography has been generated.</p></div></div>';
+
+        return '<div class="na-v2-profile"><div>'
+            . '<h2>Protection as a specialism, not an afterthought.</h2>'
+            . $facts
+            . '</div>' . $body . '</div>';
     }
 
     private static function pending(string $item): string

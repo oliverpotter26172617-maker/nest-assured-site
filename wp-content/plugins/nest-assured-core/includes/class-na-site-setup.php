@@ -363,88 +363,211 @@ final class NA_Site_Setup
     private static function home(): string
     {
         return self::html('
-<section class="na-hero">
-  <div class="na-shell na-hero__grid">
-    <div>
-      <p class="na-eyebrow">Insurance advice, made reassuringly clear</p>
-      <h1>Feel clearer about protecting what matters.</h1>
-      <p class="na-lede">Friendly, adviser-led guidance for your family, income, health, home or business. Start with an explanation, then decide whether a conversation would help.</p>
-      <div class="na-actions"><a class="na-button" href="/enquire/">Talk to an adviser</a><a class="na-button na-button--outline" href="#guided-start">Help me find a starting point</a></div>
-      <div class="na-hero__signals" aria-label="What to expect"><span>Plain English</span><span>No instant quote</span><span>Advice before decisions</span></div>
-    </div>
-    <div class="na-hero__visual" aria-hidden="true"><div class="na-orbit na-orbit--one"></div><div class="na-orbit na-orbit--two"></div><div class="na-hero__mark"><img src="/wp-content/themes/nest-assured/assets/images/nest-assured-bird-256.webp" width="256" height="256" alt="" /></div><span class="na-float-note na-float-note--one">Your family</span><span class="na-float-note na-float-note--two">Your future</span></div>
+<div class="na-v2">
+<section class="na-v2-hero">
+  <div class="na-v2-shell na-v2-hero__grid">
+    <div class="na-v2-hero__body">
+      <p class="na-v2-eyebrow">Protection advice &middot; Harold Wood, Essex &middot; UK-wide</p>
+      <h1>Know what your family needs. And what you don&rsquo;t.</h1>
+      <p class="na-v2-lede">Life insurance, income protection and critical illness &mdash; explained by a named adviser who starts with the cover you already have. No online quotes. Nothing sold on this site.</p>
+      <div class="na-v2-actions">
+        <a class="na-v2-btn" href="/enquire/">Arrange a conversation</a>
+        <a class="na-v2-link" href="#starting-point">Find my starting point <span aria-hidden="true">&darr;</span></a>
+      </div>')
+            . self::shortcode('[nest_assured_adviser variant="pill"]')
+            . self::html('</div>')
+            . self::shortcode('[nest_assured_adviser variant="portrait"]')
+            . self::html('</div>
+</section>
+</div>')
+            . self::shortcode('[nest_assured_assurance]')
+            . self::html('
+<div class="na-v2">
+<section class="na-v2-route" aria-label="Existing client route">
+  <div class="na-v2-shell na-v2-route__inner">
+    <p><strong>Already a Major Money Matters client?</strong> Continue on the adviser route you have already started. Your enquiry is kept separate from the new-enquiry queue.</p>
+    <a class="na-v2-link" href="/already-a-client/">Continue with your adviser <span aria-hidden="true">&rarr;</span></a>
   </div>
 </section>
 
-<section class="na-section">
-  <div class="na-shell">
-    <div class="na-section-heading"><div><p class="na-eyebrow">Choose your route</p><h2>Start from where you are.</h2></div><p>Existing Major Money Matters clients continue the mortgage conversation they have already started. New visitors can explore the cover first.</p></div>
-    <div class="na-grid na-grid--2">
-      <a class="na-card na-audience-card" href="/already-a-client/"><p class="na-kicker">Existing M3M client</p><h3>Continue with your adviser route</h3><p>Tell us who your mortgage adviser is and where you are in the mortgage process. Your enquiry is kept separate from the new-enquiry queue.</p><span class="na-product-card__link">Continue your conversation</span></a>
-      <a class="na-card na-audience-card" href="#guided-start"><p class="na-kicker">New to Nest Assured</p><h3>Find a useful place to begin</h3><p>Use three plain-English questions to choose a topic for discussion. It does not produce a quote or personal recommendation.</p><span class="na-product-card__link">Use the guided starting point</span></a>
-    </div>
-  </div>
-</section>
-
-<section class="na-section na-section--cream" id="cover-options">
-  <div class="na-shell">
-    <div class="na-section-heading"><div><p class="na-eyebrow">Explore your options</p><h2>One reassuring place to start.</h2></div><p>Each page explains what the cover is designed to do, where its limits sit and what an adviser would need to understand.</p></div>
-    <div class="na-product-grid">
-      <a class="na-card na-product-card" href="/life-insurance/"><span class="na-product-card__icon" aria-hidden="true">01</span><h3>Life insurance</h3><p>A lump sum if the insured person dies during the policy term.</p><span class="na-product-card__link">Explore life insurance</span></a>
-      <a class="na-card na-product-card" href="/income-protection/"><span class="na-product-card__icon" aria-hidden="true">02</span><h3>Income protection</h3><p>A regular income if illness or injury prevents the insured person working.</p><span class="na-product-card__link">Explore income protection</span></a>
-      <a class="na-card na-product-card" href="/critical-illness-cover/"><span class="na-product-card__icon" aria-hidden="true">03</span><h3>Critical illness cover</h3><p>A lump sum after diagnosis of a condition covered by the policy.</p><span class="na-product-card__link">Explore critical illness cover</span></a>
-      <a class="na-card na-product-card" href="/private-medical-insurance/"><span class="na-product-card__icon" aria-hidden="true">04</span><h3>Private medical insurance</h3><p>Cover for eligible private diagnosis and treatment, shaped around your priorities.</p><span class="na-product-card__link">Explore private medical</span></a>
-      <a class="na-card na-product-card" href="/business-protection/"><span class="na-product-card__icon" aria-hidden="true">05</span><h3>Business protection</h3><p>Cover designed around the people, ownership and borrowing a business relies on.</p><span class="na-product-card__link">Explore business protection</span></a>
-      <a class="na-card na-product-card" href="/general-insurance/"><span class="na-product-card__icon" aria-hidden="true">06</span><h3>Home and general insurance</h3><p>Buildings, contents and related cover for the things that make a house a home.</p><span class="na-product-card__link">Explore general insurance</span></a>
-      <a class="na-card na-product-card na-product-card--wide" href="/family-protection/"><span class="na-product-card__icon" aria-hidden="true">07</span><div><h3>Family protection</h3><p>Bring life insurance, income protection, critical illness cover and existing benefits into one joined-up household conversation.</p></div><span class="na-product-card__link">Explore family protection</span></a>
-    </div>
-    <div class="na-section-link"><a href="/guides/">Browse all plain-English guides <span aria-hidden="true">&rarr;</span></a></div>
-  </div>
-</section>
-
-<section class="na-section" id="guided-start"><div class="na-shell">')
+<section class="na-v2-section na-v2-section--tight" id="starting-point">
+  <div class="na-v2-shell na-v2-split">
+    <div class="na-v2-panel na-v2-panel--paper">')
             . self::shortcode('[nest_assured_assessment]')
-            . self::html('</div></section>
-
-<section class="na-section na-section--mist">
-  <div class="na-shell">
-    <div class="na-section-heading"><div><p class="na-eyebrow">Useful, not overwhelming</p><h2>Learn at your own pace.</h2></div><p>Short, connected guides answer the questions people often have before speaking with an adviser.</p></div>
-    <div class="na-grid na-grid--3">
-      <a class="na-card na-guide-card" href="/guides/life-insurance-vs-critical-illness-cover/"><p class="na-kicker">Compare cover</p><h3>Life insurance or critical illness cover?</h3><p>Understand what triggers each type of policy and how their benefits differ.</p><span class="na-product-card__link">Read the comparison</span></a>
-      <a class="na-card na-guide-card" href="/guides/income-protection-and-sick-pay/"><p class="na-kicker">Protecting income</p><h3>How does sick pay fit with income protection?</h3><p>Map employer benefits, savings and waiting periods before comparing cover.</p><span class="na-product-card__link">Read the guide</span></a>
-      <a class="na-card na-guide-card" href="/guides/when-to-review-protection-insurance/"><p class="na-kicker">Keeping cover relevant</p><h3>When is a protection review worthwhile?</h3><p>See which life, work and mortgage changes can justify another look.</p><span class="na-product-card__link">Read the checklist</span></a>
+            . self::html('</div>
+    <div class="na-v2-panel na-v2-panel--navy na-v2-timing">
+      <p class="na-v2-eyebrow na-v2-eyebrow--light">Why timing matters</p>
+      <h2>The same cover costs more the longer you wait.</h2>
+      <p>Premiums are typically set by your age at application, and stay that way for the whole term. Health changes can also affect what insurers are willing to offer. This is an illustration of the principle, not a quote.</p>
+      <div class="na-v2-chart" role="img" aria-label="Illustration showing that the same cover generally costs more the later in life it is arranged, comparing ages 30, 35, 40 and 45.">
+        <div class="na-v2-chart__col"><span class="na-v2-chart__bar" style="height:34%"></span><span class="na-v2-chart__label">Age 30</span></div>
+        <div class="na-v2-chart__col"><span class="na-v2-chart__bar" style="height:48%"></span><span class="na-v2-chart__label">Age 35</span></div>
+        <div class="na-v2-chart__col"><span class="na-v2-chart__bar" style="height:66%"></span><span class="na-v2-chart__label">Age 40</span></div>
+        <div class="na-v2-chart__col"><span class="na-v2-chart__bar na-v2-chart__bar--full" style="height:92%"></span><span class="na-v2-chart__label">Age 45</span></div>
+      </div>
+      <a class="na-v2-link na-v2-link--light" href="/enquire/">Ask about your timing <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
 </section>
 
-<section class="na-section na-section--navy">
-  <div class="na-shell">
-    <div class="na-section-heading"><div><p class="na-eyebrow">How it works</p><h2>A conversation before any recommendation.</h2></div><p>An adviser first learns what you already have, what matters to you and what you can reasonably maintain. Only then can products or policy terms be discussed.</p></div>
-    <div class="na-grid na-grid--3">
-      <div class="na-card"><span class="na-card__number">1</span><h3>Tell us where you are</h3><p>Choose the existing-client or new-enquiry route.</p></div>
-      <div class="na-card"><span class="na-card__number">2</span><h3>Speak with an adviser</h3><p>Discuss your circumstances, existing arrangements and questions.</p></div>
-      <div class="na-card"><span class="na-card__number">3</span><h3>Consider the advice</h3><p>Review any recommendation and policy information before deciding.</p></div>
+<section class="na-v2-section" id="cover-options">
+  <div class="na-v2-shell">
+    <div class="na-v2-headrow">
+      <h2>The cover, in plain English.</h2>
+      <p class="na-v2-headrow__note">Seven conversations</p>
     </div>
-    <div class="na-actions"><a class="na-button na-button--light" href="/how-it-works/">See the full process</a></div>
+    <div class="na-v2-index">
+      <a class="na-v2-index__row" href="/life-insurance/"><span class="na-v2-index__num" aria-hidden="true">I.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Life insurance</span><span class="na-v2-index__desc">A lump sum for the people who would need it</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+      <a class="na-v2-index__row" href="/income-protection/"><span class="na-v2-index__num" aria-hidden="true">II.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Income protection</span><span class="na-v2-index__desc">A monthly income if illness stops you working</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+      <a class="na-v2-index__row" href="/critical-illness-cover/"><span class="na-v2-index__num" aria-hidden="true">III.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Critical illness cover</span><span class="na-v2-index__desc">A lump sum after a covered diagnosis</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+      <a class="na-v2-index__row" href="/private-medical-insurance/"><span class="na-v2-index__num" aria-hidden="true">IV.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Private medical insurance</span><span class="na-v2-index__desc">Eligible private diagnosis and treatment</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+      <a class="na-v2-index__row" href="/business-protection/"><span class="na-v2-index__num" aria-hidden="true">V.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Business protection</span><span class="na-v2-index__desc">Key person, shareholder and loan cover</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+      <a class="na-v2-index__row" href="/general-insurance/"><span class="na-v2-index__num" aria-hidden="true">VI.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Home and general insurance</span><span class="na-v2-index__desc">Buildings, contents and valuables</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+      <a class="na-v2-index__row" href="/family-protection/"><span class="na-v2-index__num" aria-hidden="true">VII.</span><span class="na-v2-index__text"><span class="na-v2-index__title">Family protection</span><span class="na-v2-index__desc">The joined-up household conversation</span></span><span class="na-v2-index__go" aria-hidden="true">&rarr;</span></a>
+    </div>
   </div>
-</section>');
+</section>
+
+<section class="na-v2-section na-v2-section--paper" id="how-it-works">
+  <div class="na-v2-shell na-v2-steps">
+    <div class="na-v2-steps__intro">
+      <p class="na-v2-eyebrow">How it works</p>
+      <h2>A conversation before any recommendation.</h2>
+      <p>An adviser first learns what you already have, what matters to you and what you can reasonably maintain. Only then are products or policy terms discussed.</p>
+    </div>
+    <div class="na-v2-steps__list">
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">01</span><div><strong>Tell us where you are</strong><span>Existing <a href="/already-a-client/">Major Money Matters clients</a> follow their adviser route; new enquiries go straight to Ollie.</span></div></div>
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>Talk it through</strong><span>Thirty minutes on your circumstances, existing cover and questions &mdash; in person, by phone or by video.</span></div></div>
+      <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">03</span><div><strong>Decide in your own time</strong><span>Any recommendation arrives in writing, in plain English, before you commit to anything.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section">
+  <div class="na-v2-shell">
+    <div class="na-v2-headrow">
+      <h2>Guides worth reading before any call.</h2>
+      <a class="na-v2-link" href="/guides/">All guides <span aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="na-v2-guides">
+      <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/">
+        <p class="na-v2-eyebrow">Compare cover &middot; 4 min</p>
+        <h3>Life insurance or critical illness cover?</h3>
+        <p class="na-v2-guide__desc">What triggers each policy, and why they are not interchangeable.</p>
+        <span class="na-v2-guide__meta">Reviewed by Ollie Allen</span>
+      </a>
+      <a class="na-v2-guide" href="/guides/income-protection-and-sick-pay/">
+        <p class="na-v2-eyebrow">Protecting income &middot; 5 min</p>
+        <h3>How sick pay fits with income protection</h3>
+        <p class="na-v2-guide__desc">Map employer benefits and savings before comparing cover.</p>
+        <span class="na-v2-guide__meta">Reviewed by Ollie Allen</span>
+      </a>
+      <a class="na-v2-guide" href="/guides/when-to-review-protection-insurance/">
+        <p class="na-v2-eyebrow">Keeping cover relevant &middot; 3 min</p>
+        <h3>When is a protection review worthwhile?</h3>
+        <p class="na-v2-guide__desc">The life, work and mortgage changes that justify another look.</p>
+        <span class="na-v2-guide__meta">Reviewed by Ollie Allen</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-close">
+  <div class="na-v2-shell na-v2-close__grid">')
+            . self::shortcode('[nest_assured_social_proof]')
+            . self::html('<div class="na-v2-close__cta">
+      <h2>Harold Wood, Romford and Essex &mdash; or anywhere by phone.</h2>
+      <p>Thirty minutes. Your existing cover, your commitments, your budget. Only then, advice.</p>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Arrange a conversation</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function life_insurance(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell na-prose">
-  <p class="na-eyebrow">Plain-English guide</p>
-  <p class="na-lede">Life insurance is designed to pay a lump sum if the insured person dies during the policy term, provided the policy terms and claim conditions are met.</p>
-  <h2>What it is</h2><p>A life insurance policy covers a defined person for a defined term and amount. The purpose of the money is agreed by the people arranging the cover. It might be considered alongside a mortgage, shared household commitments or financial support for dependants.</p>
-  <h2>Common ways cover can be shaped</h2><div class="na-callout-grid"><div class="na-callout"><h3>Level or increasing cover</h3><p>The benefit stays fixed or can rise over time, depending on the option selected and policy terms.</p></div><div class="na-callout"><h3>Decreasing cover</h3><p>The benefit reduces over the term and is often considered alongside a repayment mortgage.</p></div><div class="na-callout"><h3>Single or joint life</h3><p>Cover can insure one person or two people under one arrangement, with different consequences after a claim.</p></div><div class="na-callout"><h3>Term or whole of life</h3><p>Term cover lasts for an agreed period. Whole-of-life cover is designed to continue while required premiums are maintained.</p></div></div>
-  <h2>What it is not</h2><ul><li>It is not a savings account.</li><li>It does not normally pay simply because the policy reaches the end of its term.</li><li>It is not the same as critical illness cover, which responds to specified diagnoses rather than death.</li><li>A website description cannot establish whether a policy is suitable for you.</li></ul>
-  <h2>What an adviser needs to understand</h2><ul class="na-checklist"><li>Who relies on your income or shares financial commitments with you</li><li>Any cover you already hold personally or through work</li><li>The amount and length of any mortgage or other commitments</li><li>Your budget and how it may change over time</li></ul>
-  <h2>A common misunderstanding</h2><p>“Life cover through work means I do not need to discuss anything else.” Workplace benefits can be valuable, but the amount, conditions and connection to your employment need to be understood before drawing that conclusion.</p>
-  <div class="na-related"><p class="na-eyebrow">Compare the options</p><a class="na-card" href="/guides/life-insurance-vs-critical-illness-cover/"><h3>Life insurance or critical illness cover?</h3><p>See how the claim triggers, benefits and purposes differ.</p><span class="na-product-card__link">Read the comparison</span></a></div>
-  <p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
-  <div class="na-cta"><div><h2>Discuss life insurance with an adviser</h2><p>Start with your existing arrangements and the people or commitments you want the conversation to consider.</p></div><a class="na-button na-button--light" href="/enquire/?topic=life-insurance">Talk to an adviser</a></div>
-</div></section>');
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Cover I &middot; Plain-English guide</p>
+      <h1>Life insurance</h1>
+      <p class="na-v2-lede na-v2-lede--wide">Designed to pay a lump sum if the insured person dies during the policy term, provided the policy terms and claim conditions are met. Here is what it is, what it is not, and what an adviser needs to understand.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <a class="na-v2-btn" href="/enquire/?topic=life-insurance">Discuss life insurance</a>
+      <span class="na-v2-note">No quotes on this site &middot; advice first</span>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <h2>Common ways cover can be shaped</h2>
+    <p class="na-v2-subhead">The purpose of the money is agreed by the people arranging the cover, alongside a mortgage, shared commitments or support for dependants.</p>
+    <div class="na-v2-shapes">
+      <div class="na-v2-shape"><span class="na-v2-shape__key" aria-hidden="true">a.</span><h3>Level or increasing</h3><p>The benefit stays fixed or can rise over time, depending on the option and policy terms.</p></div>
+      <div class="na-v2-shape"><span class="na-v2-shape__key" aria-hidden="true">b.</span><h3>Decreasing</h3><p>The benefit reduces over the term, often considered alongside a repayment mortgage.</p></div>
+      <div class="na-v2-shape"><span class="na-v2-shape__key" aria-hidden="true">c.</span><h3>Single or joint life</h3><p>One person or two under one arrangement, with different consequences after a claim.</p></div>
+      <div class="na-v2-shape"><span class="na-v2-shape__key" aria-hidden="true">d.</span><h3>Term or whole of life</h3><p>Term cover lasts an agreed period; whole-of-life continues while required premiums are maintained.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--paper na-v2-section--short">
+  <div class="na-v2-shell na-v2-twocol">
+    <div>
+      <h2 class="na-v2-h2--small">What it is not</h2>
+      <ul class="na-v2-list na-v2-list--no">
+        <li>It is not a savings account.</li>
+        <li>It does not normally pay simply because the policy reaches the end of its term.</li>
+        <li>It is not the same as critical illness cover, which responds to specified diagnoses rather than death.</li>
+        <li>A website description cannot establish whether a policy is suitable for you.</li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="na-v2-h2--small">What an adviser needs to understand</h2>
+      <ul class="na-v2-list na-v2-list--yes">
+        <li>Who relies on your income or shares financial commitments with you</li>
+        <li>Any cover you already hold personally or through work</li>
+        <li>The amount and length of any mortgage or other commitments</li>
+        <li>Your budget and how it may change over time</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-mis">
+    <div>
+      <p class="na-v2-eyebrow">A common misunderstanding</p>
+      <p class="na-v2-quote">&ldquo;Life cover through work means I do not need to discuss anything else.&rdquo;</p>
+      <p class="na-v2-subhead">Workplace benefits can be valuable, but the amount, conditions and connection to your employment need to be understood before drawing that conclusion.</p>
+    </div>
+    <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/">
+      <p class="na-v2-eyebrow">Compare the options &middot; 4 min</p>
+      <h3>Life insurance or critical illness cover?</h3>
+      <p class="na-v2-guide__desc">See how the claim triggers, benefits and purposes differ.</p>
+      <span class="na-v2-guide__more">Read the comparison <span aria-hidden="true">&rarr;</span></span>
+    </a>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <p class="na-v2-note na-v2-note--block">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+    <div class="na-v2-callout">
+      <div>
+        <h2>Discuss life insurance with an adviser</h2>
+        <p>Start with your existing arrangements and the people or commitments you want the conversation to consider.</p>
+      </div>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/?topic=life-insurance">Talk to an adviser</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function income_protection(): string
@@ -561,18 +684,87 @@ final class NA_Site_Setup
     private static function guides(): string
     {
         return self::html('
-<section class="na-section na-guides-intro"><div class="na-shell">
-  <div class="na-section-heading"><div><p class="na-eyebrow">The Nest Assured library</p><h2>Good questions lead to better conversations.</h2></div><p>Use these plain-English explainers to understand the moving parts before you speak with an adviser. They provide general information, not a personal recommendation.</p></div>
-  <div class="na-filter-pills" aria-label="Guide topics"><a href="#personal">Personal protection</a><a href="#health">Health</a><a href="#business">Business</a><a href="#home">Home</a><a href="#support">Support and basics</a></div>
-</div></section>
-<section class="na-section na-section--cream"><div class="na-shell">
-  <div class="na-guide-group" id="personal"><p class="na-eyebrow">Personal protection</p><div class="na-grid na-grid--3"><a class="na-card na-guide-card" href="/guides/life-insurance-vs-critical-illness-cover/"><h2>Life insurance or critical illness cover?</h2><p>Compare when each policy can pay and what the benefit is designed to do.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/income-protection-and-sick-pay/"><h2>Income protection and sick pay</h2><p>Understand how work benefits, savings and waiting periods fit together.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/income-protection-for-self-employed/"><h2>Income protection when self-employed</h2><p>Explore earnings evidence, waiting periods and the gap an adviser needs to understand.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/life-insurance-and-trusts/"><h2>Life insurance and trusts</h2><p>Understand trustees, beneficiaries and why policy ownership deserves attention.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/when-to-review-protection-insurance/"><h2>When to review your cover</h2><p>A practical checklist for life, mortgage and employment changes.</p><span class="na-product-card__link">Read guide</span></a></div></div>
-  <div class="na-guide-group" id="health"><p class="na-eyebrow">Health</p><div class="na-grid na-grid--3"><a class="na-card na-guide-card" href="/guides/choosing-private-medical-insurance/"><h2>Choosing private medical insurance</h2><p>Compare access, underwriting, benefits and the levers that can affect cost.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/leaving-company-private-medical-insurance/"><h2>Leaving a company medical scheme</h2><p>Check end dates, continuation terms, underwriting and ongoing treatment before cover changes.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/private-medical-insurance/"><h2>Private medical insurance overview</h2><p>Start with what the cover is designed to do and where its limits sit.</p><span class="na-product-card__link">Read overview</span></a></div></div>
-  <div class="na-guide-group" id="business"><p class="na-eyebrow">Business</p><div class="na-grid na-grid--2"><a class="na-card na-guide-card" href="/guides/types-of-business-protection/"><h2>Types of business protection explained</h2><p>Compare key person, shareholder, loan, relevant life and executive income protection arrangements.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/relevant-life-vs-key-person-cover/"><h2>Relevant life or key person cover?</h2><p>See why two company-funded arrangements can protect completely different interests.</p><span class="na-product-card__link">Read comparison</span></a></div></div>
-  <div class="na-guide-group" id="home"><p class="na-eyebrow">Home</p><div class="na-grid na-grid--2"><a class="na-card na-guide-card" href="/guides/buildings-and-contents-insurance/"><h2>Buildings and contents insurance explained</h2><p>Understand what sits on each side, plus limits and options worth checking.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/general-insurance/"><h2>Home and general insurance overview</h2><p>Start with the property, belongings and risks a useful comparison should reflect.</p><span class="na-product-card__link">Read overview</span></a></div></div>
-  <div class="na-guide-group" id="support"><p class="na-eyebrow">Support and basics</p><div class="na-grid na-grid--3"><a class="na-card na-guide-card" href="/guides/making-a-protection-insurance-claim/"><h2>Making a protection claim</h2><p>Work through the first contact, evidence and record-keeping steps.</p><span class="na-product-card__link">Read guide</span></a><a class="na-card na-guide-card" href="/guides/insurance-jargon-buster/"><h2>Insurance jargon buster</h2><p>Translate common protection, medical and home-insurance terms into plain English.</p><span class="na-product-card__link">Open glossary</span></a><a class="na-card na-guide-card" href="/guides/preparing-for-protection-appointment/"><h2>Prepare for an adviser appointment</h2><p>Gather the policies, benefits, commitments and questions that make a conversation useful.</p><span class="na-product-card__link">Use checklist</span></a></div></div>
-  <div class="na-cta"><div><h2>Not sure where to begin?</h2><p>Use the guided starting point or tell an adviser what you would like explained.</p></div><div class="na-actions"><a class="na-button na-button--light" href="/#guided-start">Use the guided start</a><a class="na-button na-button--light" href="/enquire/">Talk to an adviser</a></div></div>
-</div></section>');
+<div class="na-v2">
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <p class="na-v2-eyebrow">The Nest Assured library &middot; 13 guides</p>
+    <h1>Good questions lead to better conversations.</h1>
+    <p class="na-v2-lede na-v2-lede--wide">Plain-English explainers, each reviewed by a named adviser. General information &mdash; never a personal recommendation.</p>
+    <nav class="na-v2-pills" aria-label="Guide topics"><a href="#personal">Personal protection</a><a href="#health">Health</a><a href="#business">Business</a><a href="#home">Home</a><a href="#support">Support and basics</a></nav>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <a class="na-v2-feature" href="/guides/life-insurance-vs-critical-illness-cover/">
+      <div class="na-v2-feature__body">
+        <p class="na-v2-eyebrow na-v2-eyebrow--light">Start here &middot; most read</p>
+        <h2>Life insurance or critical illness cover?</h2>
+        <p>Two policies that both pay a lump sum, designed for completely different events. The comparison worth reading first.</p>
+        <span class="na-v2-feature__more">Read the comparison &middot; 4 min <span aria-hidden="true">&rarr;</span></span>
+      </div>
+      <div class="na-v2-feature__mark" aria-hidden="true">
+        <img src="/wp-content/themes/nest-assured/assets/images/nest-assured-bird-256.webp" width="200" height="200" alt="" />
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <div class="na-v2-group" id="personal">
+      <div class="na-v2-group__head"><h2>Personal protection</h2><span class="na-v2-group__count">5 guides</span></div>
+      <div class="na-v2-guides">
+        <a class="na-v2-guide" href="/guides/life-insurance-vs-critical-illness-cover/"><p class="na-v2-eyebrow">Compare cover &middot; 4 min</p><h3>Life insurance or critical illness cover?</h3><p class="na-v2-guide__desc">What triggers each policy and how the benefits differ.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/income-protection-and-sick-pay/"><p class="na-v2-eyebrow">Protecting income &middot; 5 min</p><h3>Income protection and employer sick pay</h3><p class="na-v2-guide__desc">How work benefits, savings and waiting periods fit together.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/income-protection-for-self-employed/"><p class="na-v2-eyebrow">Self-employed &middot; 5 min</p><h3>Income protection for self-employed people</h3><p class="na-v2-guide__desc">Earnings evidence, waiting periods and the real gap.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/life-insurance-and-trusts/"><p class="na-v2-eyebrow">Ownership &middot; 4 min</p><h3>Life insurance and trusts</h3><p class="na-v2-guide__desc">Trustees, beneficiaries and why policy ownership matters.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/when-to-review-protection-insurance/"><p class="na-v2-eyebrow">Reviews &middot; 3 min</p><h3>When should you review protection insurance?</h3><p class="na-v2-guide__desc">The life, mortgage and work changes that justify another look.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+      </div>
+    </div>
+    <div class="na-v2-group" id="health">
+      <div class="na-v2-group__head"><h2>Health</h2><span class="na-v2-group__count">2 guides</span></div>
+      <div class="na-v2-guides">
+        <a class="na-v2-guide" href="/guides/choosing-private-medical-insurance/"><p class="na-v2-eyebrow">Choosing cover &middot; 6 min</p><h3>Choosing private medical insurance</h3><p class="na-v2-guide__desc">Access, underwriting, benefits and the levers behind cost.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/leaving-company-private-medical-insurance/"><p class="na-v2-eyebrow">Changing jobs &middot; 4 min</p><h3>Leaving a company private medical scheme</h3><p class="na-v2-guide__desc">Continuation terms, underwriting and ongoing treatment.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+      </div>
+    </div>
+    <div class="na-v2-group" id="business">
+      <div class="na-v2-group__head"><h2>Business</h2><span class="na-v2-group__count">2 guides</span></div>
+      <div class="na-v2-guides">
+        <a class="na-v2-guide" href="/guides/types-of-business-protection/"><p class="na-v2-eyebrow">Explainer &middot; 6 min</p><h3>Types of business protection explained</h3><p class="na-v2-guide__desc">Key person, shareholder, loan, relevant life and executive cover.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/relevant-life-vs-key-person-cover/"><p class="na-v2-eyebrow">Compare &middot; 4 min</p><h3>Relevant life cover or key person cover?</h3><p class="na-v2-guide__desc">Two company-funded arrangements protecting different interests.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+      </div>
+    </div>
+    <div class="na-v2-group" id="home">
+      <div class="na-v2-group__head"><h2>Home</h2><span class="na-v2-group__count">1 guide</span></div>
+      <div class="na-v2-guides">
+        <a class="na-v2-guide" href="/guides/buildings-and-contents-insurance/"><p class="na-v2-eyebrow">Explainer &middot; 5 min</p><h3>Buildings and contents insurance explained</h3><p class="na-v2-guide__desc">What sits on each side, plus the limits worth checking.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+      </div>
+    </div>
+    <div class="na-v2-group" id="support">
+      <div class="na-v2-group__head"><h2>Support and basics</h2><span class="na-v2-group__count">3 guides</span></div>
+      <div class="na-v2-guides">
+        <a class="na-v2-guide" href="/guides/making-a-protection-insurance-claim/"><p class="na-v2-eyebrow">Practical &middot; 4 min</p><h3>Making a protection insurance claim</h3><p class="na-v2-guide__desc">First contact, evidence and record-keeping steps.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/insurance-jargon-buster/"><p class="na-v2-eyebrow">Glossary &middot; browse</p><h3>Insurance jargon buster</h3><p class="na-v2-guide__desc">Common protection and insurance terms in plain English.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+        <a class="na-v2-guide" href="/guides/preparing-for-protection-appointment/"><p class="na-v2-eyebrow">Checklist &middot; 3 min</p><h3>Preparing for a protection appointment</h3><p class="na-v2-guide__desc">The policies, benefits and questions that make a call useful.</p><span class="na-v2-guide__meta">Reviewed by Ollie Allen</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <div class="na-v2-callout na-v2-callout--paper">
+      <div>
+        <h2>Read something that raised a question?</h2>
+        <p>That is the point. Bring it to a conversation &mdash; Ollie will answer it in plain English, for your situation.</p>
+      </div>
+      <a class="na-v2-btn" href="/enquire/">Talk to an adviser</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function guide_life_vs_critical(): string
@@ -710,13 +902,55 @@ final class NA_Site_Setup
     private static function about(): string
     {
         return self::html('
-<section class="na-section"><div class="na-shell">
-  <div class="na-section-heading"><div><p class="na-eyebrow">About Nest Assured</p><h2>A clear route into protection advice.</h2></div><p>Nest Assured is the protection advice service connected to Major Money Matters. It gives clients and advisers a consistent digital path into a regulated conversation.</p></div>')
-            . self::shortcode('[nest_assured_ollie]')
-            . self::html('</div></section>
-<section class="na-section na-section--cream"><div class="na-shell na-prose"><h2>Regulatory status</h2>')
+<div class="na-v2">
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-hero__grid">
+    <div>
+      <p class="na-v2-eyebrow">About Nest Assured &middot; Protection adviser</p>
+      <h1>Meet Ollie Allen.</h1>
+      <p class="na-v2-lede">Nest Assured is the protection advice service connected to Major Money Matters. Every enquiry runs through one named adviser, so the person who reads your form is the person you speak to.</p>
+      <div class="na-v2-actions">
+        <a class="na-v2-btn" href="/enquire/">Book a call with Ollie</a>
+        <span class="na-v2-note">Harold Wood, Essex &middot; UK-wide by phone or video</span>
+      </div>
+    </div>')
+            . self::shortcode('[nest_assured_adviser variant="portrait"]')
+            . self::html('</div>
+</section>
+
+<section class="na-v2-section na-v2-section--paper">
+  <div class="na-v2-shell">')
+            . self::shortcode('[nest_assured_ollie_profile]')
+            . self::html('</div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-split">
+    <div class="na-v2-panel na-v2-panel--paper">
+      <p class="na-v2-eyebrow">Regulatory status</p>')
             . self::shortcode('[nest_assured_regulatory]')
-            . self::html('</div></section>');
+            . self::html('</div>
+    <div class="na-v2-panel na-v2-panel--paper">
+      <p class="na-v2-eyebrow">Editorial standards</p>
+      <h2>Every guide reviewed by Ollie</h2>
+      <p>Guides show who wrote them, who reviewed them and when. They carry general information only &mdash; a recommendation happens in a regulated conversation, never on a web page.</p>
+      <a class="na-v2-link" href="/editorial-policy/">Read the editorial policy <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <div class="na-v2-callout">
+      <div>
+        <h2>Thirty minutes, in plain English.</h2>
+        <p>Your existing cover, your commitments, your budget. Only then, advice.</p>
+      </div>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Arrange a conversation</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function contact(): string
@@ -733,16 +967,27 @@ final class NA_Site_Setup
 
     private static function enquire(): string
     {
-        return self::html('<section class="na-section"><div class="na-shell na-prose"><p class="na-lede">Tell us first whether you are an existing Major Money Matters client. The rest of the form changes so the enquiry can follow the correct route.</p>
-  <h2>What happens after you send it</h2>
-  <div class="na-timeline">
-    <div><span>1</span><h3>Your enquiry is read</h3><p>The right adviser team reviews what you send. Nothing is sold or decided at this stage.</p></div>
-    <div><span>2</span><h3>A short conversation</h3><p>An adviser arranges a time with you to understand your situation, existing cover and questions.</p></div>
-    <div><span>3</span><h3>Advice to consider</h3><p>Any recommendation is explained in plain English, for you to consider in your own time.</p></div>
-  </div>
-</div><div class="na-shell">')
+        return self::html('
+<div class="na-v2">
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell na-v2-enquire">
+    <div class="na-v2-enquire__intro">
+      <p class="na-v2-eyebrow">Talk to an adviser</p>
+      <h1 class="na-v2-h1--small">Start the conversation.</h1>
+      <p class="na-v2-lede">Tell us whether you are an existing Major Money Matters client &mdash; the form routes your enquiry to the right place. Nothing is sold or decided at this stage.</p>
+      <div class="na-v2-steps__list">
+        <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">01</span><div><strong>Your enquiry is read</strong><span>The right adviser reviews what you send. Nothing is sold or decided at this stage.</span></div></div>
+        <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>A short conversation</strong><span>An adviser arranges a time to understand your situation, existing cover and questions.</span></div></div>
+        <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">03</span><div><strong>Advice to consider</strong><span>Any recommendation arrives in writing, in plain English, for you to consider in your own time.</span></div></div>
+      </div>')
+            . self::shortcode('[nest_assured_adviser variant="pill"]')
+            . self::html('</div>
+    <div class="na-v2-form-panel">')
             . self::shortcode('[nest_assured_enquiry]')
-            . self::html('</div></section>');
+            . self::html('</div>
+  </div>
+</section>
+</div>');
     }
 
     private static function legal_index(): string
