@@ -2342,3 +2342,17 @@ body.na-editorial-guide .na-calc,
     transition: none;
   }
 }
+
+/* Visually hidden, still announced. Carries one short sentence after the visitor
+   stops typing, in place of re-reading the whole result panel per keystroke. */
+.na-calc__announce {
+  border: 0;
+  clip-path: inset(50%);
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

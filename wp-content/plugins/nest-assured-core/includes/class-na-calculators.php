@@ -126,14 +126,15 @@ final class NA_Calculators
                     </fieldset>
                 </div>
 
-                <div class="na-calc__result" data-na-calc-result role="status" aria-live="polite">
+                <div class="na-calc__result" data-na-calc-result>
                     <p class="na-calc__result-label">Indicative shortfall</p>
-                    <p class="na-calc__result-value" data-na-calc-total>&pound;0</p>
+                    <p class="na-calc__result-value" data-na-calc-total aria-hidden="true">&pound;0</p>
                     <div class="na-calc__bars" data-na-calc-bars aria-hidden="true">
                         <div class="na-calc__bar na-calc__bar--need"><span data-na-calc-bar="need"></span><small>Would need covering</small></div>
                         <div class="na-calc__bar na-calc__bar--have"><span data-na-calc-bar="have"></span><small>Already in place</small></div>
                     </div>
                     <p class="na-calc__breakdown" data-na-calc-breakdown></p>
+                    <p class="na-calc__announce" role="status" aria-live="polite" data-na-calc-announce></p>
                     <a class="na-v2-btn na-v2-btn--gold" href="<?php echo esc_url(home_url('/enquire/?topic=life-insurance')); ?>">Discuss this figure with an adviser</a>
                 </div>
             </div>
@@ -179,11 +180,12 @@ final class NA_Calculators
                     </fieldset>
                 </div>
 
-                <div class="na-calc__result" data-na-calc-result role="status" aria-live="polite">
+                <div class="na-calc__result" data-na-calc-result>
                     <p class="na-calc__result-label">Your income would hold up for about</p>
-                    <p class="na-calc__result-value" data-na-calc-total>0 months</p>
+                    <p class="na-calc__result-value" data-na-calc-total aria-hidden="true">0 months</p>
                     <ol class="na-calc__timeline" data-na-calc-timeline></ol>
                     <p class="na-calc__breakdown" data-na-calc-breakdown></p>
+                    <p class="na-calc__announce" role="status" aria-live="polite" data-na-calc-announce></p>
                     <a class="na-v2-btn na-v2-btn--gold" href="<?php echo esc_url(home_url('/enquire/?topic=income-protection')); ?>">Discuss income protection</a>
                 </div>
             </div>

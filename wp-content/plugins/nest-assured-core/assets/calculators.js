@@ -89,6 +89,30 @@
     el.style.width = pct.toFixed(1) + '%';
   }
 
+  /**
+   * One short sentence, after the visitor stops typing.
+   *
+   * The result panel used to be a single atomic live region containing the
+   * animated figure, the timeline and the breakdown, and the figure was rewritten
+   * on every animation frame. Typing one number queued roughly a hundred
+   * re-announcements of ninety words each, which makes the tool unusable with a
+   * screen reader rather than merely noisy.
+   */
+  function makeAnnouncer(root) {
+    var el = root.querySelector('[data-na-calc-announce]');
+    var timer = null;
+
+    return function (text) {
+      if (!el) {
+        return;
+      }
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function () {
+        el.textContent = text;
+      }, 700);
+    };
+  }
+
   function val(root, id) {
     var el = root.querySelector('#' + id);
     return el ? toNumber(el.value) : 0;
@@ -99,6 +123,7 @@
     var breakdownEl = root.querySelector('[data-na-calc-breakdown]');
     var needBar = root.querySelector('[data-na-calc-bar="need"]');
     var haveBar = root.querySelector('[data-na-calc-bar="have"]');
+    var say = makeAnnouncer(root);
     var previous = 0;
 
     function recalculate() {
@@ -136,6 +161,7 @@
         + ' would need covering and '
         + money.format(Math.round(have))
         + ' is already in place. The difference is a starting figure for a conversation, not a recommendation.';
+      say('Indicative shortfall: ' + money.format(Math.round(gap)) + '.');
     }
 
     root.addEventListener('input', recalculate);
@@ -146,6 +172,7 @@
     var totalEl = root.querySelector('[data-na-calc-total]');
     var timelineEl = root.querySelector('[data-na-calc-timeline]');
     var breakdownEl = root.querySelector('[data-na-calc-breakdown]');
+    var say = makeAnnouncer(root);
     var previous = 0;
 
     function recalculate() {
@@ -259,6 +286,7 @@
       breakdownEl.textContent = 'On these figures your income and savings would hold up for roughly '
         + covered + ' ' + plural(covered, 'month', 'months')
         + '. Employer sick pay varies by contract, so it is worth checking yours rather than assuming.';
+      say('Your income would hold up for about ' + covered + ' ' + plural(covered, 'month', 'months') + '.');
     }
 
     root.addEventListener('input', recalculate);
