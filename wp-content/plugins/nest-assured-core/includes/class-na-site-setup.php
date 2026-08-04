@@ -76,15 +76,9 @@ final class NA_Site_Setup
 
         $guides_id = (int) ($ids['guides'] ?? 0);
         $guide_pages = [
-            ['Life insurance or critical illness cover?', 'life-insurance-vs-critical-illness-cover', self::guide_life_vs_critical()],
-            ['Income protection and employer sick pay', 'income-protection-and-sick-pay', self::guide_income_and_sick_pay()],
-            ['Choosing private medical insurance', 'choosing-private-medical-insurance', self::guide_choosing_pmi()],
-            ['Types of business protection explained', 'types-of-business-protection', self::guide_business_protection_types()],
-            ['Buildings and contents insurance explained', 'buildings-and-contents-insurance', self::guide_buildings_and_contents()],
-            ['When should you review protection insurance?', 'when-to-review-protection-insurance', self::guide_when_to_review()],
         ];
 
-        $guide_pages = array_merge($guide_pages, NA_Content_Expansion::guides(), NA_Guides_Library::guides());
+        $guide_pages = array_merge($guide_pages, NA_Guides_Expanded::guides(), NA_Guides_Library::guides());
 
         foreach ($guide_pages as [$title, $slug, $content]) {
             $ids[$slug] = self::upsert_page($title, $slug, $content, $guides_id);
@@ -289,7 +283,11 @@ final class NA_Site_Setup
             'financial-promotions'   => 'The scope and status of the information published on the Nest Assured website.',
         ];
 
-        // The second guide series carries its own descriptions.
+        // Both guide series carry their own descriptions.
+        foreach (NA_Guides_Expanded::meta() as $guide_slug => $guide_meta) {
+            $descriptions[$guide_slug] = $guide_meta['description'];
+        }
+
         foreach (NA_Guides_Library::meta() as $guide_slug => $guide_meta) {
             $descriptions[$guide_slug] = $guide_meta['description'];
         }
@@ -1210,97 +1208,6 @@ final class NA_Site_Setup
             . '</div></section></div>';
 
         return self::html($out);
-    }
-
-    private static function guide_life_vs_critical(): string
-    {
-        return self::html('
-<article class="na-section"><div class="na-shell na-prose na-guide-article">
-  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Life insurance or critical illness cover</span></nav>
-  <p class="na-eyebrow">Personal protection guide</p><p class="na-lede">Life insurance and critical illness cover can both provide a lump sum, but they are designed to respond to different events. Neither is a substitute for understanding the risk you want to cover.</p>
-  <div class="na-comparison" role="region" aria-label="Life and critical illness comparison" tabindex="0"><div class="na-comparison__head"><span>Question</span><span>Life insurance</span><span>Critical illness cover</span></div><div><strong>What can trigger a claim?</strong><span data-label="Life insurance">Death during the policy term, subject to the policy terms</span><span data-label="Critical illness cover">Diagnosis that meets a condition definition in the policy</span></div><div><strong>How is the benefit normally paid?</strong><span data-label="Life insurance">A lump sum</span><span data-label="Critical illness cover">A lump sum</span></div><div><strong>Who might use the money?</strong><span data-label="Life insurance">Beneficiaries, trustees or the policy owner, depending on setup</span><span data-label="Critical illness cover">The insured person or policy owner, depending on setup</span></div><div><strong>What might it support?</strong><span data-label="Life insurance">Mortgage, debts, dependants and future household needs</span><span data-label="Critical illness cover">Time away from work, adapting a home or other financial commitments</span></div></div>
-  <h2>Why people sometimes consider both</h2><p>A death and a serious illness create different financial pressures. Life cover may be arranged around the needs of people left behind, while critical illness cover may help the insured person and their household adjust after a covered diagnosis. The right balance depends on commitments, other benefits and budget.</p>
-  <h2>Questions that matter more than the policy name</h2><ul class="na-checklist"><li>Who depends on your income or unpaid work?</li><li>What existing personal and workplace cover do you have?</li><li>Would a lump sum need to clear debt, support income or both?</li><li>How do definitions, exclusions and additional benefits compare?</li><li>Can the premium remain affordable for the intended term?</li></ul>
-  <h2>Where income protection fits</h2><p>Income protection is designed around regular payments when illness or injury prevents work. It can complement lump-sum cover because the claim trigger and benefit structure are different.</p>
-  <p class="na-disclaimer">This guide is general information. A diagnosis, death or other event only leads to payment when the policy terms and claim requirements are met.</p>
-  <div class="na-related"><p class="na-eyebrow">Related reading</p><div class="na-grid na-grid--2"><a class="na-card" href="/life-insurance/"><h3>Life insurance</h3><p>Read the full overview.</p></a><a class="na-card" href="/critical-illness-cover/"><h3>Critical illness cover</h3><p>Understand definitions and limits.</p></a></div></div>
-  <div class="na-cta"><div><h2>Compare the risks in your own circumstances</h2><p>An adviser can help you map existing cover, priorities and an affordable budget.</p></div><a class="na-button na-button--light" href="/enquire/?topic=family-protection">Talk to an adviser</a></div>
-</div></article>');
-    }
-
-    private static function guide_income_and_sick_pay(): string
-    {
-        return self::html('
-<article class="na-section"><div class="na-shell na-prose na-guide-article">
-  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Income protection and sick pay</span></nav>
-  <p class="na-eyebrow">Income protection guide</p><p class="na-lede">Employer sick pay is the first piece of the puzzle. Income protection can be arranged to begin after that support reduces or ends, subject to the policy terms.</p>
-  <h2>Build a simple timeline</h2><div class="na-timeline"><div><span>1</span><h3>Employer support</h3><p>Check how long full and reduced pay can last, plus any group income protection benefit.</p></div><div><span>2</span><h3>Savings and household flexibility</h3><p>Estimate how long accessible savings could meet essential spending without disrupting other plans.</p></div><div><span>3</span><h3>Policy waiting period</h3><p>A deferred period can be matched to the point at which existing support is expected to fall away.</p></div></div>
-  <h2>What changes the shape of income protection?</h2><ul class="na-checklist"><li>The definition of incapacity used by the policy</li><li>Your occupation, employment status and earnings</li><li>The proportion of income that can be insured</li><li>The waiting period before payments can begin</li><li>Whether claims can continue for a limited period or potentially longer</li><li>How premiums and benefits can change over time</li></ul>
-  <h2>If you are self-employed or a company director</h2><p>The conversation may need to consider salary, dividends, business expenses and how income is evidenced. Executive income protection may be relevant for some limited companies, while an individual policy may suit other circumstances.</p>
-  <h2>Do not count the same support twice</h2><p>Policies normally limit the total benefit in relation to earnings and other continuing income. Accurate details of employer and existing insurance benefits are important when cover is arranged and when a claim is assessed.</p>
-  <p class="na-disclaimer">This guide is general information. Benefit levels, income definitions, waiting periods, claim limits and taxation depend on the policy and circumstances.</p>
-  <div class="na-cta"><div><h2>Map your income safety net</h2><p>Bring your sick-pay terms, a recent payslip and a view of essential monthly spending.</p></div><a class="na-button na-button--light" href="/enquire/?topic=income-protection">Talk to an adviser</a></div>
-</div></article>');
-    }
-
-    private static function guide_choosing_pmi(): string
-    {
-        return self::html('
-<article class="na-section"><div class="na-shell na-prose na-guide-article">
-  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Choosing private medical insurance</span></nav>
-  <p class="na-eyebrow">Private medical insurance guide</p><p class="na-lede">A useful comparison starts with how you want to access care. Price matters, but so do the hospital network, outpatient pathway, underwriting and limits behind it.</p>
-  <h2>Seven points to compare</h2><div class="na-feature-list"><div><span>01</span><h3>Who is covered?</h3><p>Individual, couple, family and company schemes can have different options and pricing.</p></div><div><span>02</span><h3>How are existing conditions treated?</h3><p>Full medical underwriting and moratorium underwriting take different approaches.</p></div><div><span>03</span><h3>Which hospitals can you use?</h3><p>Hospital lists and guided-care pathways affect where and how treatment is accessed.</p></div><div><span>04</span><h3>How broad is outpatient cover?</h3><p>Consultations, diagnostics and therapies may be full, limited or excluded.</p></div><div><span>05</span><h3>What cancer and mental health benefits apply?</h3><p>Limits and pathways vary, so read the detail rather than relying on labels.</p></div><div><span>06</span><h3>What excess will you pay?</h3><p>A higher excess may reduce premium, but it changes what you contribute to eligible claims.</p></div><div><span>07</span><h3>How might renewal costs change?</h3><p>Age, medical inflation, claims and provider pricing can all influence future premiums.</p></div></div>
-  <h2>Cost controls need trade-offs</h2><p>Reducing outpatient benefits, choosing a narrower hospital list, increasing an excess or adding a six-week option can reduce cost. Each choice also changes access, so it should be made deliberately.</p>
-  <h2>Information to have ready</h2><ul class="na-checklist"><li>Who needs to be included and their ages</li><li>Your preferred hospitals or locations</li><li>Benefits that matter most to you</li><li>Your current cover and renewal date, if applicable</li><li>A comfortable monthly or annual budget</li></ul>
-  <p class="na-disclaimer">This guide is general information. Private medical insurance is not designed to cover every condition or treatment, and policy terms vary.</p>
-  <div class="na-cta"><div><h2>Turn priorities into a comparison</h2><p>An adviser can help distinguish essential benefits from options you may not value.</p></div><a class="na-button na-button--light" href="/enquire/?topic=private-medical-insurance">Talk to an adviser</a></div>
-</div></article>');
-    }
-
-    private static function guide_business_protection_types(): string
-    {
-        return self::html('
-<article class="na-section"><div class="na-shell na-prose na-guide-article">
-  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Types of business protection</span></nav>
-  <p class="na-eyebrow">Business protection guide</p><p class="na-lede">Business protection is not one product. The arrangement needs to match the financial problem, the intended beneficiary and the company’s ownership structure.</p>
-  <div class="na-comparison" role="region" aria-label="Business protection types" tabindex="0"><div class="na-comparison__head"><span>Arrangement</span><span>Usually intended to protect</span><span>Potential recipient</span></div><div><strong>Key person</strong><span data-label="Usually intended to protect">Profit, replacement costs or business continuity</span><span data-label="Potential recipient">The business</span></div><div><strong>Shareholder or partnership</strong><span data-label="Usually intended to protect">Ownership transition following death or covered illness</span><span data-label="Potential recipient">Owners or trustees, depending on setup</span></div><div><strong>Business loan</strong><span data-label="Usually intended to protect">Repayment of borrowing linked to an insured person</span><span data-label="Potential recipient">The business or lender, depending on setup</span></div><div><strong>Relevant life</strong><span data-label="Usually intended to protect">The family of an eligible employee or director</span><span data-label="Potential recipient">Beneficiaries through a trust</span></div><div><strong>Executive income protection</strong><span data-label="Usually intended to protect">Continued remuneration during covered incapacity</span><span data-label="Potential recipient">The employer, to fund benefit payments</span></div></div>
-  <h2>Valuation should follow the purpose</h2><p>A key person’s contribution, an ownership interest and a business loan are not valued in the same way. An adviser may need accounts, ownership details, borrowing documents and remuneration information to establish a defensible starting point.</p>
-  <h2>Documents and advice may need to work together</h2><p>Shareholder or partnership protection often relies on legal agreements as well as policies. Trusts, policy ownership and premium treatment also need careful consideration. An accountant or solicitor may need to advise on matters outside insurance advice.</p>
-  <h2>A concise preparation checklist</h2><ul class="na-checklist"><li>Latest accounts and a simple ownership chart</li><li>Current shareholder or partnership agreements</li><li>Business borrowing and personal guarantees</li><li>Roles, remuneration and existing employee benefits</li><li>Any current business protection policies and trusts</li></ul>
-  <p class="na-disclaimer">This guide is general information and not tax or legal advice. Arrangement, ownership and taxation depend on individual business circumstances and current rules.</p>
-  <div class="na-cta"><div><h2>Start with a business risk map</h2><p>A structured conversation can identify which risks are already covered and which need attention.</p></div><a class="na-button na-button--light" href="/enquire/?topic=business-protection">Talk to an adviser</a></div>
-</div></article>');
-    }
-
-    private static function guide_buildings_and_contents(): string
-    {
-        return self::html('
-<article class="na-section"><div class="na-shell na-prose na-guide-article">
-  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>Buildings and contents insurance</span></nav>
-  <p class="na-eyebrow">Home insurance guide</p><p class="na-lede">Buildings cover follows the structure. Contents cover follows the belongings. A combined policy can be convenient, but each half still needs accurate limits and answers.</p>
-  <h2>A simple moving-house test</h2><p>If you could reasonably take an item with you when moving, it will usually sit under contents. The structure and permanently fitted elements usually sit under buildings. Kitchens, bathrooms, fitted flooring, garden structures and landlord or leasehold arrangements can need closer checking.</p>
-  <div class="na-callout-grid"><div class="na-callout"><h3>Buildings: use rebuild cost</h3><p>The insured amount is based on rebuilding the property, not its sale price. Specialist construction or listed status may need more care.</p></div><div class="na-callout"><h3>Contents: think room by room</h3><p>Estimate the cost of replacing belongings as new where the policy uses new-for-old cover, subject to limits.</p></div></div>
-  <h2>Common details that change the comparison</h2><ul class="na-checklist"><li>Valuable items above a single-item limit</li><li>Jewellery, bicycles or technology used away from home</li><li>Business equipment or working from home</li><li>Previous flooding, subsidence, claims or property alterations</li><li>Periods when the home is empty</li><li>Accidental damage and the excess for different claims</li></ul>
-  <h2>At mortgage completion</h2><p>Buildings cover is normally required by a mortgage lender, while contents cover remains a personal choice. The policy start date should match the point at which you become responsible for the property, which can be exchange rather than completion.</p>
-  <h2>At renewal</h2><p>Check changes to the property, household, valuable items and rebuilding costs. A lower renewal price is not automatically better if limits, excesses or optional benefits have changed.</p>
-  <p class="na-disclaimer">This guide is general information. Insurer definitions, limits, exclusions and mortgage requirements vary.</p>
-  <div class="na-cta"><div><h2>Check the cover behind the price</h2><p>Bring your property details, current schedule and a note of valuable or unusual items.</p></div><a class="na-button na-button--light" href="/enquire/?topic=general-insurance">Talk to an adviser</a></div>
-</div></article>');
-    }
-
-    private static function guide_when_to_review(): string
-    {
-        return self::html('
-<article class="na-section"><div class="na-shell na-prose na-guide-article">
-  <nav class="na-breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>When to review protection insurance</span></nav>
-  <p class="na-eyebrow">Protection review guide</p><p class="na-lede">Protection does not need constant tinkering, but important changes can leave the amount, term, ownership or purpose of existing cover out of step with your life.</p>
-  <h2>Changes that can justify a review</h2><div class="na-milestones"><div><span>Home</span><p>Buying, remortgaging, moving or materially changing the mortgage.</p></div><div><span>Family</span><p>Marriage, separation, a new child or a change in who depends on you.</p></div><div><span>Work</span><p>A new employer, self-employment, promotion, reduced hours or changed benefits.</p></div><div><span>Business</span><p>New owners, borrowing, key hires, growth or a succession plan.</p></div><div><span>Health access</span><p>Leaving a company medical scheme or changing how you want to access treatment.</p></div><div><span>Home contents</span><p>Renovation, an extension, valuable purchases or changed occupancy.</p></div></div>
-  <h2>A review does not automatically mean replacing a policy</h2><p>Existing cover may have valuable terms, pricing or underwriting that cannot be recreated. Never cancel a policy until any replacement has been fully accepted, is in force and has been checked. Sometimes the right outcome is to keep what you have, amend it if possible or add separate cover.</p>
-  <h2>What to bring</h2><ul class="na-checklist"><li>Current policy schedules and trust documents</li><li>Updated mortgage and household commitments</li><li>Workplace benefit details</li><li>Changes to income, ownership or dependants</li><li>A realistic budget for keeping cover sustainable</li></ul>
-  <h2>Review the purpose as well as the amount</h2><p>Ask who should receive a benefit, what it is intended to fund and for how long the need is likely to remain. Those answers help test whether the arrangement still makes sense.</p>
-  <p class="na-disclaimer">This guide is general information. Changing or replacing cover can create risks, including new underwriting, exclusions, waiting periods or higher premiums.</p>
-  <div class="na-cta"><div><h2>Give existing cover a proper review</h2><p>Start with the policies you already have and what has changed since they were arranged.</p></div><a class="na-button na-button--light" href="/enquire/?topic=family-protection">Request a review</a></div>
-</div></article>');
     }
 
     private static function already_client(): string

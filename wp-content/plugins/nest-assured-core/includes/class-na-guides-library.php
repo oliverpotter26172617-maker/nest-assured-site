@@ -91,20 +91,21 @@ final class NA_Guides_Library
      */
     public static function catalogue(): array
     {
-        $legacy = [
-            'life-insurance-vs-critical-illness-cover'  => ['Life insurance or critical illness cover?', 'Compare cover', 'personal'],
-            'income-protection-and-sick-pay'            => ['Income protection and employer sick pay', 'Protecting income', 'personal'],
-            'income-protection-for-self-employed'       => ['Income protection for self-employed people', 'Self-employed', 'personal'],
-            'life-insurance-and-trusts'                 => ['Life insurance and trusts', 'Ownership', 'estate'],
-            'when-to-review-protection-insurance'       => ['When should you review protection insurance?', 'Reviews', 'support'],
-            'choosing-private-medical-insurance'        => ['Choosing private medical insurance', 'Choosing cover', 'health'],
-            'leaving-company-private-medical-insurance' => ['Leaving a company private medical scheme', 'Changing jobs', 'health'],
-            'types-of-business-protection'              => ['Types of business protection explained', 'Explainer', 'business'],
-            'relevant-life-vs-key-person-cover'         => ['Relevant life cover or key person cover?', 'Compare', 'business'],
-            'buildings-and-contents-insurance'          => ['Buildings and contents insurance explained', 'Explainer', 'home'],
-            'making-a-protection-insurance-claim'       => ['Making a protection insurance claim', 'Practical', 'support'],
-            'insurance-jargon-buster'                   => ['Insurance jargon buster', 'Glossary', 'support'],
-            'preparing-for-protection-appointment'      => ['Preparing for a protection appointment', 'Checklist', 'support'],
+        // Titles and descriptions now live with the guides themselves.
+        $legacy_groups = [
+            'life-insurance-vs-critical-illness-cover'  => 'personal',
+            'income-protection-and-sick-pay'            => 'personal',
+            'income-protection-for-self-employed'       => 'personal',
+            'life-insurance-and-trusts'                 => 'estate',
+            'when-to-review-protection-insurance'       => 'support',
+            'choosing-private-medical-insurance'        => 'health',
+            'leaving-company-private-medical-insurance' => 'health',
+            'types-of-business-protection'              => 'business',
+            'relevant-life-vs-key-person-cover'         => 'business',
+            'buildings-and-contents-insurance'          => 'home',
+            'making-a-protection-insurance-claim'       => 'support',
+            'insurance-jargon-buster'                   => 'support',
+            'preparing-for-protection-appointment'      => 'support',
         ];
 
         $groups = [
@@ -131,8 +132,15 @@ final class NA_Guides_Library
         ];
 
         $catalogue = [];
-        foreach ($legacy as $slug => $row) {
-            $catalogue[$slug] = ['title' => $row[0], 'eyebrow' => $row[1], 'group' => $row[2]];
+
+        if (class_exists('NA_Guides_Expanded')) {
+            foreach (NA_Guides_Expanded::meta() as $slug => $meta) {
+                $catalogue[$slug] = [
+                    'title'   => $meta['title'],
+                    'eyebrow' => $meta['eyebrow'],
+                    'group'   => $legacy_groups[$slug] ?? 'support',
+                ];
+            }
         }
 
         foreach (self::meta() as $slug => $meta) {
