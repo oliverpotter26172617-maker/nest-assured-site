@@ -2261,3 +2261,66 @@ body.na-editorial-guide .na-related {
   object-fit: cover;
   width: 100%;
 }
+
+/* Guide footer: the relevant planning tool, neighbouring guides, then a route to
+   an adviser. Sits outside the reading column so it reads as a change of gear. */
+body.na-editorial-guide .na-calc,
+.na-guide-related,
+.na-guide-cta {
+  margin-inline: auto;
+  max-width: 64rem;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+
+.na-guide-related {
+  border-top: 1px solid var(--v2-line);
+  margin-block: clamp(3rem, 6vw, 4.5rem) 0;
+  padding-top: clamp(2rem, 4vw, 3rem);
+}
+
+.na-guide-related__head {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.na-guide-related__head h2 {
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.na-guide-cta {
+  align-items: center;
+  background: var(--na-navy);
+  border-radius: var(--v2-radius);
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: space-between;
+  margin-block: clamp(2rem, 4vw, 3rem) clamp(3rem, 6vw, 4.5rem);
+  padding: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.na-guide-cta h2 {
+  color: #fff;
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+
+.na-guide-cta p {
+  color: var(--v2-navy-soft);
+  margin: 0;
+  max-width: 46ch;
+}
+
+@media (max-width: 40rem) {
+  .na-guide-cta {
+    display: grid;
+  }
+}

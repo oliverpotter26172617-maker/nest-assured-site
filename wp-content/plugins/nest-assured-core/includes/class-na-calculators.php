@@ -39,8 +39,14 @@ final class NA_Calculators
             return false;
         }
 
-        return has_shortcode($post->post_content, 'nest_assured_cover_calculator')
-            || has_shortcode($post->post_content, 'nest_assured_income_calculator');
+        if (has_shortcode($post->post_content, 'nest_assured_cover_calculator')
+            || has_shortcode($post->post_content, 'nest_assured_income_calculator')) {
+            return true;
+        }
+
+        // Guides embed a calculator after the article rather than in their stored
+        // content, so the shortcode is not in post_content to be found.
+        return class_exists('NA_Editorial') && NA_Editorial::guide_has_calculator($post->ID);
     }
 
     public static function enqueue(): void

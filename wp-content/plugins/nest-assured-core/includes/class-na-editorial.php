@@ -33,6 +33,7 @@ final class NA_Editorial
     public static function init(): void
     {
         add_filter('the_content', [self::class, 'add_guide_information'], 12);
+        add_filter('the_content', [self::class, 'add_guide_footer'], 13);
         add_filter('body_class', [self::class, 'body_class']);
         add_action('wp_head', [self::class, 'render_article_metadata'], 4);
         add_filter('wpseo_opengraph_image', [self::class, 'social_image']);
@@ -227,6 +228,107 @@ final class NA_Editorial
         }
 
         return $heading . $information . $content;
+    }
+
+    /**
+     * Guides that carry a planning tool, because the reader has arrived asking a
+     * question the tool actually answers.
+     *
+     * @return array<string, string>
+     */
+    private static function guide_calculators(): array
+    {
+        return [
+            'how-much-life-insurance-do-i-need'    => 'nest_assured_cover_calculator',
+            'how-much-income-protection-can-i-get' => 'nest_assured_income_calculator',
+            'income-protection-and-sick-pay'       => 'nest_assured_income_calculator',
+            'life-insurance-and-mortgages'         => 'nest_assured_cover_calculator',
+        ];
+    }
+
+    public static function guide_has_calculator(int $post_id): bool
+    {
+        $slug = (string) get_post_field('post_name', $post_id);
+
+        return isset(self::guide_calculators()[$slug]);
+    }
+
+    /**
+     * Everything after the article: the relevant planning tool, guides on the same
+     * subject, and a route to an adviser.
+     *
+     * The library had almost no cross-linking, which wastes both the reader's
+     * attention and the internal linking that makes a library worth having.
+     */
+    public static function add_guide_footer(string $content): string
+    {
+        if (is_admin() || ! is_singular('page') || ! in_the_loop() || ! is_main_query() || ! self::is_guide()) {
+            return $content;
+        }
+
+        $post_id = get_queried_object_id();
+        $slug = (string) get_post_field('post_name', $post_id);
+        $out = '';
+
+        $calculators = self::guide_calculators();
+        if (isset($calculators[$slug])) {
+            // Shortcodes are already expanded by this point, so this one is run
+            // explicitly rather than left as literal text in the output.
+            $out .= do_shortcode('[' . $calculators[$slug] . ']');
+        }
+
+        $out .= self::related_guides($slug);
+
+        $out .= '<aside class="na-guide-cta">'
+            . '<div><h2>Still the wrong question for your situation?</h2>'
+            . '<p>A guide can frame what to ask. Weighing your health, your budget and the cover you already hold is what the conversation is for.</p></div>'
+            . '<a class="na-v2-btn na-v2-btn--gold" href="' . esc_url(home_url('/enquire/')) . '">Talk to an adviser</a>'
+            . '</aside>';
+
+        return $content . $out;
+    }
+
+    /**
+     * Up to three guides from the same part of the library, then a link to the rest.
+     */
+    private static function related_guides(string $slug): string
+    {
+        if (! class_exists('NA_Guides_Library')) {
+            return '';
+        }
+
+        $catalogue = NA_Guides_Library::catalogue();
+        if (! isset($catalogue[$slug])) {
+            return '';
+        }
+
+        $group = $catalogue[$slug]['group'];
+        $cards = '';
+        $shown = 0;
+
+        foreach ($catalogue as $other => $guide) {
+            if ($other === $slug || $guide['group'] !== $group || $shown >= 3) {
+                continue;
+            }
+
+            $cards .= '<a class="na-v2-guide" href="' . esc_url(home_url('/guides/' . $other . '/')) . '">'
+                . '<p class="na-v2-eyebrow">' . esc_html($guide['eyebrow']) . '</p>'
+                . '<h3>' . esc_html($guide['title']) . '</h3></a>';
+            $shown++;
+        }
+
+        if ('' === $cards) {
+            return '';
+        }
+
+        $groups = NA_Guides_Library::groups();
+        $label = $groups[$group] ?? 'More guides';
+
+        return '<section class="na-guide-related" aria-labelledby="na-related-title">'
+            . '<div class="na-guide-related__head">'
+            . '<h2 id="na-related-title">More on ' . esc_html(strtolower($label)) . '</h2>'
+            . '<a class="na-v2-link" href="' . esc_url(home_url('/guides/')) . '">All guides <span aria-hidden="true">&rarr;</span></a>'
+            . '</div><div class="na-v2-guides">' . $cards . '</div></section>';
     }
 
     /**
