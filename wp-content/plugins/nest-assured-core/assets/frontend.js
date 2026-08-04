@@ -79,6 +79,10 @@
       });
     }
 
+    // Take over validation only once this script is running, so the browser's own
+    // validation remains in place for anyone without JavaScript.
+    form.noValidate = true;
+
     radios.forEach((radio) => radio.addEventListener('change', updateBranch));
     contactPreference?.addEventListener('change', updateBranch);
     adviserUnknown?.addEventListener('change', updateBranch);

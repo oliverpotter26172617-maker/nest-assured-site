@@ -35,6 +35,7 @@ final class NA_Shortcodes
         add_shortcode('nest_assured_ollie_profile', [self::class, 'ollie_profile']);
         add_shortcode('nest_assured_footer_regulatory', [self::class, 'footer_regulatory']);
         add_shortcode('nest_assured_copyright', [self::class, 'copyright']);
+        add_shortcode('nest_assured_contact_details', [self::class, 'contact_details']);
 
         add_action('wp_footer', [self::class, 'render_dock']);
     }
@@ -100,7 +101,9 @@ final class NA_Shortcodes
 
         ob_start();
         ?>
-        <form class="na-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" data-na-enquiry novalidate>
+        <?php // novalidate is applied by JavaScript, not in the markup, so that without
+              // JavaScript the browser's own validation still runs. ?>
+        <form class="na-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" data-na-enquiry>
             <?php if (isset($messages[$status])) : ?>
                 <div class="na-form__message na-form__message--<?php echo esc_attr($messages[$status][0]); ?>" role="<?php echo 'success' === $messages[$status][0] ? 'status' : 'alert'; ?>" tabindex="-1" data-na-form-message>
                     <?php echo esc_html($messages[$status][1]); ?>
@@ -153,7 +156,11 @@ final class NA_Shortcodes
                 </div>
             </div>
 
-            <fieldset class="na-form__branch" data-branch="existing" hidden>
+            <?php // Branch sections start visible and are hidden by JavaScript on load.
+                  // Starting them hidden meant that without JavaScript an existing client
+                  // could never reach the adviser field the server requires, leaving them
+                  // in a validation loop with no way out. ?>
+            <fieldset class="na-form__branch" data-branch="existing">
                 <legend>Your existing mortgage journey</legend>
                 <div class="na-field">
                     <label for="na-adviser-name">Your mortgage adviser’s name</label>
@@ -180,7 +187,7 @@ final class NA_Shortcodes
                 </div>
             </fieldset>
 
-            <fieldset class="na-form__branch" data-branch="new" hidden>
+            <fieldset class="na-form__branch" data-branch="new">
                 <legend>Your new enquiry</legend>
                 <div class="na-field">
                     <label for="na-product-interest">What would you like to discuss?</label>
@@ -224,6 +231,12 @@ final class NA_Shortcodes
             <p class="na-eyebrow">Guided starting point</p>
             <h2 id="na-assessment-title">Which conversation might help?</h2>
             <p>Three short questions can help you choose a useful subject for an adviser conversation. No prices or policy recommendations are produced.</p>
+            <?php // Steps two and three are revealed by JavaScript, so without it this
+                  // panel is a single question and an inert button. Say so, and offer the
+                  // route the panel exists to lead to. ?>
+            <noscript>
+                <p class="na-note">This guided panel needs JavaScript. You can <a href="<?php echo esc_url(home_url('/enquire/')); ?>">talk to an adviser directly</a> instead, or read the <a href="<?php echo esc_url(home_url('/guides/')); ?>">protection guides</a>.</p>
+            </noscript>
             <p class="na-assessment__progress" aria-live="polite">Question 1 of 3</p>
 
             <fieldset class="na-assessment__step" data-step="1">
@@ -400,6 +413,29 @@ final class NA_Shortcodes
     public static function copyright(): string
     {
         return '&copy; ' . esc_html(gmdate('Y'));
+    }
+
+    /**
+     * Telephone and email routes. Returns anchors only, so the caller supplies the
+     * block-level wrapper (the core shortcode block runs wpautop before
+     * do_shortcode). Renders nothing until real details are entered.
+     */
+    public static function contact_details(): string
+    {
+        $phone = trim(NA_Settings::get('contact_phone'));
+        $email = trim(NA_Settings::get('contact_email'));
+        $parts = [];
+
+        if ('' !== $phone) {
+            $tel = preg_replace('/[^0-9+]/', '', $phone);
+            $parts[] = '<a href="tel:' . esc_attr((string) $tel) . '">' . esc_html($phone) . '</a>';
+        }
+
+        if (is_email($email)) {
+            $parts[] = '<a href="mailto:' . esc_attr($email) . '">' . esc_html($email) . '</a>';
+        }
+
+        return implode('<span aria-hidden="true"> &middot; </span>', $parts);
     }
 
     /**

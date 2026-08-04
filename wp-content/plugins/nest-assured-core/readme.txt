@@ -2,9 +2,9 @@
 Contributors: nestassured
 Tags: protection, enquiry, routing, accessibility
 Requires at least: 6.7
-Tested up to: 7.0
+Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.5.5
+Stable tag: 1.6.5
 License: GPL-2.0-or-later
 
 Secure enquiry routing and advice-led guidance for the Nest Assured website.
@@ -51,8 +51,34 @@ Enquiries are stored as private `na_enquiry` posts. The form records contact det
 * `[nest_assured_adviser]`
 * `[nest_assured_assurance]`
 * `[nest_assured_social_proof]`
+* `[nest_assured_privacy]`
+* `[nest_assured_legal_links]`
+* `[nest_assured_footer_reviews]`
+* `[nest_assured_footer_regulatory]`
+* `[nest_assured_contact_details]`
+* `[nest_assured_copyright]`
+* `[nest_assured_dock]`
+* `[nest_assured_ollie_profile]`
+
+Gated shortcodes render nothing at all until the matching approved value exists in
+the launch controls. They never substitute placeholder wording, because a line such
+as "FCA reference published at launch" is itself an unapproved statement of
+regulatory status.
 
 == Changelog ==
+
+= 1.6.5 =
+
+* Compliance: gated shortcodes now omit content entirely rather than publishing "published at launch" placeholders, which were themselves unapproved statements of regulatory status. Adviser experience and permissions moved behind approved settings.
+* Compliance: removed the homepage premium-by-age chart (its figures were not sourced) and the "Reviewed by Ollie Allen" credit stamped on thirteen guides and in `Article` structured data, where no review had been recorded. Both now read per-guide meta.
+* Compliance: indexing fails closed. Nothing is indexable until approved copy exists and a named person has recorded a sign-off, which is withdrawn automatically whenever approved wording changes.
+* Compliance: warns in wp-admin when stored copy contains regulated status terms such as "independent" or "whole of market".
+* Enquiries: added a delivery fallback chain, an honest "pending" status, failure logging and an admin notice. A stored enquiry that reaches nobody is no longer reported to the visitor as received.
+* Enquiries: the form is gated in every environment, is never cached, records what wording was consented to, and works without JavaScript.
+* Data protection: registered the personal-data exporter and eraser, added removal cleanup, widened the retention job to trashed records, and stopped configuring unencrypted local backups containing client data.
+* Accessibility: guide articles publish a real `h1`; reading time is computed with a multibyte-safe count.
+* Reliability: the installer takes an atomic lock, stamps its version last, and detects pages edited in wp-admin instead of trusting only its own hash. Settings are merged on save so a partial write cannot wipe approved copy.
+* Structured data: the organisation is described as a `FinancialService` with a postal address, and guide breadcrumbs include the Guides level.
 
 = 1.5.5 =
 
@@ -115,7 +141,7 @@ Enquiries are stored as private `na_enquiry` posts. The form records contact det
 
 = 1.2.1 =
 
-* Added the approved Ollie Allen profile and responsive adviser photography.
+* Added the adviser profile mechanism and responsive photography handling. The profile renders only approved content supplied through the launch controls; no approved biography ships with the plugin.
 * Improved the long-form adviser profile layout on larger screens.
 * Reflowed the footer at 200% text size and removed repeated media lookups.
 

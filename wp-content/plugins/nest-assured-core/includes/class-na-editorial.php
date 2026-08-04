@@ -41,6 +41,84 @@ final class NA_Editorial
         add_filter('wpseo_opengraph_image_width', static fn (): int => 1200);
         add_filter('wpseo_opengraph_image_height', static fn (): int => 630);
         add_filter('wpseo_opengraph_type', [self::class, 'open_graph_type']);
+        add_filter('wpseo_schema_organization', [self::class, 'organization_schema']);
+        add_filter('wpseo_breadcrumb_links', [self::class, 'breadcrumb_links']);
+    }
+
+    /**
+     * Describe the firm properly: a generic Organization with only a name, URL and
+     * logo forfeits the local pack for a location-based advisory firm, and carried
+     * no address, telephone or business type at all.
+     *
+     * @param array<string, mixed> $data Organization schema node.
+     * @return array<string, mixed>
+     */
+    public static function organization_schema(array $data): array
+    {
+        $data['@type'] = ['Organization', 'FinancialService'];
+
+        $data['address'] = [
+            '@type'           => 'PostalAddress',
+            'streetAddress'   => '133 Shepherds Hill',
+            'addressLocality' => 'Harold Wood',
+            'addressRegion'   => 'Essex',
+            'postalCode'      => 'RM3 0NR',
+            'addressCountry'  => 'GB',
+        ];
+
+        $data['areaServed'] = [
+            '@type' => 'Country',
+            'name'  => 'United Kingdom',
+        ];
+
+        $phone = trim(NA_Settings::get('contact_phone'));
+        if ('' !== $phone) {
+            $data['telephone'] = $phone;
+        }
+
+        $email = trim(NA_Settings::get('contact_email'));
+        if (is_email($email)) {
+            $data['email'] = $email;
+        }
+
+        $reviews = trim(NA_Settings::get('google_reviews_url'));
+        if ('' !== $reviews) {
+            $data['sameAs'] = array_values(array_unique(array_merge(
+                isset($data['sameAs']) && is_array($data['sameAs']) ? $data['sameAs'] : [],
+                [$reviews]
+            )));
+        }
+
+        return $data;
+    }
+
+    /**
+     * The visible breadcrumb on a guide reads Home / Guides / Article, but the
+     * machine-readable trail skipped the Guides level entirely.
+     *
+     * @param array<int, array<string, mixed>> $crumbs Breadcrumb links.
+     * @return array<int, array<string, mixed>>
+     */
+    public static function breadcrumb_links(array $crumbs): array
+    {
+        if (! self::is_guide() || count($crumbs) < 2) {
+            return $crumbs;
+        }
+
+        $guides_url = home_url('/guides/');
+
+        foreach ($crumbs as $crumb) {
+            $url = (string) ($crumb['url'] ?? '');
+            if ('' !== $url && untrailingslashit($url) === untrailingslashit($guides_url)) {
+                return $crumbs;
+            }
+        }
+
+        $tail = array_pop($crumbs);
+        $crumbs[] = ['url' => $guides_url, 'text' => 'Guides'];
+        $crumbs[] = $tail;
+
+        return array_values($crumbs);
     }
 
     public static function is_guide(?int $post_id = null): bool
@@ -151,17 +229,17 @@ final class NA_Editorial
     {
         $links = [
             '<a href="/editorial-policy/">How we review guides</a>',
-            '<a href="https://www.fca.org.uk/consumers/your-rights-financial-services" rel="noopener noreferrer">FCA consumer rights</a>',
+            '<a href="https://www.fca.org.uk/consumers/your-rights-financial-services" target="_blank" rel="noopener noreferrer">FCA consumer rights</a>',
         ];
 
         if (str_contains($slug, 'income-protection')) {
-            $links[] = '<a href="https://www.moneyhelper.org.uk/en/everyday-money/insurance/what-is-income-protection-insurance" rel="noopener noreferrer">MoneyHelper income protection guidance</a>';
+            $links[] = '<a href="https://www.moneyhelper.org.uk/en/everyday-money/insurance/what-is-income-protection-insurance" target="_blank" rel="noopener noreferrer">MoneyHelper income protection guidance</a>';
         } elseif ('life-insurance-and-trusts' === $slug) {
-            $links[] = '<a href="https://www.gov.uk/trusts-taxes" rel="noopener noreferrer">GOV.UK trusts guidance</a>';
+            $links[] = '<a href="https://www.gov.uk/trusts-taxes" target="_blank" rel="noopener noreferrer">GOV.UK trusts guidance</a>';
         } elseif ('making-a-protection-insurance-claim' === $slug || 'buildings-and-contents-insurance' === $slug) {
-            $links[] = '<a href="https://www.abi.org.uk/products-and-issues/choosing-the-right-insurance/" rel="noopener noreferrer">ABI consumer insurance guidance</a>';
+            $links[] = '<a href="https://www.abi.org.uk/products-and-issues/choosing-the-right-insurance/" target="_blank" rel="noopener noreferrer">ABI consumer insurance guidance</a>';
         } else {
-            $links[] = '<a href="https://www.moneyhelper.org.uk/en/everyday-money/insurance" rel="noopener noreferrer">MoneyHelper insurance guidance</a>';
+            $links[] = '<a href="https://www.moneyhelper.org.uk/en/everyday-money/insurance" target="_blank" rel="noopener noreferrer">MoneyHelper insurance guidance</a>';
         }
 
         return '<nav class="na-guide-references" aria-label="Guide references"><span>References</span>' . implode('<span aria-hidden="true">&middot;</span>', $links) . '</nav>';

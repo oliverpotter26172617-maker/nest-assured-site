@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Nest Assured Core
  * Description: Enquiry routing, needs assessment, booking controls and site setup for Nest Assured.
- * Version: 1.6.4
+ * Version: 1.6.6
  * Requires at least: 6.7
  * Requires PHP: 8.1
  * Author: Nest Assured
@@ -22,7 +22,7 @@ if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
     exit('XML-RPC is disabled.');
 }
 
-define('NA_CORE_VERSION', '1.6.4');
+define('NA_CORE_VERSION', '1.6.6');
 define('NA_CORE_FILE', __FILE__);
 define('NA_CORE_DIR', plugin_dir_path(__FILE__));
 define('NA_CORE_URL', plugin_dir_url(__FILE__));
@@ -45,6 +45,7 @@ add_action('plugins_loaded', static function (): void {
     NA_Shortcodes::init();
     NA_Editorial::init();
     NA_Site_Setup::register_command();
+    add_action('admin_notices', ['NA_Site_Setup', 'backup_notice']);
 });
 
 add_action('init', static function (): void {

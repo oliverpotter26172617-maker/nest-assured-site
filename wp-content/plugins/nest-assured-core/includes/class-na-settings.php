@@ -68,6 +68,8 @@ final class NA_Settings
             'faqs_copy'            => '',
             'adviser_since'        => '',
             'adviser_permissions'  => '',
+            'contact_phone'        => '',
+            'contact_email'        => '',
             // Never default to empty: absint('') is 0, which silently leaves the
             // deletion task unscheduled and retains personal data indefinitely.
             'retention_days'       => '365',
@@ -141,6 +143,8 @@ final class NA_Settings
             'faqs_copy'          => wp_kses_post((string) ($input['faqs_copy'] ?? '')),
             'adviser_since'       => sanitize_text_field((string) ($input['adviser_since'] ?? '')),
             'adviser_permissions' => sanitize_text_field((string) ($input['adviser_permissions'] ?? '')),
+            'contact_phone'       => sanitize_text_field((string) ($input['contact_phone'] ?? '')),
+            'contact_email'       => sanitize_email((string) ($input['contact_email'] ?? '')),
             'retention_days'     => self::sanitize_retention_days($input['retention_days'] ?? ''),
             'send_confirmations' => empty($input['send_confirmations']) ? '0' : '1',
             'purge_on_uninstall' => empty($input['purge_on_uninstall']) ? '0' : '1',
@@ -456,6 +460,8 @@ final class NA_Settings
                     <?php self::textarea_row('Ollie Allen approved biography', 'ollie_bio', $settings, 'Do not add generated biography copy. Add approved text only.'); ?>
                     <?php self::text_row('Ollie Allen approved photograph URL', 'ollie_photo_url', $settings, 'Use only a consented, approved media-library or CDN image URL.', 'url'); ?>
                     <?php self::textarea_row('Approved FAQs', 'faqs_copy', $settings, 'Add only questions and answers sourced from real adviser conversations. Basic HTML is allowed.'); ?>
+                    <?php self::text_row('Public phone number', 'contact_phone', $settings, 'Published in the footer, on the contact page and in structured data. Without it the site offers no telephone route, which also affects the complaints channel.', 'text'); ?>
+                    <?php self::text_row('Public email address', 'contact_email', $settings, 'A monitored inbox. Published alongside the phone number.', 'email'); ?>
                     <?php self::text_row('Adviser experience line', 'adviser_since', $settings, 'Approved wording for the credentials panel, for example "Since November 2023". Left blank, the fact is not published.', 'text'); ?>
                     <?php self::text_row('Adviser permissions line', 'adviser_permissions', $settings, 'Approved description of the product permissions held. Left blank, the fact is not published.', 'text'); ?>
                     <?php self::number_row('Enquiry retention period', 'retention_days', $settings, 'Approved number of days to retain enquiry records. Expired records are permanently deleted by a daily task.'); ?>

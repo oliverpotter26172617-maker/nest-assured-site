@@ -360,14 +360,51 @@ final class NA_Site_Setup
         }
     }
 
+    /**
+     * Backup scheduling is deliberately NOT configured from code.
+     *
+     * Scheduling a daily database backup with no remote destination and no
+     * encryption phrase wrote unencrypted SQL dumps containing every stored
+     * enquiry — names, email addresses, phone numbers and mortgage references —
+     * into wp-content/updraft/ inside the webroot. The directory ships .htaccess
+     * and web.config, which protect nothing on Nginx, and both WordPress.com and
+     * Pressable run Nginx.
+     *
+     * A backup schedule now has to be set up deliberately, with a destination and
+     * an encryption phrase, rather than being switched on silently by a deploy.
+     */
     private static function configure_backups(): void
     {
-        if (defined('UPDRAFTPLUS_DIR') || is_dir(WP_PLUGIN_DIR . '/updraftplus')) {
-            update_option('updraft_interval', 'weekly');
-            update_option('updraft_interval_database', 'daily');
-            update_option('updraft_retain', 2);
-            update_option('updraft_retain_db', 7);
+    }
+
+    /**
+     * Warn when a local, unencrypted backup schedule is active, since those archives
+     * contain client personal data and sit inside the webroot.
+     */
+    public static function backup_notice(): void
+    {
+        if (! current_user_can('manage_options')) {
+            return;
         }
+
+        if (! defined('UPDRAFTPLUS_DIR') && ! is_dir(WP_PLUGIN_DIR . '/updraftplus')) {
+            return;
+        }
+
+        $scheduled = 'manual' !== (string) get_option('updraft_interval_database', 'manual')
+            && '' !== (string) get_option('updraft_interval_database', '');
+        $encrypted = '' !== trim((string) get_option('updraft_encryptionphrase', ''));
+        $remote = (array) get_option('updraft_service', []);
+        $remote = array_filter($remote, static fn ($service): bool => '' !== (string) $service && 'none' !== (string) $service);
+
+        if (! $scheduled || ($encrypted && [] !== $remote)) {
+            return;
+        }
+
+        echo '<div class="notice notice-warning"><p><strong>Nest Assured:</strong> scheduled database backups are running without '
+            . esc_html([] === $remote ? 'a remote destination' : 'an encryption phrase')
+            . '. Backup archives contain client enquiry data and are written inside the website directory. '
+            . 'Set an encryption phrase and a remote destination in UpdraftPlus, or turn the schedule off.</p></div>';
     }
 
     private static function html(string $content): string
