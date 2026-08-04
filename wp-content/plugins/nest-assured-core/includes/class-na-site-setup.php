@@ -59,6 +59,7 @@ final class NA_Site_Setup
             ['Business protection', 'business-protection', self::business_protection()],
             ['General insurance', 'general-insurance', self::general_insurance()],
             ['Protection guides', 'guides', self::guides()],
+            ['Protection calculators', 'calculators', self::calculators()],
             ['Editorial policy', 'editorial-policy', NA_Content_Expansion::editorial_policy()],
             ['Already a client', 'already-a-client', self::already_client()],
             ['How it works', 'how-it-works', self::how_it_works()],
@@ -1009,6 +1010,50 @@ final class NA_Site_Setup
                 'p' => 'Start with the property, who lives there and the belongings or risks you do not want overlooked.',
             ],
         ]);
+    }
+
+    private static function calculators(): string
+    {
+        return self::html('
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Planning tools</p>
+      <h1>Put the numbers on the table.</h1>
+      <p class="na-v2-lede na-v2-lede--wide">Two tools that work only with figures you already know. They do not quote, compare insurers or recommend anything. They exist so the conversation starts from arithmetic rather than guesswork.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <a class="na-v2-btn" href="/enquire/">Talk to an adviser</a>
+      <span class="na-v2-note">Nothing you type is sent or stored</span>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">')
+            . self::shortcode('[nest_assured_cover_calculator]')
+            . self::html('</div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">')
+            . self::shortcode('[nest_assured_income_calculator]')
+            . self::html('</div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <div class="na-v2-callout">
+      <div>
+        <h2>A figure is a starting point, not an answer.</h2>
+        <p>What the number cannot tell you is which policy would pay out in your circumstances, what your health means for the application, or what is affordable long term. That is the conversation.</p>
+      </div>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Discuss your figures</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function guides(): string

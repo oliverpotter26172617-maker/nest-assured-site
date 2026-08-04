@@ -1962,3 +1962,274 @@ body.na-editorial-guide .na-related {
     transition: none;
   }
 }
+
+/* ============================================================================
+   Planning calculators. Not quote engines: they work only with figures the
+   visitor already knows, so the result is framed as a starting point for a
+   conversation rather than an answer.
+   ========================================================================== */
+
+.na-calc {
+  background: var(--na-paper);
+  border: 1px solid var(--v2-line);
+  border-radius: var(--v2-radius);
+  margin-block: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+.na-calc__head {
+  border-bottom: 1px solid var(--v2-line);
+  margin-bottom: 2rem;
+  max-width: 44rem;
+  padding-bottom: 1.5rem;
+}
+
+.na-calc__head h2 {
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+}
+
+.na-calc__intro {
+  color: var(--v2-body);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.na-calc__grid {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+}
+
+.na-calc fieldset {
+  border: 0;
+  margin: 0 0 1.75rem;
+  padding: 0;
+}
+
+.na-calc legend {
+  color: var(--v2-gold-deep);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+.na-calc__field {
+  margin-top: 1.125rem;
+}
+
+.na-calc__field label {
+  color: var(--na-navy);
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 0.375rem;
+}
+
+.na-calc__input {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(16, 41, 67, 0.55);
+  border-radius: var(--v2-radius);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 0.875rem;
+  transition: border-color 160ms ease;
+}
+
+.na-calc__input:focus-within {
+  border-color: var(--na-navy);
+}
+
+.na-calc__input span {
+  color: var(--v2-body);
+  flex: 0 0 auto;
+  font-size: 0.9375rem;
+}
+
+.na-calc__input input {
+  background: transparent;
+  border: 0;
+  color: var(--na-ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  min-height: 3rem;
+  padding: 0;
+  width: 100%;
+}
+
+.na-calc__input input:focus {
+  outline: none;
+}
+
+.na-calc__field small {
+  color: var(--v2-body);
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin-top: 0.375rem;
+}
+
+.na-calc__result {
+  align-content: start;
+  background: var(--na-navy);
+  border-radius: var(--v2-radius);
+  color: #fff;
+  display: grid;
+  gap: 1rem;
+  height: fit-content;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  position: sticky;
+  top: 7rem;
+}
+
+.na-calc__result-label {
+  color: var(--na-gold-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.na-calc__result-value {
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+}
+
+.na-calc__bars {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.na-calc__bar small {
+  color: var(--v2-navy-soft);
+  display: block;
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+}
+
+.na-calc__bar span {
+  background: var(--na-gold);
+  border-radius: 999px;
+  display: block;
+  height: 0.5rem;
+  min-width: 2px;
+  transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 0;
+}
+
+.na-calc__bar--have span {
+  background: var(--v2-navy-faint);
+}
+
+.na-calc__breakdown {
+  color: var(--v2-navy-soft);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.na-calc__timeline {
+  display: grid;
+  gap: 0.625rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.na-calc__stage {
+  border-left: 3px solid var(--v2-navy-faint);
+  padding-left: 0.875rem;
+}
+
+.na-calc__stage strong {
+  color: #fff;
+  display: block;
+  font-size: 0.9375rem;
+}
+
+.na-calc__stage span {
+  color: var(--v2-navy-soft);
+  display: block;
+  font-size: 0.845rem;
+  line-height: 1.55;
+  margin-top: 0.2rem;
+}
+
+.na-calc__stage--ok {
+  border-left-color: var(--na-gold);
+}
+
+.na-calc__stage--warn {
+  border-left-color: var(--na-gold-soft);
+}
+
+.na-calc__stage--gap {
+  border-left-color: #d98b8b;
+}
+
+.na-calc__notice {
+  border-top: 1px solid var(--v2-line);
+  color: var(--v2-body);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: 2rem 0 0;
+  padding-top: 1.25rem;
+}
+
+@media (max-width: 60rem) {
+  .na-calc__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .na-calc__result {
+    position: static;
+  }
+}
+
+/* ============================================================================
+   Motion. Sparing and weighted: a short rise as a section arrives, once, and
+   only for major blocks. Anything that would animate on every element has been
+   left alone deliberately.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-na-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--na-reveal-index, 0) * 70ms);
+  }
+
+  [data-na-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  .na-calc__stage {
+    animation: na-stage-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--na-stage-index, 0) * 60ms);
+  }
+
+  @keyframes na-stage-in {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

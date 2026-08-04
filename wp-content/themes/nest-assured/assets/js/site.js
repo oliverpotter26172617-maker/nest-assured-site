@@ -129,6 +129,44 @@
     update();
   }
 
+  // Section reveal. Deliberately restrained: major blocks only, once each, and
+  // nothing at all if the visitor has asked for reduced motion. Animating every
+  // element on scroll is the tell of a template, and it slows reading down.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (!reduceMotion.matches && 'IntersectionObserver' in window) {
+    const revealTargets = document.querySelectorAll(
+      '.na-v2-section > .na-v2-shell, .na-v2-masthead__grid, .na-calc, .na-v2-close__grid'
+    );
+
+    if (revealTargets.length) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+      revealTargets.forEach((target, index) => {
+        // Anything already in view on load is shown immediately, so the first
+        // screen never animates in underneath the reader.
+        const box = target.getBoundingClientRect();
+        if (box.top < window.innerHeight * 0.9) {
+          target.setAttribute('data-na-reveal', '');
+          target.classList.add('is-revealed');
+          return;
+        }
+
+        target.setAttribute('data-na-reveal', '');
+        target.style.setProperty('--na-reveal-index', String(index % 3));
+        observer.observe(target);
+      });
+    }
+  }
+
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') {
       return;
