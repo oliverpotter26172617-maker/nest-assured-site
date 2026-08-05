@@ -54,6 +54,11 @@ Nothing regulated is published until it has been entered and signed off. The gat
 
 ### 4.1 Adviser biography, priority item
 
+**Status changed.** A final audit found this copy live on the About page. It is no longer published, and the mechanism that allowed it to publish has been fixed. The wording is still stored in the launch controls and still needs a decision, but a visitor can no longer see it.
+
+The About page now shows the standing notice that the information will be published before the service opens, exactly as the other gated sections do.
+
+
 The stored `ollie_bio` setting currently contains:
 
 > "Ollie works the full whole-of-market panel. Advice is independent, and the recommendation is on cover and price, never on commission."
@@ -110,6 +115,25 @@ The thirteen original guides were rewritten to full depth and audited again. Thr
 
 - **Scope of permission.** Three guides cover non-investment general insurance (buildings and contents, and the two private medical guides). If the appointed representative permission does not extend to general insurance mediation, those guides raise a scope question independent of their content.
 - **Overlapping guide pairs.** Four subjects are covered twice across the two series (trusts, self-employment, reviewing or switching cover, and income protection amounts). They no longer contradict each other, but a reviewer may prefer one primary guide per subject.
+
+### 5.3 Third audit round, pre-submission
+
+| Issue | Correction |
+|---|---|
+| The About page published a claim that the advice is independent, covers the full whole-of-market panel and is never on commission | Removed from display. See 4.1. For an appointed representative advising from a principal's panel this is a status-disclosure breach, and it sat directly above the page's own empty regulatory block. |
+| Regulated copy published on being filled in rather than on being approved | This was the underlying cause. Approved copy now passes one gate: the field must be filled, a named person must have signed off that exact wording, and the wording must contain no protected status term. The stored text is untouched, so nothing is destroyed; it simply cannot be published until it is approved and clean. |
+| The guard that warns about protected status terms scanned only the settings fields | It now reads published page content as well, so a breach in a page cannot be invisible to it. |
+| Five further unverifiable claims in the same biography | A five year "insurance file", recommending "the right cover", sitting with "every" new mortgage client, cover meaning a family is "protected from day one", and a colleague named by first name only. All removed by the same gate. |
+| The enquiry endpoint was the only control not failing closed | It now refuses while compliance is outstanding, rather than relying on no form being published. |
+| The noindex gate was a meta tag only on HTML | Now also a response header, so a caching layer that rewrites the head cannot un-gate the site. |
+| Six glossary terms sat outside the A to Z the page promises | Moved into the alphabetical sections. |
+| The Article node declared a second, unlinked Organization for the same publisher | Now points at the organisation already in the graph. |
+
+### 5.4 What this round says about the build
+
+Three audit rounds have now found errors, and the pattern is worth stating plainly. The first found unsubstantiated claims and repealed law. The second found guides contradicting each other. The third found a live status-disclosure breach that the project's own compliance guard could not see.
+
+Every one was found by looking rather than by assuming, and each fix has been to the mechanism as well as the text, so the same class of failure cannot recur silently. The gate now fails closed in every place it is asserted: indexing, the enquiry endpoint, regulated copy, feeds and headers.
 
 ## 6. How to review
 
