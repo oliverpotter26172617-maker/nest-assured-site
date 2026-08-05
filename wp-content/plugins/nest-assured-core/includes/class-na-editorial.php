@@ -43,6 +43,7 @@ final class NA_Editorial
         add_filter('wpseo_opengraph_image_height', static fn (): int => 630);
         add_filter('wpseo_opengraph_type', [self::class, 'open_graph_type']);
         add_filter('wpseo_schema_organization', [self::class, 'organization_schema']);
+        add_filter('wpseo_schema_graph', [self::class, 'add_adviser_node'], 11, 1);
         add_filter('wpseo_breadcrumb_links', [self::class, 'breadcrumb_links']);
     }
 
@@ -66,6 +67,11 @@ final class NA_Editorial
             'postalCode'      => 'RM3 0NR',
             'addressCountry'  => 'GB',
         ];
+
+        // A real address in Essex with no local node at all. Competitors with a
+        // physical presence publish one, and it is the cheapest local signal there is.
+        $data['@type'] = ['Organization', 'FinancialService', 'InsuranceAgency'];
+        $data['priceRange'] = 'Advice-led, no online quotes';
 
         $data['areaServed'] = [
             '@type' => 'Country',
@@ -91,6 +97,55 @@ final class NA_Editorial
         }
 
         return $data;
+    }
+
+    /**
+     * The named adviser, as a Person node joined to the organisation.
+     *
+     * The whole proposition is that one named person reads every enquiry, and the
+     * graph said nothing about them at all. Only facts already published on the
+     * site appear here, and the credential lines are added only once compliance
+     * has supplied them.
+     *
+     * @param array<int, array<string, mixed>> $graph Schema graph.
+     * @return array<int, array<string, mixed>>
+     */
+    public static function add_adviser_node(array $graph): array
+    {
+        $org_id = home_url('/#organization');
+
+        $person = [
+            '@type'      => 'Person',
+            '@id'        => home_url('/#adviser'),
+            'name'       => 'Ollie Allen',
+            'jobTitle'   => 'Protection Adviser',
+            'worksFor'   => ['@id' => $org_id],
+            'url'        => home_url('/about/'),
+        ];
+
+        $permissions = trim(NA_Settings::get('adviser_permissions'));
+        if ('' !== $permissions) {
+            $person['knowsAbout'] = $permissions;
+        }
+
+        $photo = trim(NA_Settings::get('ollie_photo_url'));
+        if ('' !== $photo) {
+            $person['image'] = $photo;
+        }
+
+        $graph[] = $person;
+
+        // Employee, so a search engine can connect the firm to the person rather
+        // than treating the About page as an unrelated biography.
+        foreach ($graph as $i => $node) {
+            $type = (array) ($node['@type'] ?? []);
+            if (in_array('Organization', $type, true)) {
+                $graph[$i]['employee'] = ['@id' => home_url('/#adviser')];
+                break;
+            }
+        }
+
+        return $graph;
     }
 
     /**

@@ -60,6 +60,7 @@ final class NA_Site_Setup
             ['General insurance', 'general-insurance', self::general_insurance()],
             ['Protection guides', 'guides', self::guides()],
             ['Protection calculators', 'calculators', self::calculators()],
+            ['Find your starting point', 'find-your-starting-point', self::starting_point()],
             ['Editorial policy', 'editorial-policy', NA_Content_Expansion::editorial_policy()],
             ['Already a client', 'already-a-client', self::already_client()],
             ['How it works', 'how-it-works', self::how_it_works()],
@@ -277,6 +278,7 @@ final class NA_Site_Setup
             'contact'                => 'Choose the correct Nest Assured contact route for an existing-client or new protection enquiry.',
             'enquire'                => 'Start an advice-led protection conversation through the correct existing-client or new-enquiry route.',
             'calculators'            => 'Two planning tools that work only with figures you already know: a cover gap estimator and an income timeline. No quotes, nothing stored.',
+            'find-your-starting-point' => 'Three short questions to help work out which protection conversation is worth having. No prices, no recommendation, nothing stored.',
             'legal'                  => 'Legal, privacy and regulatory information for the Nest Assured protection advice service.',
             'privacy'                => 'How Nest Assured collects, uses and retains the information you send through an enquiry.',
             'complaints-procedure'   => 'How to raise a concern about Nest Assured and how a complaint will be handled.',
@@ -1194,6 +1196,51 @@ final class NA_Site_Setup
                 'p' => 'Start with the property, who lives there and the belongings or risks you do not want overlooked.',
             ],
         ]);
+    }
+
+    /**
+     * The guided triage, on a page of its own.
+     *
+     * It only ever existed on the home page, so it had no URL, could not be
+     * linked to and earned nothing in search, despite being the one interactive
+     * thing on the site that maps a visitor to a subject.
+     */
+    private static function starting_point(): string
+    {
+        return self::html('
+<div class="na-v2">
+<section class="na-v2-masthead">
+  <div class="na-v2-shell na-v2-masthead__grid">
+    <div>
+      <p class="na-v2-eyebrow">Guided starting point</p>
+      <h1>Not sure which conversation you need?</h1>
+      <p class="na-v2-lede na-v2-lede--wide">Three short questions to help you work out which subject is worth an adviser conversation. No prices, no recommendation, and nothing is sent anywhere.</p>
+    </div>
+    <div class="na-v2-masthead__aside">
+      <a class="na-v2-btn" href="/guides/">Read the guides instead</a>
+      <span class="na-v2-note">No quotes on this site &middot; advice first</span>
+    </div>
+  </div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">')
+            . self::shortcode('[nest_assured_assessment]')
+            . self::html('</div>
+</section>
+
+<section class="na-v2-section na-v2-section--short">
+  <div class="na-v2-shell">
+    <div class="na-v2-callout">
+      <div>
+        <h2>A subject is not the same as an answer.</h2>
+        <p>Which policy would actually pay out in your circumstances depends on your health, your budget and the cover you already hold. That is the conversation this leads to.</p>
+      </div>
+      <a class="na-v2-btn na-v2-btn--gold" href="/enquire/">Talk to an adviser</a>
+    </div>
+  </div>
+</section>
+</div>');
     }
 
     private static function calculators(): string
