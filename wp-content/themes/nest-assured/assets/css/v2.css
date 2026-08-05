@@ -2362,3 +2362,28 @@ body.na-editorial-guide .na-calc,
 .na-v2-section--short + .na-v2-section--short {
   padding-top: 0;
 }
+
+/* Category photograph on a guide, between the article furniture and the prose.
+   Wider than the reading column so it reads as a break rather than an inline
+   figure, but not full bleed, which would fight the article. */
+.na-guide-band {
+  margin: clamp(1.75rem, 3.5vw, 2.75rem) auto clamp(2rem, 4vw, 3rem);
+  max-width: 64rem;
+  overflow: hidden;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+
+.na-guide-band img {
+  aspect-ratio: 21 / 9;
+  border-radius: var(--v2-radius);
+  filter: saturate(0.9) contrast(1.02);
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+@media (max-width: 40rem) {
+  .na-guide-band img {
+    aspect-ratio: 16 / 10;
+  }
+}

@@ -315,7 +315,34 @@ final class NA_Guides_Expanded
   <li>Benefit from a personal policy paid for from taxed personal income is generally received without further income tax, but tax treatment depends on individual circumstances and current rules, both of which can change, and specialist advice may be needed.</li>
 </ul>
 
-<h2>What an adviser will want to understand</h2>
+<h2>How incapacity is defined, and why the wording matters</h2>
+
+<p>Income protection pays a benefit when illness or injury stops someone working, but the point at which a claim can be accepted depends entirely on how the policy defines incapacity. Two plans can look similar on premium and deferred period and still behave very differently at the moment of claim, because they measure inability to work against different tests. The definition that applies is set out in the policy wording and varies between insurers.</p>
+
+<p>The definitions form a ladder, running from the broadest test to the hardest to satisfy.</p>
+
+<div class="na-callout-grid">
+  <div class="na-callout">
+    <h3>Own occupation</h3>
+    <p>Incapacity is measured against the specific job held before the illness or injury. If that role can no longer be carried out, a claim can be considered, even where other work might still be possible. This is the broadest of the tests.</p>
+  </div>
+  <div class="na-callout">
+    <h3>Suited occupation</h3>
+    <p>The test widens to any occupation for which experience, education or training makes the person suited. If another role of that kind is open to them, the insurer may decide that the incapacity test has not been met.</p>
+  </div>
+  <div class="na-callout">
+    <h3>Any occupation</h3>
+    <p>The test asks whether any paid work at all could be done, not simply the work the person trained for. It is the hardest definition to satisfy, because recovering enough to do lower paid or unrelated work can be enough to end a claim.</p>
+  </div>
+  <div class="na-callout">
+    <h3>Activities of daily work</h3>
+    <p>Rather than looking at a job at all, this test measures whether listed functional tasks can be performed, such as walking, lifting, bending or communicating. It is sometimes used where an occupational definition is not offered.</p>
+  </div>
+</div>
+
+<p>Some contracts also switch definition partway through a claim, applying one test for an initial period and then moving to a wider test if the claim continues beyond it. Whether that happens, and at what point, is set out in the policy wording rather than in any general rule.</p>
+
+<p>Because a single clause can decide whether a long claim continues or stops, the incapacity definition can matter more than the premium. Which definitions are available in the first place depends on the occupation, the insurer and personal circumstances.</p><h2>What an adviser will want to understand</h2>
 <ul class="na-checklist">
   <li>Your contractual sick pay terms in writing, including whether service or discretion applies</li>
   <li>Details of any group income protection or other employer scheme, from the scheme documents</li>
@@ -573,7 +600,23 @@ final class NA_Guides_Expanded
 <li>Ask what would need to be reviewed if your job, health, family or borrowing changed</li>
 </ul>
 
-<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+<h3>Any occupation</h3>
+<p>A definition of incapacity used in income protection. It tests whether illness or injury prevents someone doing any paid work at all, rather than the particular job they held before the claim. It is the hardest of the common definitions to satisfy, because becoming well enough for lower paid or unrelated work can end a claim. The exact wording varies between insurers.</p>
+
+<h3>Acute condition</h3>
+<p>A condition that comes on suddenly and is expected to respond to treatment, returning the person to the state of health they were in beforehand. The distinction from a chronic condition matters most in private medical insurance, where cover is generally aimed at acute conditions. What counts as acute is decided by the definition in the policy wording.</p>
+
+<h3>Chronic condition</h3>
+<p>A condition that continues over time, needs ongoing monitoring or management, cannot be cured, or returns when treatment stops. Policies often limit or exclude cover for chronic conditions, particularly in private medical insurance. Because the boundary between acute and chronic decides what is paid for, the way the term is defined in the policy wording carries real weight at claim.</p>
+
+<h3>Conversion option</h3>
+<p>A right built into some term assurance to convert the cover into a level term or whole of life policy without providing further medical evidence. It works within rules set by the contract, including time limits and limits on the amount of cover, and only while the original policy is in force. Whether one exists depends on the policy wording.</p>
+
+<h3>Death in service</h3>
+<p>A lump sum paid by an employer scheme if an employee dies while still employed, usually expressed as a multiple of salary. It is governed by the scheme rules rather than by the employee, normally ends when the employment ends, and can be changed or withdrawn by the employer, so it sits alongside personal cover rather than replacing it.</p>
+
+<h3>Family income benefit</h3>
+<p>A form of life cover that pays a regular income to beneficiaries for the remainder of the policy term instead of a single lump sum, which some households find easier to plan around. Because payments stop at the end of the term, a claim made later in the term produces payments over a shorter period. Tax treatment depends on individual circumstances.</p><p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
 </div></section>');
     }
 
@@ -744,7 +787,27 @@ final class NA_Guides_Expanded
 
 <p>A trust that nobody can find does not help anybody. Keep the deed with the policy documents, make sure the trustees know where the paperwork is, and check that the insurer holds a record of the trust.</p>
 
-<h2>What an adviser will want to understand</h2>
+<h2>Split trusts and business trusts</h2>
+
+<p>Bare and discretionary trusts cover most straightforward life cover arrangements, but they are not the only forms in use. Two others appear regularly, and each exists to solve a problem a simple trust cannot.</p>
+
+<h3>The split trust</h3>
+
+<p>Some policies pay out in more than one situation. A combined life and critical illness plan pays on death, when the money is needed by someone else, and also on diagnosis of a covered condition, when the money may well be needed by the person who is ill. Placing the whole of that policy into an ordinary trust would put the critical illness benefit beyond the reach of the life assured, because property held in trust no longer belongs to the person who gave it away.</p>
+
+<p>A split trust separates the two strands. The death benefit is held for the chosen beneficiaries, while the living benefits, typically critical illness and terminal illness cover and sometimes waiver of premium, are retained by the settlor. That is why a split trust is the standard answer for a combined life and critical illness policy: it allows the death benefit to be directed to beneficiaries without waiting for probate, while keeping the illness benefit available to the person who took the plan out. Exactly which benefits are retained and which are given away is defined by the trust deed, and the wording differs between insurers.</p>
+
+<h3>The business trust</h3>
+
+<p>Where cover is written for shareholder or partnership protection, a business trust directs the proceeds to the surviving owners rather than to family. It normally works alongside a linked document such as a cross option agreement, so that the money and the obligation to buy or sell an interest arrive in the right hands at the right time. The trust, the agreement and the articles or partnership deed all have to be consistent with one another, which is why these are usually drafted with a solicitor rather than completed from a standard form.</p>
+
+<p>The tax treatment of any trust depends on individual circumstances and on current rules, both of which can change, and legal or tax advice may be needed before a deed is signed.</p><h2>Gift with reservation of benefit, and trust charges</h2>
+
+<p>A trust only takes a policy outside the estate of the person who created it if that person has genuinely given it away. Where the settlor can still benefit from the trust, for example by being named among the beneficiaries or by keeping a right to the proceeds, the arrangement can be treated as a gift with reservation of benefit. If that applies, the proceeds can be treated as remaining in the estate for inheritance tax, and the trust achieves very little of what was intended. This is why most insurer trust forms exclude the settlor from benefiting, and why the beneficiary wording on a deed repays careful reading rather than being filled in at speed.</p>
+
+<p>Discretionary trusts also sit within a separate regime of periodic charges, which can include a charge at each ten year anniversary of the trust and a further charge when capital leaves it. For a pure protection policy with no surrender value there is often nothing of value held in the trust between the date it is written and the date of a claim, so in practice these charges frequently do not arise. That outcome is not automatic, though. It depends on the type of policy, the terms of the deed and the wider circumstances of the settlor.</p>
+
+<p>Tax treatment depends on individual circumstances and on current rules, both of which can change. Legal or tax advice may be needed.</p><h2>What an adviser will want to understand</h2>
 
 <ul class="na-checklist">
 <li>Who the cover is really for, and who would need money quickly if a claim arose</li>
@@ -1143,7 +1206,15 @@ final class NA_Guides_Expanded
 
 <p>Almost every problem found when reviewing existing business protection is a mismatch. A policy owned personally when the loss falls on the company. A trust drafted for family protection used for a shareholding. A key person policy still covering someone who left. An agreement drafted but never signed. They are also not set and forget: a new shareholder, a departure, a refinancing or a change of legal structure can each break the logic of something that was sound when written.</p>
 
-<h2>What an adviser will want to understand</h2>
+<h2>Business property relief and the way the agreement is drafted</h2>
+
+<p>Business protection is not only an insurance question. The way a shareholder agreement, cross option agreement or partnership agreement is drafted can affect how a shareholding or a partnership interest is treated for inheritance tax when an owner dies.</p>
+
+<p>The relief in question is business property relief. Broadly, it can reduce the inheritance tax value attributed to qualifying business assets, but whether it is available depends on the nature of the business, how the interest is held, and the terms of any agreement governing what happens on a death. A binding obligation to sell, as distinct from an option to buy or sell, is the classic example of drafting that can change the position, because the estate may then be treated as holding a right to money rather than an interest in the business. That is one reason cross option agreements are drafted the way they are.</p>
+
+<p>The rules on business property relief changed with effect from April 2026, so guides, precedents and articles written before that date can describe a position that no longer applies. Anything resting on an older summary is worth re-checking against the current rules.</p>
+
+<p>This is a point for the company accountant or solicitor rather than the insurance adviser. Tax treatment depends on individual circumstances and on current rules, both of which can change, and legal or tax advice may be needed before an agreement is signed or amended.</p><h2>What an adviser will want to understand</h2>
 
 <ul class="na-checklist">
 <li>The legal structure of the business and who owns what, in writing</li>
@@ -1245,7 +1316,13 @@ final class NA_Guides_Expanded
 
 <p>Beneficiary details also go stale. Nominations made before a divorce, a remarriage or a bereavement are a common and avoidable problem, as are trusts where a named trustee has died. Employer death in service nominations sit outside your personal policies and need updating separately.</p>
 
-<h2>What an adviser will want to understand</h2>
+<h2>Conversion options: the guarantee hiding in older policies</h2>
+
+<p>Some term assurance is written as convertible term. The contract carries an option to convert the cover into a level term or a whole of life policy without providing further medical evidence, so a change in health since the plan started does not affect the terms of the new policy. The option operates within its own rules, which set out what the cover can be converted into, by when, and up to what amount, and it can be exercised only while the original policy remains in force.</p>
+
+<p>That matters whenever a policy is being reviewed or replaced. Someone whose health has changed since the plan was taken out may be holding a guarantee that cannot be bought again on any terms, and cancelling the policy cancels the option along with it. Other guarantees in older contracts, such as guaranteed insurability options, can be lost in the same way.</p>
+
+<p>This is a reason to check the original policy documents before a replacement is arranged rather than afterwards. Whether an option exists at all, and what it permits, depends on the policy wording and the insurer, and the schedule or the terms issued at outset are usually where it is set out. Where the paperwork can no longer be found, the insurer can confirm what the contract actually contains.</p><h2>What an adviser will want to understand</h2>
 
 <ul class="na-checklist">
 <li>Every policy currently in force, with schedules, including any arranged years ago and forgotten.</li>

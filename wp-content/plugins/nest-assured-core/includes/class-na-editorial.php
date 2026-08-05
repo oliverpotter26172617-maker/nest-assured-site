@@ -244,6 +244,8 @@ final class NA_Editorial
             self::reference_links((string) get_post_field('post_name', $post_id))
         );
 
+        $band = self::category_band($post_id);
+
         // Every guide needs a real, visible level-one heading. The template's title
         // block is suppressed for guides (see the theme's functions.php), so the
         // heading is published here, immediately after the breadcrumb trail, using the
@@ -251,6 +253,8 @@ final class NA_Editorial
         $heading = '<h1 class="na-guide-title">' . esc_html(get_the_title($post_id)) . '</h1>';
 
         if (str_contains($content, '</nav>')) {
+            $information .= $band;
+
             // substr_replace, not preg_replace: a guide title containing a dollar sign
             // would be read as a backreference in a replacement string and silently
             // mangled, so "Is $1m of cover enough?" would lose the $1.
@@ -362,6 +366,40 @@ final class NA_Editorial
             . '<h2 id="na-related-title">More on ' . esc_html(strtolower($label)) . '</h2>'
             . '<a class="na-v2-link" href="' . esc_url(home_url('/guides/')) . '">All guides <span aria-hidden="true">&rarr;</span></a>'
             . '</div><div class="na-v2-guides">' . $cards . '</div></section>';
+    }
+
+    /**
+     * A photograph for the part of the library this guide belongs to.
+     *
+     * Decorative, so the alt text is empty: it repeats nothing the heading does
+     * not already say, and describing it would only add noise for anyone using a
+     * screen reader.
+     */
+    private static function category_band(int $post_id): string
+    {
+        if (! class_exists('NA_Guides_Library')) {
+            return '';
+        }
+
+        $slug = (string) get_post_field('post_name', $post_id);
+        $catalogue = NA_Guides_Library::catalogue();
+        if (! isset($catalogue[$slug])) {
+            return '';
+        }
+
+        $name = 'cat-' . $catalogue[$slug]['group'];
+        $dir = get_theme_file_path('assets/images/editorial/' . $name . '.webp');
+        if (! is_file($dir)) {
+            return '';
+        }
+
+        $base = get_theme_file_uri('assets/images/editorial/');
+
+        return '<figure class="na-guide-band">'
+            . '<img src="' . esc_url($base . $name . '.webp') . '" '
+            . 'srcset="' . esc_url($base . $name . '-800.webp') . ' 800w, ' . esc_url($base . $name . '.webp') . ' 1600w" '
+            . 'sizes="(max-width: 64rem) 100vw, 64rem" width="1600" height="686" alt="" loading="lazy" decoding="async" />'
+            . '</figure>';
     }
 
     /**
