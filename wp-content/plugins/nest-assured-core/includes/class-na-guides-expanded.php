@@ -93,7 +93,7 @@ final class NA_Guides_Expanded
 
 <p>Underinsurance is the risk that the sum insured is lower than the true value of what you are insuring, and its effect is not limited to total losses. Many policies contain an average condition, allowing the insurer to reduce a settlement in proportion to the shortfall, so a partial claim can be scaled down and you meet the difference. Contents underinsurance is the more common failure, because most households underestimate the cost of replacing everything they own. Working room by room, including the loft, the garage and anything in storage, beats a guess at the front door.</p>
 
-<p>A separate risk sits in the information you give. Under consumer insurance law you must take reasonable care not to make a misrepresentation when you apply or renew. The remedy available to the insurer depends on whether a misrepresentation was careless or deliberate, and it can reduce a claim or, in serious cases, allow the policy to be avoided. Previous claims, subsidence history, flooding, unusual construction, business use and periods of letting all need declaring accurately.</p>
+<p>A separate risk sits in the information you give. Under consumer insurance law you must take reasonable care not to make a misrepresentation when you apply or renew. The remedy available to the insurer depends on whether a misrepresentation was careless, or deliberate or reckless, and it can reduce a claim or, in serious cases, allow the policy to be avoided. Previous claims, subsidence history, flooding, unusual construction, business use and periods of letting all need declaring accurately.</p>
 
 <h2>Single item limits and valuables</h2>
 
@@ -138,7 +138,7 @@ final class NA_Guides_Expanded
 
 <h2>What a mortgage lender typically requires</h2>
 
-<p>Lenders take security over the property, so they require buildings insurance in force from the point you become responsible for it, with a sum insured at least matching the reinstatement figure the lender has identified and cover against the standard perils. For a freehold purchase, risk normally passes on exchange of contracts rather than completion, so cover generally needs to start at exchange, not on moving day. For a leasehold flat the lender will usually want to see the block policy rather than a policy in your name. Contents insurance is not a lender requirement, it is a personal decision.</p>
+<p>Lenders take security over the property, so they require buildings insurance in force from the point you become responsible for it, with a sum insured at least matching the reinstatement figure the lender has identified and cover against the standard perils. In England and Wales most residential contracts use the Standard Conditions of Sale, under which the seller keeps the risk until completion, but many conveyancers and lenders still want the buyer\'s buildings insurance in force from exchange, and some contracts are varied to pass risk at that point. In Scotland the position depends on the missives. Confirm with your conveyancer and your lender the exact date you must be insured from, rather than assuming it is moving day. For a leasehold flat the lender will usually want to see the block policy rather than a policy in your name. Contents insurance is not a lender requirement, it is a personal decision.</p>
 
 <h2>Flood, subsidence and difficult risks</h2>
 
@@ -203,7 +203,7 @@ final class NA_Guides_Expanded
 
 <h3>Full medical underwriting in practice</h3>
 
-<p>Full medical underwriting takes longer and requires you to be thorough, and its advantage is certainty. Exclusions are named on your certificate, so you know before you commit whether the thing you were most worried about is covered. They may be permanent, time limited, or reviewable after a period without symptoms or treatment. Accuracy matters: under consumer insurance law you must take reasonable care not to make a misrepresentation, and the insurer\'s remedies depend on whether an error was careless or deliberate. If you are unsure of a date or a diagnosis, say so rather than guess.</p>
+<p>Full medical underwriting takes longer and requires you to be thorough, and its advantage is certainty. Exclusions are named on your certificate, so you know before you commit whether the thing you were most worried about is covered. They may be permanent, time limited, or reviewable after a period without symptoms or treatment. Accuracy matters: under consumer insurance law you must take reasonable care not to make a misrepresentation, and the insurer\'s remedies depend on whether an error was careless, or deliberate or reckless. If you are unsure of a date or a diagnosis, say so rather than guess.</p>
 
 <h2>Hospital lists and consultant access</h2>
 
@@ -339,7 +339,7 @@ final class NA_Guides_Expanded
 <p class="na-lede">Without an employer scheme, the gap between stopping work and receiving money is yours to bridge. Understanding how long that gap is, and how an insurer would measure your income, matters more than comparing headline premiums.</p>
 
 <h2>Start with what actually stops</h2>
-<p>An employee who falls ill has a sequence of support to work through. If you are self-employed, most of that sequence does not exist. There is no contractual sick pay, and Statutory Sick Pay does not apply to you, because it is a payment made by an employer to an employee. The realistic sources of money are your savings, whatever the business can keep generating without you, help from a partner or family, state benefits, and any insurance you have arranged in advance.</p>
+<p>An employee who falls ill has a sequence of support to work through. If you are self-employed, most of that sequence does not exist. There is no contractual sick pay. If you are a sole trader or a partner, Statutory Sick Pay does not apply to you at all, because it is a payment made by an employer to an employee. If you run your own limited company and take a salary through PAYE you are technically an employee of that company and may qualify, but the company funds it, and the company usually depends on you being at work. The realistic sources of money are your savings, whatever the business can keep generating without you, help from a partner or family, state benefits, and any insurance you have arranged in advance.</p>
 <p>State support usually means New Style Employment and Support Allowance, which depends on your National Insurance record, or Universal Credit, which is means tested and takes account of savings, capital and a partner\'s income. National Insurance rules for the self-employed have changed in recent years, including how Class 2 contributions work, so if entitlement to contribution based support matters to you, check your record and the current rules on GOV.UK rather than assuming.</p>
 
 <h2>Separate the household gap from the business gap</h2>
@@ -506,7 +506,7 @@ final class NA_Guides_Expanded
 <p>An approach used mainly in private medical insurance where medical history is not assessed at the outset, but conditions from a defined period before the policy started are excluded, sometimes with the possibility of cover later if you remain free of them for a set time. The rules are specific to the insurer.</p>
 
 <h3>Non-disclosure</h3>
-<p>A failure to give the insurer the information it asked for when applying. The consequences depend on whether the failure was careless or deliberate and on what the insurer would have done had it known, and can range from an adjustment to the claim to the policy being treated as though it never existed.</p>
+<p>A failure to give the insurer the information it asked for when applying. The consequences depend on whether the failure was careless, or deliberate or reckless and on what the insurer would have done had it known, and can range from an adjustment to the claim to the policy being treated as though it never existed.</p>
 
 <h3>Own occupation</h3>
 <p>An income protection definition of incapacity based on your inability to carry out your own job. Other definitions, such as suited occupation or activities of daily work, are less generous and make a claim harder to establish. This single definition can matter more than the premium.</p>
@@ -553,7 +553,7 @@ final class NA_Guides_Expanded
 <p>The insurer\'s process of assessing an application and deciding on what terms, if any, it will offer cover. It can involve medical, lifestyle, occupational, travel and financial questions, and may lead to standard terms, a loading, an exclusion, a postponement or a decline.</p>
 
 <h3>Waiver of premium</h3>
-<p>An option on some policies under which the insurer pays the premiums while you are unable to work because of illness or injury, after a waiting period and subject to the policy definition. It keeps cover in force at the point it is most likely to be needed.</p>
+<p>An option on some policies under which the premiums are waived while you are unable to work because of illness or injury, after a waiting period and subject to the policy definition. It keeps cover in force at the point it is most likely to be needed.</p>
 
 <h3>Whole of life cover</h3>
 <p>Life cover intended to remain in force for life rather than for a fixed term, provided premiums continue to be paid. Structures vary considerably, including whether premiums are guaranteed or reviewable, so the basis of the plan should be understood before comparing it with term cover.</p>
@@ -650,7 +650,7 @@ final class NA_Guides_Expanded
 <li>Contractual sick pay ends. Statutory Sick Pay is a legal minimum, and where an employer pays contractual sick pay it normally includes the statutory element rather than following on after it. A new employer\'s terms may be considerably less generous.</li>
 </ul>
 
-<p>None of these can be continued as personal policies in the way medical cover sometimes can. Replacing them means new applications and fresh underwriting.</p>
+<p>Medical cover is the benefit most likely to offer a route to a personal policy, but it is not the only one. Some group life schemes include a continuation option, allowing an individual policy with the same insurer without full medical underwriting, usually within a short window after leaving and at individual rates. Group income protection and group critical illness rarely offer an equivalent. Ask the scheme administrator what each scheme offers before your last day, because where no option exists, replacing the benefit means a new application and fresh underwriting.</p>
 
 <h2>Redundancy, retirement and long term sickness</h2>
 
@@ -801,7 +801,7 @@ final class NA_Guides_Expanded
 </div>
 
 <h2>Joint or single lives, and one point that is often misunderstood</h2>
-<p>A joint life first death policy covers two people and pays once, on the first death. It then ends. There is no residual cover for the survivor, and no mechanism within that policy, whether described as a separation option, a guaranteed insurability option or anything else, that gives the survivor cover without going through underwriting again. Any option to take out new cover after a claim is a fresh application, on the health and the price available at that time.</p>
+<p>A joint life first death policy covers two people and pays once, on the first death. It then ends. There is no residual cover for the survivor once the policy has paid. A small number of insurers offer a survivor option, allowing the surviving life to apply for individual cover without full medical underwriting inside a short window after a claim, but it is not a standard feature and it should be confirmed in the policy wording rather than assumed. A separation option is a different feature again, dealing with the end of a relationship rather than a death claim. Where no such option exists, new cover after a claim is a fresh application, on the health and the price available at that time.</p>
 <p>Two single life policies usually cost more, but each life keeps its own cover after a claim, each can be placed under its own trust, and the two can be varied independently. The same reasoning applies to critical illness cover: a joint arrangement that pays on the first qualifying diagnosis leaves the second person without cover afterwards.</p>
 
 <h2>Honesty at application is part of the cover</h2>
@@ -1012,7 +1012,7 @@ final class NA_Guides_Expanded
 
 <p>A relevant life policy is a single life arrangement, so it suits businesses too small to run a group death-in-service scheme, or those wanting a benefit for one or two individuals rather than the whole workforce. It is commonly considered by owner-managed limited companies for their working directors.</p>
 
-<p>Because the arrangement relies on conditions set out in the tax rules, it is more constrained than a personal life policy. Those rules limit what can sit inside it, so features a client might expect from a personal plan are not necessarily available, and what is offered varies by provider. The main benefit is a lump sum payable on death, cover normally has to end before a specified age, the proceeds must be capable of reaching an individual or a charity rather than the business, and the arrangement must not exist for tax avoidance purposes. Anything beyond that basic shape needs checking against the provider\'s terms and the trust deed.</p>
+<p>Because the arrangement relies on conditions set out in the tax rules, it is more constrained than a personal life policy. Those rules limit what can sit inside it, so features a client might expect from a personal plan are not necessarily available, and what is offered varies by provider. The only benefit a relevant life policy can provide is a lump sum on death, and terminal illness cover is generally accepted as an acceleration of that death benefit. Critical illness cover cannot be included, and the policy can have no surrender value. Cover has to end before a specified age, the proceeds must be capable of reaching an individual or a charity rather than the business, and the arrangement must not exist for tax avoidance purposes. Anything beyond that basic shape needs checking against the provider\'s terms and the trust deed.</p>
 
 <p>Eligibility is the first thing to test. The person covered must be an employee, which for these purposes generally includes salaried directors. Sole traders are not employees of their own business, and equity partners are generally in the same position, so this route is often unavailable to them.</p>
 
@@ -1032,7 +1032,7 @@ final class NA_Guides_Expanded
 
 <p>For key person cover, whether premiums are a deductible business expense, and whether a claim receipt is taxable, depend on the purpose of the policy, the role and any shareholding of the person covered, and the length of the cover. The position is generally viewed differently where the policy protects profits than where it protects a capital item such as a loan, and there is no single answer that applies to every company.</p>
 
-<p>For relevant life cover, the treatment of premiums for the company and for the individual depends on the arrangement meeting the conditions in the rules and on the company\'s own circumstances. Because the benefit is a death benefit held on trust, it also sits alongside pension death benefit rules, and those rules have changed in recent years. Older articles on this subject can therefore be out of date.</p>
+<p>For relevant life cover, the treatment of premiums for the company and for the individual depends on the arrangement meeting the conditions in the rules and on the company\'s own circumstances. Because a relevant life policy is not a registered pension scheme arrangement, the benefit is generally outside the allowances that apply to registered scheme death benefits. Those pension allowances have changed in recent years, which is one reason older summaries of relevant life cover can be misleading. Older articles on this subject can therefore be out of date.</p>
 
 <p>Tax treatment depends on individual circumstances and on current rules, and both can change. This guide is not tax or legal advice, and neither arrangement should be set up on the strength of a general description alone. Legal advice on the trust or on any related agreement may also be needed alongside the insurance advice.</p>
 
@@ -1226,7 +1226,7 @@ final class NA_Guides_Expanded
 <ul>
 <li>You are older than when the original policy was written, and age is a primary pricing factor.</li>
 <li>Your health may have changed. Anything since the original application is disclosable and may lead to exclusions, higher terms, postponement or a decline.</li>
-<li>New policies restart their own clocks. Critical illness policies typically apply a qualifying period at the start and a survival period after diagnosis, income protection restarts its deferred period, and life policies commonly restart a suicide or self inflicted injury exclusion.</li>
+<li>New policies restart their own clocks. Critical illness policies apply a survival period after diagnosis, and some benefits, particularly children\'s cover and total permanent disability, apply an initial qualifying period, income protection restarts its deferred period, and life policies commonly restart a suicide or self inflicted injury exclusion.</li>
 <li>Definitions differ between insurers and product generations. A condition covered under an older critical illness policy may be defined more tightly, or not listed at all, under a new one.</li>
 <li>A gap of even a single day is a period with no cover, and events do not schedule themselves around administration.</li>
 </ul>
@@ -1235,7 +1235,7 @@ final class NA_Guides_Expanded
 
 <h2>What can usually be changed, and what usually cannot</h2>
 
-<p>Insurers differ and the policy conditions govern, but the pattern is consistent. Changes often made without new underwriting include reducing the sum assured, reducing the term, removing an optional benefit, changing the payment date or bank details, placing the policy into trust, appointing or removing trustees, and changing the beneficiaries under a trust. Reductions are straightforward because they reduce the insurer\'s risk, though they are rarely reversible on the same terms.</p>
+<p>Insurers differ and the policy conditions govern, but the pattern is consistent. Changes often made without new underwriting include reducing the sum assured, reducing the term, removing an optional benefit, changing the payment date or bank details, placing the policy into trust, and appointing or removing trustees within the powers the deed gives. Whether beneficiaries can be changed depends on the type of trust: under a discretionary or flexible trust the trustees can usually exercise discretion within the class, but under a bare or absolute trust the beneficiaries are fixed. Where a policy is held on trust the trustees are the legal owners and must be involved in any change. Reductions are straightforward because they reduce the insurer\'s risk, though they are rarely reversible on the same terms.</p>
 
 <p>Changes that generally require new underwriting, and often a new policy altogether, include increasing the sum assured, extending the term, adding critical illness cover to a life policy, adding waiver of premium, shortening a deferred period, and converting decreasing cover to level cover. Some insurers will consider alterations subject to evidence of health, many will simply issue a new contract. Where a guaranteed insurability option exists and the event qualifies, an increase may be possible without medical evidence, but only within the option\'s rules and only while the policy remains in force.</p>
 
