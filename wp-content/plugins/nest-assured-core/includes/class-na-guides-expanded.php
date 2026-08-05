@@ -315,7 +315,7 @@ final class NA_Guides_Expanded
   <li>Benefit from a personal policy paid for from taxed personal income is generally received without further income tax, but tax treatment depends on individual circumstances and current rules, both of which can change, and specialist advice may be needed.</li>
 </ul>
 
-<h2>How incapacity is defined, and why the wording matters</h2>
+<h2>The four incapacity definitions, in full</h2>
 
 <p>Income protection pays a benefit when illness or injury stops someone working, but the point at which a claim can be accepted depends entirely on how the policy defines incapacity. Two plans can look similar on premium and deferred period and still behave very differently at the moment of claim, because they measure inability to work against different tests. The definition that applies is set out in the policy wording and varies between insurers.</p>
 
