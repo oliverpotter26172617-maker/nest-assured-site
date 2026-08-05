@@ -152,6 +152,56 @@ final class NA_Settings
     }
 
     /**
+     * Copy that is safe to publish.
+     *
+     * A field being filled in is not the same as it being approved. Regulated
+     * wording was rendering the moment somebody typed it, which is how an
+     * unapproved biography claiming independent, whole-of-market advice came to
+     * be live on the About page while the compliance gate reported everything as
+     * outstanding. Nothing regulated now reaches a visitor until a named person
+     * has signed off the exact wording, and never if it contains a protected
+     * status term.
+     */
+    public static function approved(string $key): string
+    {
+        $value = trim(self::get($key));
+
+        if ('' === $value) {
+            return '';
+        }
+
+        if (! self::is_signed_off()) {
+            return '';
+        }
+
+        if ([] !== self::prohibited_terms_in($value)) {
+            return '';
+        }
+
+        return $value;
+    }
+
+    /**
+     * Protected status terms found in a piece of copy.
+     *
+     * @return array<int, string>
+     */
+    public static function prohibited_terms_in(string $text): array
+    {
+        $terms = ['independent', 'whole of market', 'whole-of-market', 'impartial', 'unbiased', 'no commission', 'never on commission'];
+        $haystack = strtolower(wp_strip_all_tags($text));
+        $found = [];
+
+        foreach ($terms as $term) {
+            if (str_contains($haystack, $term)) {
+                $found[] = $term;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Status terms that carry a specific regulatory meaning. Their presence in stored
      * copy is not automatically wrong, but it must be a deliberate, approved choice:
      * an appointed representative advising from a panel is normally restricted rather
@@ -167,6 +217,13 @@ final class NA_Settings
 
         foreach (self::APPROVED_COPY_FIELDS as $field) {
             $haystack .= ' ' . wp_strip_all_tags(self::get($field));
+        }
+
+        // Also read what is actually published. The guard previously scanned only
+        // these nine settings, so a breach sitting in page content was invisible
+        // to it and the admin screen reported a clean bill of health.
+        foreach (get_posts(['post_type' => 'page', 'posts_per_page' => 200, 'post_status' => 'publish']) as $page) {
+            $haystack .= ' ' . wp_strip_all_tags($page->post_content);
         }
 
         $haystack = strtolower($haystack);

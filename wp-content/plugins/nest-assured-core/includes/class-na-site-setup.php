@@ -440,7 +440,7 @@ final class NA_Site_Setup
       <p class="na-v2-lede">Life insurance, income protection and critical illness, explained by a named adviser who starts with the cover you already have. No online quotes. Nothing sold on this site.</p>
       <div class="na-v2-actions">
         <a class="na-v2-btn" href="/enquire/">Arrange a conversation</a>
-        <a class="na-v2-link" href="#starting-point">Find my starting point <span aria-hidden="true">&darr;</span></a>
+        <a class="na-v2-link" href="/find-your-starting-point/">Find my starting point <span aria-hidden="true">&darr;</span></a>
       </div>')
             . self::shortcode('[nest_assured_adviser variant="pill"]')
             . self::html('</div>')
@@ -1359,7 +1359,7 @@ final class NA_Site_Setup
     <div>
       <p class="na-v2-eyebrow">Existing Major Money Matters clients</p>
       <h1 class="na-v2-h1--small">Keep it connected to your mortgage journey.</h1>
-      <p class="na-v2-lede na-v2-lede--wide">Your mortgage adviser may already have introduced this conversation. Use the form below to keep your protection enquiry connected to that journey.</p>
+      <p class="na-v2-lede na-v2-lede--wide">Your mortgage adviser may already have introduced this conversation. When enquiries open, this route keeps your protection enquiry connected to that journey.</p>
     </div>
     <div class="na-v2-masthead__aside">
       <span class="na-v2-note">A distinct client route &middot; not the standard new-enquiry queue</span>
@@ -1580,7 +1580,7 @@ final class NA_Site_Setup
     <div class="na-v2-enquire__intro">
       <p class="na-v2-eyebrow">Talk to an adviser</p>
       <h1 class="na-v2-h1--small">Start the conversation.</h1>
-      <p class="na-v2-lede">Tell us whether you are an existing Major Money Matters client, so the form routes your enquiry to the right place. Nothing is sold or decided at this stage.</p>
+      <p class="na-v2-lede">Tell us whether you are an existing Major Money Matters client, so your enquiry reaches the right place when enquiries open. Nothing is sold or decided at this stage.</p>
       <div class="na-v2-steps__list">
         <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">01</span><div><strong>Your enquiry is read</strong><span>The right adviser reviews what you send. Nothing is sold or decided at this stage.</span></div></div>
         <div class="na-v2-step"><span class="na-v2-step__num" aria-hidden="true">02</span><div><strong>A short conversation</strong><span>An adviser arranges a time to understand your situation, existing cover and questions.</span></div></div>

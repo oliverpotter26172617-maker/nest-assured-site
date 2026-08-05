@@ -92,6 +92,7 @@ final class NA_Shortcodes
             'security'   => ['error', 'The form session expired. Please refresh the page and try again.'],
             'rate'       => ['error', 'Please wait a moment before sending another enquiry.'],
             'storage'    => ['error', 'We could not store the enquiry. Please try again.'],
+            'closed'     => ['error', 'Online enquiries are not open yet. Please check back shortly.'],
         ];
         $request_uri = isset($_SERVER['REQUEST_URI'])
             ? esc_url_raw(wp_unslash((string) $_SERVER['REQUEST_URI']))
@@ -299,8 +300,8 @@ final class NA_Shortcodes
 
     public static function regulatory(): string
     {
-        $copy = NA_Settings::get('regulatory_copy');
-        $reference = NA_Settings::get('fca_reference');
+        $copy = NA_Settings::approved('regulatory_copy');
+        $reference = NA_Settings::approved('fca_reference');
         if ('' === $copy || '' === $reference) {
             return self::pending('Compliance-approved regulatory status and FCA reference');
         }
@@ -310,25 +311,25 @@ final class NA_Shortcodes
 
     public static function privacy(): string
     {
-        $copy = NA_Settings::get('privacy_copy');
+        $copy = NA_Settings::approved('privacy_copy');
         return '' === $copy ? self::pending('Compliance-approved privacy notice') : '<div class="na-prose">' . wp_kses_post(wpautop($copy)) . '</div>';
     }
 
     public static function complaints(): string
     {
-        $copy = NA_Settings::get('complaints_copy');
+        $copy = NA_Settings::approved('complaints_copy');
         return '' === $copy ? self::pending('Compliance-approved complaints procedure') : '<div class="na-prose">' . wp_kses_post(wpautop($copy)) . '</div>';
     }
 
     public static function financial(): string
     {
-        $copy = NA_Settings::get('financial_copy');
+        $copy = NA_Settings::approved('financial_copy');
         return '' === $copy ? self::pending('Compliance-approved financial promotions wording') : '<div class="na-prose">' . wp_kses_post(wpautop($copy)) . '</div>';
     }
 
     public static function ollie(): string
     {
-        $bio = NA_Settings::get('ollie_bio');
+        $bio = NA_Settings::approved('ollie_bio');
         $photo = NA_Settings::get('ollie_photo_url');
         if ('' === $bio || '' === $photo) {
             return '<div class="na-card na-team-card"><div class="na-team-card__portrait" aria-hidden="true">OA</div><div><p class="na-eyebrow">Protection adviser</p><h2>Ollie Allen</h2>' . self::pending('Ollie Allen approved biography and photography') . '</div></div>';
@@ -348,9 +349,9 @@ final class NA_Shortcodes
 
     public static function faqs(): string
     {
-        $copy = NA_Settings::get('faqs_copy');
+        $copy = NA_Settings::approved('faqs_copy');
         if ('' === $copy) {
-            return '<div class="na-status"><h2>Approved adviser questions are being prepared</h2><p>This page is intentionally not filled with generic insurance questions. Ollie Allen will supply questions drawn from real adviser conversations before launch.</p></div>';
+            return '<div class="na-status"><h2>Approved adviser questions are being prepared</h2><p>This page is intentionally not filled with generic insurance questions. Questions drawn from real adviser conversations will be published here before the service opens.</p></div>';
         }
 
         return '<div class="na-prose na-faqs">' . wp_kses_post(wpautop($copy)) . '</div>';
@@ -403,8 +404,8 @@ final class NA_Shortcodes
      */
     public static function footer_regulatory(): string
     {
-        $copy = trim(NA_Settings::get('regulatory_copy'));
-        $reference = trim(NA_Settings::get('fca_reference'));
+        $copy = trim(NA_Settings::approved('regulatory_copy'));
+        $reference = trim(NA_Settings::approved('fca_reference'));
 
         if ('' === $copy || '' === $reference) {
             return '';
@@ -496,7 +497,7 @@ final class NA_Shortcodes
      */
     public static function assurance(): string
     {
-        $reference = trim(NA_Settings::get('fca_reference'));
+        $reference = trim(NA_Settings::approved('fca_reference'));
         $reviews = trim(NA_Settings::get('google_reviews_url'));
 
         $cells = [];
@@ -601,11 +602,11 @@ final class NA_Shortcodes
      */
     public static function ollie_profile(): string
     {
-        $reference = trim(NA_Settings::get('fca_reference'));
-        $bio = trim(NA_Settings::get('ollie_bio'));
+        $reference = trim(NA_Settings::approved('fca_reference'));
+        $bio = trim(NA_Settings::approved('ollie_bio'));
 
-        $since = trim(NA_Settings::get('adviser_since'));
-        $permissions = trim(NA_Settings::get('adviser_permissions'));
+        $since = trim(NA_Settings::approved('adviser_since'));
+        $permissions = trim(NA_Settings::approved('adviser_permissions'));
 
         // Experience, permissions and advice status are all regulated credential
         // claims. Each is published only from its own approved setting, and omitted

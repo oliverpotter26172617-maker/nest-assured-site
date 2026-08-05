@@ -178,6 +178,15 @@ final class NA_Enquiry
             : home_url('/enquire/');
         $redirect = self::safe_redirect($redirect_value);
 
+        // Fail closed, like every other gate. The form is not rendered while
+        // compliance is outstanding, so no valid nonce exists and nothing can get
+        // this far, but this was the one control relying on that rather than
+        // saying no. Personal data must not be storable against a placeholder
+        // privacy notice and an unscheduled retention job.
+        if ([] !== NA_Settings::missing_compliance_controls() || ! NA_Settings::is_signed_off()) {
+            self::redirect_with_status($redirect, 'closed');
+        }
+
         if (! isset($_POST['na_nonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash((string) $_POST['na_nonce'])), 'na_enquiry')) {
             self::redirect_with_status($redirect, 'security');
         }

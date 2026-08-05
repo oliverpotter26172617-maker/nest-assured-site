@@ -71,7 +71,6 @@ final class NA_Editorial
         // A real address in Essex with no local node at all. Competitors with a
         // physical presence publish one, and it is the cheapest local signal there is.
         $data['@type'] = ['Organization', 'FinancialService', 'InsuranceAgency'];
-        $data['priceRange'] = 'Advice-led, no online quotes';
 
         $data['areaServed'] = [
             '@type' => 'Country',
@@ -516,10 +515,9 @@ final class NA_Editorial
             'dateModified'     => $modified,
             'mainEntityOfPage' => get_permalink($post_id),
             'image'            => [$image],
-            'author'           => [
-                '@type' => 'Organization',
-                'name'  => 'Nest Assured editorial team',
-            ],
+            // Point at the organisation already in the graph rather than
+            // declaring a second, unlinked Organization for the same publisher.
+            'author'           => ['@id' => home_url('/#organization')],
             // Point at Yoast's organisation node rather than declaring a second
             // Organization with a different logo URL, which left two competing
             // publisher nodes in the graph.

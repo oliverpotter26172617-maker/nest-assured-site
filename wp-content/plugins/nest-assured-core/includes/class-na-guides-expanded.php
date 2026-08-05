@@ -463,7 +463,11 @@ final class NA_Guides_Expanded
 <h3>Cross option agreement</h3>
 <p>A legal agreement used alongside shareholder or partnership protection. It gives the surviving owners the option to require a sale and the deceased owner\'s estate the option to require a purchase, which makes the transaction effectively certain without binding either side to sell from the outset. It is drafted by a solicitor, not by an insurer.</p>
 
-<h2>D to F</h2>
+<h3>Acute condition</h3>
+<p>A condition that comes on suddenly and is expected to respond to treatment, returning the person to the state of health they were in beforehand. The distinction from a chronic condition matters most in private medical insurance, where cover is generally aimed at acute conditions. What counts as acute is decided by the definition in the policy wording.</p><h3>Any occupation</h3>
+<p>A definition of incapacity used in income protection. It tests whether illness or injury prevents someone doing any paid work at all, rather than the particular job they held before the claim. It is the hardest of the common definitions to satisfy, because becoming well enough for lower paid or unrelated work can end a claim. The exact wording varies between insurers.</p><h3>Chronic condition</h3>
+<p>A condition that continues over time, needs ongoing monitoring or management, cannot be cured, or returns when treatment stops. Policies often limit or exclude cover for chronic conditions, particularly in private medical insurance. Because the boundary between acute and chronic decides what is paid for, the way the term is defined in the policy wording carries real weight at claim.</p><h3>Conversion option</h3>
+<p>A right built into some term assurance to convert the cover into a level term or whole of life policy without providing further medical evidence. It works within rules set by the contract, including time limits and limits on the amount of cover, and only while the original policy is in force. Whether one exists depends on the policy wording.</p><h2>D to F</h2>
 
 <h3>Decreasing term assurance</h3>
 <p>Life cover where the sum assured reduces over the term, often considered alongside a repayment mortgage. The rate at which cover reduces is set by the policy and will not track a specific loan balance exactly.</p>
@@ -492,7 +496,9 @@ final class NA_Guides_Expanded
 <h3>Full medical underwriting</h3>
 <p>An approach where health and lifestyle information is assessed before cover starts, so that the terms of the policy are known at outset rather than being investigated at claim.</p>
 
-<h2>G to L</h2>
+<h3>Death in service</h3>
+<p>A lump sum paid by an employer scheme if an employee dies while still employed, usually expressed as a multiple of salary. It is governed by the scheme rules rather than by the employee, normally ends when the employment ends, and can be changed or withdrawn by the employer, so it sits alongside personal cover rather than replacing it.</p><h3>Family income benefit</h3>
+<p>A form of life cover that pays a regular income to beneficiaries for the remainder of the policy term instead of a single lump sum, which some households find easier to plan around. Because payments stop at the end of the term, a claim made later in the term produces payments over a shorter period. Tax treatment depends on individual circumstances.</p><h2>G to L</h2>
 
 <h3>Guaranteed insurability option</h3>
 <p>A feature on some policies allowing cover to be increased on specified life events, such as a house move or the birth of a child, without full further medical underwriting. The qualifying events, notice periods and limits are defined in the policy.</p>
@@ -600,23 +606,17 @@ final class NA_Guides_Expanded
 <li>Ask what would need to be reviewed if your job, health, family or borrowing changed</li>
 </ul>
 
-<h3>Any occupation</h3>
-<p>A definition of incapacity used in income protection. It tests whether illness or injury prevents someone doing any paid work at all, rather than the particular job they held before the claim. It is the hardest of the common definitions to satisfy, because becoming well enough for lower paid or unrelated work can end a claim. The exact wording varies between insurers.</p>
 
-<h3>Acute condition</h3>
-<p>A condition that comes on suddenly and is expected to respond to treatment, returning the person to the state of health they were in beforehand. The distinction from a chronic condition matters most in private medical insurance, where cover is generally aimed at acute conditions. What counts as acute is decided by the definition in the policy wording.</p>
 
-<h3>Chronic condition</h3>
-<p>A condition that continues over time, needs ongoing monitoring or management, cannot be cured, or returns when treatment stops. Policies often limit or exclude cover for chronic conditions, particularly in private medical insurance. Because the boundary between acute and chronic decides what is paid for, the way the term is defined in the policy wording carries real weight at claim.</p>
 
-<h3>Conversion option</h3>
-<p>A right built into some term assurance to convert the cover into a level term or whole of life policy without providing further medical evidence. It works within rules set by the contract, including time limits and limits on the amount of cover, and only while the original policy is in force. Whether one exists depends on the policy wording.</p>
 
-<h3>Death in service</h3>
-<p>A lump sum paid by an employer scheme if an employee dies while still employed, usually expressed as a multiple of salary. It is governed by the scheme rules rather than by the employee, normally ends when the employment ends, and can be changed or withdrawn by the employer, so it sits alongside personal cover rather than replacing it.</p>
 
-<h3>Family income benefit</h3>
-<p>A form of life cover that pays a regular income to beneficiaries for the remainder of the policy term instead of a single lump sum, which some households find easier to plan around. Because payments stop at the end of the term, a claim made later in the term produces payments over a shorter period. Tax treatment depends on individual circumstances.</p><p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
+
+
+
+
+
+<p class="na-disclaimer">This guide is general information. It is not a personal recommendation and does not describe every policy condition or exclusion.</p>
 </div></section>');
     }
 
