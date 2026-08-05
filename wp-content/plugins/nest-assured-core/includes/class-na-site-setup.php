@@ -626,8 +626,9 @@ final class NA_Site_Setup
       <a class="na-v2-btn na-v2-btn--gold" href="/enquire/?topic=life-insurance">Talk to an adviser</a>
     </div>
   </div>
-</section>
-</div>');
+</section>')
+            . self::faq_block(NA_Faq::for_slug('life-insurance'))
+            . self::html('</div>');
     }
 
     /**

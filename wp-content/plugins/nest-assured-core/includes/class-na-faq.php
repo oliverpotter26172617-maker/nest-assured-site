@@ -29,6 +29,14 @@ final class NA_Faq
     public static function all(): array
     {
         return [
+            'life-insurance' => [
+                ['Does life insurance pay out for any cause of death?', 'Most policies cover death from any cause once in force, subject to their terms. There are usually exclusions, commonly around suicide in an early period, and answering the application questions accurately matters at the point of claim.'],
+                ['What is the difference between level and decreasing cover?', 'Level cover keeps the same sum assured throughout the term. Decreasing cover reduces over time and is often considered alongside a repayment mortgage. Which suits a household depends on what the money would need to do.'],
+                ['Should life insurance be written in trust?', 'Putting a policy in trust can affect who receives the money, how quickly it reaches them, and how it is treated for inheritance tax. Trusts have consequences of their own, so this is a point to take advice on rather than a box to tick.'],
+                ['What happens if I stop paying the premiums?', 'Most protection policies have no cash value, so cover normally ends after a short grace period and nothing is returned. If affordability changes, speak to an adviser before cancelling rather than after.'],
+                ['Can I get life insurance with a health condition?', 'Many conditions can be considered. An insurer may accept on ordinary terms, apply a higher premium, add an exclusion, postpone or decline, and the outcome depends on the condition, its history and the insurer.'],
+                ['Do I need life insurance if I have cover through work?', 'Death in service can be valuable, but the amount is usually tied to salary and it normally ends when the job does. It is worth understanding what it would leave behind before treating the question as settled.'],
+            ],
             'income-protection' => [
                 ['How long does income protection pay out for?', 'It depends on the policy. Some plans limit each claim to a set period, while others can continue until the end of the policy term if you remain unable to work under its definition. The maximum payment period is one of the main things that separates otherwise similar plans.'],
                 ['Is income protection the same as payment protection insurance?', 'No. Income protection is designed to replace part of your earnings when illness or injury stops you working. Payment protection was sold to cover a specific debt or credit agreement, and works differently.'],
