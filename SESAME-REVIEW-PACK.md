@@ -92,6 +92,25 @@ The content was audited before submission and the following were found and fixed
 | "Every guide reviewed by Ollie" on the about page, and per-guide review credits | No review had been recorded. All review claims removed from pages and from structured data. A reviewer is named only where a review is recorded against that guide. |
 | A homepage chart implying a premium-to-age relationship | Removed. The figures were not sourced. |
 
+### 5.1 Second audit round, expanded guides
+
+The thirteen original guides were rewritten to full depth and audited again. Three further errors were found and corrected, all of them cases where the two guide series disagreed and one of them was wrong.
+
+| Issue | Correction |
+|---|---|
+| The guide on leaving an employer said no group benefit could be continued as a personal policy | Group life schemes commonly include a continuation option with a short window after leaving. The guide now says so and tells the reader to ask before their last day. This was the most serious finding: a reader following the original would not have asked, and may not have been insurable afterwards. |
+| The life versus critical illness guide denied survivor and separation options exist | Both are real. Corrected, and hedged as features to confirm in the wording rather than assume. |
+| Relevant life cover implied further benefits could be added, and key person cover was described as available with critical illness in the same guide | Critical illness cannot sit inside a relevant life policy. Now stated explicitly. |
+| Statutory Sick Pay said not to apply to the self-employed | Corrected to except the salaried director of their own limited company, who is an employee of it. |
+| Critical illness initial qualifying periods described as typical | They are the exception. Corrected. |
+| Trust beneficiaries listed as routinely changeable | Depends on the trust. A bare trust fixes them. Corrected. |
+| Risk on a property purchase said to pass on exchange of contracts | The Standard Conditions of Sale usually leave risk with the seller until completion. Corrected, with Scotland noted separately. |
+
+### 5.2 Two items a reviewer should check against the firm's permissions
+
+- **Scope of permission.** Three guides cover non-investment general insurance (buildings and contents, and the two private medical guides). If the appointed representative permission does not extend to general insurance mediation, those guides raise a scope question independent of their content.
+- **Overlapping guide pairs.** Four subjects are covered twice across the two series (trusts, self-employment, reviewing or switching cover, and income protection amounts). They no longer contradict each other, but a reviewer may prefer one primary guide per subject.
+
 ## 6. How to review
 
 - The site runs locally. All pages are reachable from the primary navigation and the footer.
