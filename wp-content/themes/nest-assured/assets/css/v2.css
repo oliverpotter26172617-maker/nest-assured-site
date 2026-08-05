@@ -2387,3 +2387,30 @@ body.na-editorial-guide .na-calc,
     aspect-ratio: 16 / 10;
   }
 }
+
+/* Question block. Two columns on wide screens so a set of six questions does not
+   become a column of scrolling. */
+.na-v2-faq {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 2rem) clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.na-v2-faq__item h3 {
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+}
+
+.na-v2-faq__item p {
+  color: var(--v2-body);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+@media (max-width: 52rem) {
+  .na-v2-faq {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
